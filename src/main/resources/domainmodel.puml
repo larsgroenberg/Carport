@@ -1,0 +1,59 @@
+@startuml
+
+package app {
+    object Main
+}
+
+package app.config {
+    object ThymeleafConfig
+}
+
+package app.controllers {
+    object AdminController
+    object CarportController
+    object UserController
+    object CalculationController
+}
+
+package app.persistence {
+    object CarportMapper
+    object AdminMapper
+    object UserMapper
+    object ConnectionPool
+}
+
+package app.entities {
+    object Carport
+    object User
+    object PartsList
+    object Order
+}
+
+Main --> ThymeleafConfig
+Main --> AdminController
+Main --> CarportController
+Main --> UserController
+
+AdminController --> ConnectionPool
+AdminController --> AdminMapper
+CarportController --> ConnectionPool
+CarportController --> CarportMapper
+UserController --> ConnectionPool
+UserController --> UserMapper
+
+CarportMapper --> ConnectionPool
+CarportMapper --> Carport
+
+
+AdminMapper --> ConnectionPool
+AdminMapper --> User
+
+UserMapper --> ConnectionPool
+UserMapper --> User
+
+PartsList --> Carport
+
+
+
+
+@enduml
