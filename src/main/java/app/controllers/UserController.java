@@ -15,18 +15,12 @@ import java.util.List;
 public class UserController {
     public static void addRoutes(Javalin app) {
         app.post("login", ctx -> {
-            CarportController.showBottom(ctx, ConnectionPool.getInstance());
-            CarportController.showTopping(ctx, ConnectionPool.getInstance());
             login(ctx, ConnectionPool.getInstance());
         });
         app.get("login", ctx -> {
-            CarportController.showBottom(ctx, ConnectionPool.getInstance());
-            CarportController.showTopping(ctx, ConnectionPool.getInstance());
             ctx.render("login.html");
         });
         app.get("index.html", ctx -> {
-            CarportController.showBottom(ctx, ConnectionPool.getInstance());
-            CarportController.showTopping(ctx, ConnectionPool.getInstance());
             ctx.render("index.html");
         });
         app.get("logout", ctx -> logout(ctx, ConnectionPool.getInstance()));
@@ -42,6 +36,8 @@ public class UserController {
         String password2 = ctx.formParam("password2");
         String name = ctx.formParam("name");
         String mobile = ctx.formParam("mobile");
+        String address = ctx.formParam("address");
+        String zipcode = ctx.formParam("zipcode");
 
         boolean userexist = UserMapper.userexist(email, connectionPool);
         ctx.attribute("createuser", true);
@@ -50,7 +46,7 @@ public class UserController {
         if (!userexist) {
             if (password1.equals(password2)) {
                 try {
-                    UserMapper.createuser(email, password1, name, mobile, connectionPool);
+                    UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
                     ctx.attribute("message", "Du er hermed oprettet med brugernavn: " + email +
                             ". Nu kan du logge på.");
                     ctx.attribute("login", true);
@@ -73,33 +69,6 @@ public class UserController {
     }
 
     private static void logout(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-            // Her henter jeg currentUser fra sessionattributten så jeg kan kalde på brugerens userid
-            User currentUser = ctx.sessionAttribute("currentUser");
-            // Her henter jeg brugerens ordrelinier
-            ArrayList<Order> tempOrderLine = ctx.sessionAttribute("orders");
-            // Her henter jeg toppingList og bottomList
-            List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
-            List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
-
-            if(!tempOrderLine.isEmpty()) {
-                // Her sletter jeg brugerens gamle kurv i tabellen basket
-                CarportMapper.deleteUsersBasket(currentUser.getUserId(), connectionPool);
-                for (Order order : tempOrderLine) {
-                    // Her henter jeg hver enkel ordrelinies toppingid og bottomid
-                    int toppingId = 0;
-                    for (Topping topping : toppingList) {
-                        if (order.getTopping().equals(topping.getTopping())) toppingId = topping.getToppingId();
-                    }
-                    int bottomId = 0;
-                    for (Bottom bottom : bottomList) {
-                        if (order.getBottom().equals(bottom.getBottom())) bottomId = bottom.getBottomId();
-                    }
-                    // Her gemmer jeg hver enkelt ordrelinie i tabellen basket
-                    CarportMapper.insertOrderline(currentUser.getUserId(), toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
-                }
-            }
-            // Her sletter jeg tempOrderLine arraylisten
-            tempOrderLine.clear();
             // Her sletter jeg alle sessionAttributter
             ctx.req().getSession().invalidate();
             // Her sender jeg brugeren tilbage til forsiden index.html
@@ -118,30 +87,11 @@ public class UserController {
         try {
             User user = UserMapper.login(email, password, connectionPool);
             ctx.sessionAttribute("currentUser", user);
-            List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
-            List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
-            ArrayList<Order> orderLines = CarportMapper.getBasket(user, bottomList, toppingList, connectionPool);
-
-            if(orderLines != null) {
-                ctx.sessionAttribute("orders", orderLines);
-            }
 
             // Hvis brugeren er admin, sendes han videre til adminsite.html
             if (user.isAdmin()) {
                 ctx.render("adminSite.html");
             } else {
-                // Her udregner jeg hvor mange ordrelinier der er og hvad den samlede pris er for dem
-                int orderCount = 0;
-                int totalAmount = 0;
-                if (orderLines != null) {
-                    for (Order orderline : orderLines) {
-                        orderCount++;
-                        totalAmount += orderline.getOrderlinePrice();
-                    }
-                }
-                // Her opdaterer jeg orderCount og totalAmount i deres respektive sessionatributter
-                ctx.sessionAttribute("totalAmount", totalAmount);
-                ctx.sessionAttribute("orderCount", orderCount);
                 // Her sender jeg brugeren tilbage til index.html
                 ctx.render("index.html");
             }

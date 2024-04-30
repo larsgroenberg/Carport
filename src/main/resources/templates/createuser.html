@@ -24,8 +24,11 @@
             <input type="text" name="email" placeholder="Enter your email"/>
             <input type="text" name="name" placeholder="Enter your name"/>
             <input type="text" name="mobile" placeholder="Enter your mobilenumber"/>
+            <input type="text" name="address" placeholder="Enter your address"/>
+            <input type="text" name="zipcode" placeholder="Enter your zipcode"/>
             <input type="password" name="password1" placeholder="Enter your password"/>
             <input type="password" name="password2" placeholder="Enter your password again"/>
+
             <button type="submit" formaction="/createuser">Create User</button>
 
             <div id="hiddenDiv" class="modal" th:if="${created}" >

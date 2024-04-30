@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarportController {
+    /*
     static ArrayList<Order> orderLine = new ArrayList<>();
 
         public static void addRoutes(Javalin app)
@@ -181,10 +182,10 @@ public class CarportController {
             showBottom(ctx, ConnectionPool.getInstance());
             ctx.render("index.html");
         } else {
-            ctx.attribute("message", "Din saldo lyder på " + currentUser.getBalance() + " kr. hvilket ikke er nok til at betale for ordren! Fjern nogle varer fra din kurv eller indbetal penge på din konto!");
+            //ctx.attribute("message", "Din saldo lyder på " + currentUser.getBalance() + " kr. hvilket ikke er nok til at betale for ordren! Fjern nogle varer fra din kurv eller indbetal penge på din konto!");
             ctx.attribute("notenoughtmoney", true);
             ctx.render("checkoutpage.html");
         }
     }
-
+*/
 }

@@ -30,8 +30,9 @@ public class UserMapper
                 boolean isAdmin = rs.getBoolean("is_admin");
                 String name = rs.getString("name");
                 String mobile = rs.getString("mobile");
-                int balance = rs.getInt("balance");
-                return new User(id, email, password, isAdmin, name, mobile, balance);
+                String address = rs.getString("address");
+                String zipcode = rs.getString("zipcode");
+                return new User(id, email, password, isAdmin, name, mobile, address, zipcode);
 
             } else
             {
@@ -45,22 +46,22 @@ public class UserMapper
     }
 
 
-    public static void createuser(String email, String password, String name, String mobile, ConnectionPool connectionPool) throws DatabaseException
+    public static void createuser(String email, String password, String name, String mobile, String address, String zipcode, ConnectionPool connectionPool) throws DatabaseException
     {
-        String sql = "insert into users (email, password, is_admin, name, mobile, balance) values (?,?,?,?,?,?)";
+        String sql = "insert into users (email, password, is_admin, name, mobile, address, zipcode) values (?,?,?,?,?,?,?)";
 
         try (
                 Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
         )
         {
-            int balance = 0;
             ps.setString(1, email);
             ps.setString(2, password);
             ps.setBoolean(3, false);
             ps.setString(4, name);
             ps.setString(5, mobile);
-            ps.setInt(6, balance);
+            ps.setString(6, address);
+            ps.setString(7,zipcode);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1)

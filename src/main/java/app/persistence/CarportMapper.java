@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarportMapper {
-
+/*
 
     public static List<Topping> showToppings(ConnectionPool connectionPool) throws DatabaseException {
         List<Topping> toppingList = new ArrayList<>();
@@ -250,5 +250,5 @@ public class CarportMapper {
         {
             throw new DatabaseException(e.getMessage());
         }
-    }
+    }*/
 }
