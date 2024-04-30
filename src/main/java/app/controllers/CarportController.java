@@ -21,7 +21,7 @@ public class CarportController {
             app.get("/", ctx -> {
                showTopping(ctx,ConnectionPool.getInstance());
                showBottom(ctx, ConnectionPool.getInstance());
-               ctx.render("index.html");
+               ctx.render("carportspecs.html");
             });
             app.post("/createorder", ctx -> {
                 createOrder(ctx,ConnectionPool.getInstance());
@@ -32,7 +32,7 @@ public class CarportController {
             app.post("/ordermore", ctx -> {
                 showTopping(ctx,ConnectionPool.getInstance());
                 showBottom(ctx, ConnectionPool.getInstance());
-                ctx.render("index.html");
+                ctx.render("carportspecs.html");
             });
 
             app.post("/payorder", ctx -> {
@@ -68,12 +68,12 @@ public class CarportController {
         ctx.sessionAttribute("orderCount", orderCount);
         ctx.sessionAttribute("totalAmount", totalAmount);
 
-        // Hvis kunden sletter alle sine ordrelinier sender jeg ham tilbage til index.html. Er er stadig
+        // Hvis kunden sletter alle sine ordrelinier sender jeg ham tilbage til carportspecs.html. Er er stadig
         // ordrelinier smider jeg ham tilbage til checkoutpage.html
         if (orderLines.isEmpty()) {
             showTopping(ctx, ConnectionPool.getInstance());
             showBottom(ctx, ConnectionPool.getInstance());
-            ctx.render("index.html");
+            ctx.render("carportspecs.html");
         } else {
             ctx.render("checkoutpage.html");
         }
@@ -127,7 +127,7 @@ public class CarportController {
 
         showTopping(ctx, ConnectionPool.getInstance());
         showBottom(ctx, ConnectionPool.getInstance());
-        ctx.render("index.html");
+        ctx.render("carportspecs.html");
     }
 
     private static int calculateOrderLinePrice(Topping topping, Bottom bottom, int quantity) {
@@ -180,7 +180,7 @@ public class CarportController {
             ctx.sessionAttribute("orderCount", 0);
             showTopping(ctx, ConnectionPool.getInstance());
             showBottom(ctx, ConnectionPool.getInstance());
-            ctx.render("index.html");
+            ctx.render("carportspecs.html");
         } else {
             //ctx.attribute("message", "Din saldo lyder på " + currentUser.getBalance() + " kr. hvilket ikke er nok til at betale for ordren! Fjern nogle varer fra din kurv eller indbetal penge på din konto!");
             ctx.attribute("notenoughtmoney", true);
