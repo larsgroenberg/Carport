@@ -21,7 +21,7 @@ public class Main
 
         //Routing
 
-        CarportController.addRoutes(app);
+        //CarportController.addRoutes(app);
         UserController.addRoutes(app);
         AdminController.addRoutes(app);
     }

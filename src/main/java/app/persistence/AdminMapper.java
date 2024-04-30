@@ -29,8 +29,9 @@ public class AdminMapper {
                 String email = rs.getString("email");
                 String user_Name = rs.getString("name");
                 String user_Mobile = rs.getString("mobile");
-                int user_Balance = rs.getInt("balance");
-                User newUser = new User(user_ID,email,"",false,user_Name,user_Mobile,user_Balance);
+                String user_Address = rs.getString("address");
+                String user_Zipcode = rs.getString("zipcode");
+                User newUser = new User(user_ID,email,"",false,user_Name,user_Mobile,user_Address, user_Zipcode);
                 customerInfo.add(newUser);
             } else {
                 //throw new DatabaseException("Fejl i login. Prøv igen");
