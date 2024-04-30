@@ -1,12 +1,10 @@
 package app.controllers;
 
-import app.entities.Bottom;
 import app.entities.Order;
-import app.entities.Topping;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
-import app.persistence.ItemMapper;
+import app.persistence.CarportMapper;
 import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -14,7 +12,7 @@ import io.javalin.http.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemController {
+public class CarportController {
     static ArrayList<Order> orderLine = new ArrayList<>();
 
         public static void addRoutes(Javalin app)
@@ -100,8 +98,8 @@ public class ItemController {
         int bottomId = Integer.parseInt(ctx.formParam("bund"));   // Assumes you have bottomId in form
         int quantity = Integer.parseInt(ctx.formParam("antal"));
 
-        Topping topping = ItemMapper.getToppingById(toppingId, connectionPool);
-        Bottom bottom = ItemMapper.getBottomById(bottomId, connectionPool);
+        Topping topping = CarportMapper.getToppingById(toppingId, connectionPool);
+        Bottom bottom = CarportMapper.getBottomById(bottomId, connectionPool);
         if (topping == null || bottom == null) {
             throw new DatabaseException("cant find id for bottom or topping");
         }
@@ -137,12 +135,12 @@ public class ItemController {
     }
 
     public static void showBottom(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        List<Bottom> bottomList = ItemMapper.showBottoms(connectionPool);
+        List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
         ctx.attribute("bottomList", bottomList);
     }
 
     public static void showTopping(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        List<Topping> toppingList = ItemMapper.showToppings(connectionPool);
+        List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
         ctx.attribute("toppingList", toppingList);
     }
 
@@ -153,9 +151,9 @@ public class ItemController {
         if (currentUser.getBalance() >= orderprice) {
             ArrayList<Order> tempOrderLine = ctx.sessionAttribute("orders");
 
-            int generatedOrderId = ItemMapper.insertOrder(tempOrderLine.get(0).getUserId(), connectionPool);
-            List<Topping> toppingList = ItemMapper.showToppings(connectionPool);
-            List<Bottom> bottomList = ItemMapper.showBottoms(connectionPool);
+            int generatedOrderId = CarportMapper.insertOrder(tempOrderLine.get(0).getUserId(), connectionPool);
+            List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
+            List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
 
             for (Order order : tempOrderLine) {
                 int toppingId = 0;
@@ -167,11 +165,11 @@ public class ItemController {
                     if (order.getBottom().equals(bottom.getBottom())) bottomId = bottom.getBottomId();
                 }
 
-                ItemMapper.payForOrder(generatedOrderId, toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
+                CarportMapper.payForOrder(generatedOrderId, toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
 
             }
             tempOrderLine.clear();
-            ItemMapper.deleteUsersBasket(currentUser.getUserId(), connectionPool);
+            CarportMapper.deleteUsersBasket(currentUser.getUserId(), connectionPool);
             int newBalance = currentUser.getBalance() - orderprice;
             currentUser.setBalance(newBalance);
             UserMapper.updateBalance(currentUser.getUserId(), newBalance, connectionPool);

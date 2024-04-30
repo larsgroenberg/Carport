@@ -1,8 +1,6 @@
 package app.persistence;
 
-import app.entities.Bottom;
 import app.entities.Order;
-import app.entities.Topping;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 
@@ -10,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemMapper {
+public class CarportMapper {
 
 
     public static List<Topping> showToppings(ConnectionPool connectionPool) throws DatabaseException {

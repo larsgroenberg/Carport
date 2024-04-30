@@ -1,12 +1,10 @@
 package app.controllers;
 
-import app.entities.Bottom;
 import app.entities.Order;
-import app.entities.Topping;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
-import app.persistence.ItemMapper;
+import app.persistence.CarportMapper;
 import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -17,18 +15,18 @@ import java.util.List;
 public class UserController {
     public static void addRoutes(Javalin app) {
         app.post("login", ctx -> {
-            ItemController.showBottom(ctx, ConnectionPool.getInstance());
-            ItemController.showTopping(ctx, ConnectionPool.getInstance());
+            CarportController.showBottom(ctx, ConnectionPool.getInstance());
+            CarportController.showTopping(ctx, ConnectionPool.getInstance());
             login(ctx, ConnectionPool.getInstance());
         });
         app.get("login", ctx -> {
-            ItemController.showBottom(ctx, ConnectionPool.getInstance());
-            ItemController.showTopping(ctx, ConnectionPool.getInstance());
+            CarportController.showBottom(ctx, ConnectionPool.getInstance());
+            CarportController.showTopping(ctx, ConnectionPool.getInstance());
             ctx.render("login.html");
         });
         app.get("index.html", ctx -> {
-            ItemController.showBottom(ctx, ConnectionPool.getInstance());
-            ItemController.showTopping(ctx, ConnectionPool.getInstance());
+            CarportController.showBottom(ctx, ConnectionPool.getInstance());
+            CarportController.showTopping(ctx, ConnectionPool.getInstance());
             ctx.render("index.html");
         });
         app.get("logout", ctx -> logout(ctx, ConnectionPool.getInstance()));
@@ -80,12 +78,12 @@ public class UserController {
             // Her henter jeg brugerens ordrelinier
             ArrayList<Order> tempOrderLine = ctx.sessionAttribute("orders");
             // Her henter jeg toppingList og bottomList
-            List<Topping> toppingList = ItemMapper.showToppings(connectionPool);
-            List<Bottom> bottomList = ItemMapper.showBottoms(connectionPool);
+            List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
+            List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
 
             if(!tempOrderLine.isEmpty()) {
                 // Her sletter jeg brugerens gamle kurv i tabellen basket
-                ItemMapper.deleteUsersBasket(currentUser.getUserId(), connectionPool);
+                CarportMapper.deleteUsersBasket(currentUser.getUserId(), connectionPool);
                 for (Order order : tempOrderLine) {
                     // Her henter jeg hver enkel ordrelinies toppingid og bottomid
                     int toppingId = 0;
@@ -97,7 +95,7 @@ public class UserController {
                         if (order.getBottom().equals(bottom.getBottom())) bottomId = bottom.getBottomId();
                     }
                     // Her gemmer jeg hver enkelt ordrelinie i tabellen basket
-                    ItemMapper.insertOrderline(currentUser.getUserId(), toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
+                    CarportMapper.insertOrderline(currentUser.getUserId(), toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
                 }
             }
             // Her sletter jeg tempOrderLine arraylisten
@@ -120,9 +118,9 @@ public class UserController {
         try {
             User user = UserMapper.login(email, password, connectionPool);
             ctx.sessionAttribute("currentUser", user);
-            List<Topping> toppingList = ItemMapper.showToppings(connectionPool);
-            List<Bottom> bottomList = ItemMapper.showBottoms(connectionPool);
-            ArrayList<Order> orderLines = ItemMapper.getBasket(user, bottomList, toppingList, connectionPool);
+            List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
+            List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
+            ArrayList<Order> orderLines = CarportMapper.getBasket(user, bottomList, toppingList, connectionPool);
 
             if(orderLines != null) {
                 ctx.sessionAttribute("orders", orderLines);
