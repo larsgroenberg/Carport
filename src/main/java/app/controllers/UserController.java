@@ -35,8 +35,6 @@ public class UserController {
         String zipcode = ctx.formParam("zipcode");
 
         boolean userexist = UserMapper.userexist(email, connectionPool);
-        ctx.attribute("createuser", true);
-        ctx.attribute("usercreated", false);
 
         if (!userexist) {
             if (password1.equals(password2)) {
@@ -47,17 +45,17 @@ public class UserController {
                     ctx.attribute("login", true);
                     ctx.render("login.html");
                 } catch (DatabaseException e) {
-                    ctx.attribute("message", "Dit brugernavn findes allerede. Prøv igen, eller log ind");
+                    ctx.attribute("message", "Der skete en fejl, prøv igen");
                     ctx.attribute("login", true);
                     ctx.render("login.html");
                 }
             } else {
-                ctx.attribute("message", "Dine to passwords matcher ikke! Prøv igen");
-                ctx.attribute("createuser", true);
+                ctx.attribute("message", "Passwords matcher ikke! Prøv igen");
+                ctx.attribute("error", true);
                 ctx.render("createuser.html");
             }
         } else {
-            ctx.attribute("message", "Dit brugernavn findes allerede. Prøv igen, eller log ind");
+            ctx.attribute("message", "En bruger med denne email findes allerede. Venligst Log ind");
             ctx.attribute("login", true);
             ctx.render("login.html");
         }
