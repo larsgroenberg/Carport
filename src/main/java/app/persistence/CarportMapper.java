@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarportMapper {
-
+/*
 
     /*public static List<Carport> showOrders(ConnectionPool connectionPool) throws DatabaseException {
         List<Carport> orderList = new ArrayList<>();
@@ -102,5 +102,5 @@ public class CarportMapper {
         {
             throw new DatabaseException(e.getMessage());
         }
-    }
+    }*/
 }

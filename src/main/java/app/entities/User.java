@@ -8,9 +8,12 @@ public class User
     private boolean isAdmin;
     private String name;
     private String mobile;
-    private int balance;
 
-    public User(int userId, String email, String password, boolean isAdmin, String name, String mobile, int balance)
+
+    private String address;
+    private String zipcode;
+
+    public User(int userId, String email, String password, boolean isAdmin, String name, String mobile, String address, String zipcode)
     {
         this.userId = userId;
         this.email = email;
@@ -18,7 +21,23 @@ public class User
         this.isAdmin = isAdmin;
         this.name = name;
         this.mobile = mobile;
-        this.balance = balance;
+        this.address = address;
+        this.zipcode = zipcode;
+    }
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
     }
 
     public int getUserId() {
@@ -69,11 +88,4 @@ public class User
         this.mobile = mobile;
     }
 
-    public int getBalance() {
-        return balance;
-    }
-
-    public void setBalance(int balance) {
-        this.balance = balance;
-    }
 }
