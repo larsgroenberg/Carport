@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
+
+<head>
+    <title>BookingBois</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../public/css/bookiBois.css" th:href="@{/css/bookiBois.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<div class="page">
+    <form class="form-table" id="myForm" action="" method="post">
+        <h1>Carport Detajler</h1>
+
+            <h2>Carport bredde:</h2>
+
+            <label for="carport_width">
+                <select name="carport_width" id="carport_width" required>
+                    <option selected="">
+                    </option>
+                    <option value="240 cm">
+                        240 cm
+                    </option>
+                    <option value="270 cm">
+                        270 cm
+                    </option>
+                    <option value="300 cm">
+                        300 cm
+                    </option>
+                    <option value="330 cm">
+                        330 cm
+                    </option>
+                    <option value="360 cm">
+                        360 cm
+                    </option>
+                    <option value="390 cm">
+                        390 cm
+                    </option>
+                    <option value="420 cm">
+                        420 cm
+                    </option>
+                    <option value="450 cm">
+                        450 cm
+                    </option>
+                    <option value="480 cm">
+                        480 cm
+                    </option>
+                    <option value="510 cm">
+                        510 cm
+                    </option>
+                    <option value="540 cm">
+                        540 cm
+                    </option>
+                    <option value="570 cm">
+                        570 cm
+                    </option>
+                    <option value="600 cm">
+                        600 cm
+                    </option>
+                </select>
+            </label>
+
+            <h2>Carport længde:</h2>
+
+            <label for="carport_length">
+                <select name="carport_length" id="carport_length" required="">
+                    <option selected="">
+                    </option>
+                    <option value="240 cm">
+                        240 cm
+                    </option>
+                    <option value="270 cm">
+                        270 cm
+                    </option>
+                    <option value="300 cm">
+                        300 cm
+                    </option>
+                    <option value="330 cm">
+                        330 cm
+                    </option>
+                    <option value="360 cm">
+                        360 cm
+                    </option>
+                    <option value="390 cm">
+                        390 cm
+                    </option>
+                    <option value="420 cm">
+                        420 cm
+                    </option>
+                    <option value="450 cm">
+                        450 cm
+                    </option>
+                    <option value="480 cm">
+                        480 cm
+                    </option>
+                    <option value="510 cm">
+                        510 cm
+                    </option>
+                    <option value="540 cm">
+                        540 cm
+                    </option>
+                    <option value="570 cm">
+                        570 cm
+                    </option>
+                    <option value="600 cm">
+                        600 cm
+                    </option>
+                    <option value="630 cm">
+                        630 cm
+                    </option>
+                    <option value="660 cm">
+                        660 cm
+                    </option>
+                    <option value="690 cm">
+                        690 cm
+                    </option>
+                    <option value="720 cm">
+                        720 cm
+                    </option>
+                    <option value="750 cm">
+                        750 cm
+                    </option>
+                    <option value="780 cm">
+                        780 cm
+                    </option>
+                </select>
+            </label>
+
+            <h2>Carport trapeztag:</h2>
+
+            <label for="carport_trapeztag">
+                <select name="carport_trapeztag" id="carport_trapeztag" required>
+                    <option selected=""></option>
+                    <option value="Uden tagplader">Uden tagplader</option>
+                    <option value="Med Plasttrapezplader">Med Plasttrapezplader</option>
+                </select>
+            </label>
+
+        <div class="button-container">
+            <input class="betal" type="submit" value="Fortsæt" formaction="/saveCarportData">
+        </div>
+
+    </form>
+</div>
+
+</body>
+
+</html>
