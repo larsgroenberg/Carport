@@ -7,21 +7,19 @@ import app.persistence.AdminMapper;
 import app.persistence.ConnectionPool;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
 import java.util.ArrayList;
 
 public class AdminController
 {
-
     public static void addRoutes(Javalin app)
     {
         app.get("/adminSite", ctx -> index(ctx));
 
         app.post("/getAllOrders", ctx -> getAllOrders(ctx, ConnectionPool.getInstance()));
-        app.post("/showCustomer", ctx -> showCustomer(ctx, ConnectionPool.getInstance()));
-        app.post("/showCustomerOrders", ctx -> showCustomerOrders(ctx, ConnectionPool.getInstance()));
-
-        app.post("/addToBalance", ctx -> addMoneyToCustomerBalance(ctx, ConnectionPool.getInstance()));
+        app.post("/getOrderByEmail", ctx -> getOrderByEmail(ctx, ConnectionPool.getInstance()));
+        app.post("/getOrderByName", ctx -> getOrderByName(ctx, ConnectionPool.getInstance()));
+        app.post("/getCustomerByName", ctx -> getCustomerByName(ctx, ConnectionPool.getInstance()));
+        app.post("/getCustomerByEmail", ctx -> getCustomerByEmail(ctx, ConnectionPool.getInstance()));
     }
 
     private static void index(Context ctx)
@@ -33,34 +31,34 @@ public class AdminController
         AdminMapper.showAllOrders(connectionPool);
         ArrayList<Order> customerOrders = AdminMapper.showAllOrders(connectionPool);
         ctx.attribute("customerOrders", customerOrders);
-
         ctx.render("adminSite.html");
     }
 
-    private static void showCustomer(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        String username = ctx.formParam("username_input");
-        ArrayList<User> customer = AdminMapper.showCustomer(username, connectionPool);
-        ctx.attribute("customer", customer);
-
+    private static void getOrderByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String email = ctx.formParam("email");
+        Order customerOrder = AdminMapper.getOrderByEmail(email, connectionPool);
+        ctx.attribute("customerOrders", customerOrder);
         ctx.render("adminSite.html");
     }
 
-    private static void showCustomerOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        String username = ctx.formParam("username_input");
-
-        ArrayList<Order> customerOrders = AdminMapper.showCustomerOrders(username, connectionPool);
-        ctx.attribute("customerOrders", customerOrders);
-
+    private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String userName = ctx.formParam("username");
+        Order customerOrder = AdminMapper.getOrderByEmail(userName, connectionPool);
+        ctx.attribute("customerOrders", customerOrder);
         ctx.render("adminSite.html");
     }
 
-    private static void addMoneyToCustomerBalance(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        String customerEmail = ctx.formParam("email");
-        String amountToAdd = ctx.formParam("balance_input");
+    private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String userName = ctx.formParam("username");
+        User currentUser = AdminMapper.getCustomerByName(userName, connectionPool);
+        ctx.attribute("currentuser", currentUser);
+        ctx.render("adminSite.html");
+    }
 
-        AdminMapper.addMoneyToCustomerBalance(customerEmail,amountToAdd, connectionPool);
-
-
+    private static void getCustomerByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String email = ctx.formParam("email");
+        User currentUser = AdminMapper.getCustomerByEmail(email, connectionPool);
+        ctx.attribute("currentuser", currentUser);
         ctx.render("adminSite.html");
     }
 }
