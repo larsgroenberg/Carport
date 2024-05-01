@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.entities.Order;
+import app.entities.Carport;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
@@ -13,35 +13,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarportController {
-    static ArrayList<Order> orderLine = new ArrayList<>();
+    //static ArrayList<Order> orderLine = new ArrayList<>();
 
         public static void addRoutes(Javalin app)
         {
             app.get("/", ctx -> {
-               showTopping(ctx,ConnectionPool.getInstance());
-               showBottom(ctx, ConnectionPool.getInstance());
                ctx.render("index.html");
             });
-            app.post("/createorder", ctx -> {
-                createOrder(ctx,ConnectionPool.getInstance());
-            });
-            app.get("/showcupcakes", ctx -> {
-                ctx.render("checkoutpage.html");
-            });
-            app.post("/ordermore", ctx -> {
-                showTopping(ctx,ConnectionPool.getInstance());
-                showBottom(ctx, ConnectionPool.getInstance());
-                ctx.render("index.html");
+            app.post("/saveCarportData", ctx -> {
+                String width = ctx.formParam("carport_width");
+                String length = ctx.formParam("carport_length");
+                String trapeztag = ctx.formParam("carport_trapeztag");
+
+                ctx.sessionAttribute("carport_width",width);
+                ctx.sessionAttribute("carport_length",length);
+                ctx.sessionAttribute("carport_trapeztag",trapeztag);
+
+                ctx.render("index.html"); //render næste side efter at man har indtastet carport og trykket videre
             });
 
-            app.post("/payorder", ctx -> {
-                payForOrder(ctx,ConnectionPool.getInstance());
-                //ctx.render("checkoutpage.html");
-            });
-            app.post("deleteorderline", ctx -> deleteorderline(ctx, ConnectionPool.getInstance()));
+
+            /*app.post("/createorder", ctx -> {
+                createOrder(ctx,ConnectionPool.getInstance());
+            });*/
+            /*app.post("/ordermore", ctx -> {
+                showOrders(ctx, ConnectionPool.getInstance());
+                ctx.render("index.html");
+            });*/
+
+            //app.post("deleteorderline", ctx -> deleteorderline(ctx, ConnectionPool.getInstance()));
         }
 
-    private static void deleteorderline(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+    /*private static void deleteorderline(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         List<Order> orderLines = ctx.sessionAttribute("orders");
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
         // Her fjerner jeg den ordrelinie som kunden ønsker at fjerne
@@ -71,80 +74,28 @@ public class CarportController {
         // ordrelinier smider jeg ham tilbage til checkoutpage.html
         if (orderLines.isEmpty()) {
             showTopping(ctx, ConnectionPool.getInstance());
-            showBottom(ctx, ConnectionPool.getInstance());
+            showOrders(ctx, ConnectionPool.getInstance());
             ctx.render("index.html");
         } else {
             ctx.render("checkoutpage.html");
         }
-    }
+    }*/
 
     private static void createOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        User currentUser = ctx.sessionAttribute("currentUser");
-        if (currentUser == null) {
-            ctx.render("login.html");
-            return;
-        }
-
-        if (ctx.sessionAttribute("orders") != null) {
-            orderLine = ctx.sessionAttribute("orders");
-        }
-
-        String email = currentUser.getEmail();
-        String name = currentUser.getName();
-        String mobile = currentUser.getMobile();
-        int balance = currentUser.getBalance();
-
-        int toppingId = Integer.parseInt(ctx.formParam("topping")); // Assumes you have toppingId in form
-        int bottomId = Integer.parseInt(ctx.formParam("bund"));   // Assumes you have bottomId in form
-        int quantity = Integer.parseInt(ctx.formParam("antal"));
-
-        Topping topping = CarportMapper.getToppingById(toppingId, connectionPool);
-        Bottom bottom = CarportMapper.getBottomById(bottomId, connectionPool);
-        if (topping == null || bottom == null) {
-            throw new DatabaseException("cant find id for bottom or topping");
-        }
-
-        int orderlinePrice = calculateOrderLinePrice(topping, bottom, quantity);
-
-        Order order = new Order(currentUser.getUserId(), email, name, mobile, balance, topping.getTopping(), bottom.getBottom(), quantity, orderlinePrice);
-        orderLine.add(order);
-
-        ctx.sessionAttribute("orders", orderLine);
+        int length = ctx.sessionAttribute("carport_length");
+        int width = ctx.sessionAttribute("carport_width");
+        boolean trapeztag = ctx.sessionAttribute("carport_trapeztag");
 
 
-        int totalAmount = 0;
-        int orderCount = 0;
-        for (Order orderline : orderLine) {
-            if (order.getUserId() == currentUser.getUserId()) {
-                totalAmount += orderline.getOrderlinePrice();
-                orderCount++;
-            }
-        }
-
-        ctx.sessionAttribute("totalAmount", totalAmount); // Sender det samlede beløb som en attribut til HTML-skabelonen
-        ctx.sessionAttribute("orderCount", orderCount);
-
-        showTopping(ctx, ConnectionPool.getInstance());
-        showBottom(ctx, ConnectionPool.getInstance());
-        ctx.render("index.html");
+        //CarportMapper.InsertIntoOrders(userId,orderDate,orderprice,status,length,width,trapeztag);
     }
 
-    private static int calculateOrderLinePrice(Topping topping, Bottom bottom, int quantity) {
-        int totalItemPrice = topping.getPrice() + bottom.getPrice();
-        return totalItemPrice * quantity;
-    }
+    /*public static void showOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        List<Carport> orderList = CarportMapper.showOrders(connectionPool);
+        ctx.attribute("orderList", orderList);
+    }*/
 
-    public static void showBottom(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        List<Bottom> bottomList = CarportMapper.showBottoms(connectionPool);
-        ctx.attribute("bottomList", bottomList);
-    }
-
-    public static void showTopping(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        List<Topping> toppingList = CarportMapper.showToppings(connectionPool);
-        ctx.attribute("toppingList", toppingList);
-    }
-
-    public static void payForOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+    /*public static void payForOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         User currentUser = ctx.sessionAttribute("currentUser");
         int orderprice = ctx.sessionAttribute("totalAmount");
 
@@ -165,7 +116,7 @@ public class CarportController {
                     if (order.getBottom().equals(bottom.getBottom())) bottomId = bottom.getBottomId();
                 }
 
-                CarportMapper.payForOrder(generatedOrderId, toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
+                CarportMapper.InsertIntoOrders(generatedOrderId, toppingId, bottomId, order.getQuantity(), order.getOrderlinePrice(), connectionPool);
 
             }
             tempOrderLine.clear();
@@ -178,13 +129,13 @@ public class CarportController {
             ctx.sessionAttribute("totalAmount", 0);
             ctx.sessionAttribute("orderCount", 0);
             showTopping(ctx, ConnectionPool.getInstance());
-            showBottom(ctx, ConnectionPool.getInstance());
+            showOrders(ctx, ConnectionPool.getInstance());
             ctx.render("index.html");
         } else {
             ctx.attribute("message", "Din saldo lyder på " + currentUser.getBalance() + " kr. hvilket ikke er nok til at betale for ordren! Fjern nogle varer fra din kurv eller indbetal penge på din konto!");
             ctx.attribute("notenoughtmoney", true);
             ctx.render("checkoutpage.html");
         }
-    }
+    }*/
 
 }
