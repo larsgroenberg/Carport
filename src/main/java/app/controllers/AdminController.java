@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.entities.Material;
 import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
@@ -19,13 +20,39 @@ public class AdminController
 
         app.post("/getAllOrders", ctx -> getAllOrders(ctx, ConnectionPool.getInstance()));
         app.post("/showCustomer", ctx -> showCustomer(ctx, ConnectionPool.getInstance()));
+        app.post("/getMaterialById", ctx -> getMaterialById(ctx, ConnectionPool.getInstance()));
+        app.post("/getMaterialByName", ctx -> getMaterialByName(ctx, ConnectionPool.getInstance()));
         app.post("/showCustomerOrders", ctx -> showCustomerOrders(ctx, ConnectionPool.getInstance()));
-
+        app.post("/getAllMaterials", ctx -> showMaterials(ctx, ConnectionPool.getInstance()));
         app.post("/addToBalance", ctx -> addMoneyToCustomerBalance(ctx, ConnectionPool.getInstance()));
     }
 
     private static void index(Context ctx)
     {
+        ctx.render("adminSite.html");
+    }
+
+    private static void showMaterials(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        AdminMapper.showMaterials(connectionPool);
+        ArrayList<Material> materialList = AdminMapper.showMaterials(connectionPool);
+        ctx.attribute("materiallist", materialList);
+
+        ctx.render("adminSite.html");
+    }
+
+    private static void getMaterialById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        int materialId = Integer.parseInt(ctx.formParam("materialid"));
+        Material material = AdminMapper.getMaterialById(materialId, connectionPool);
+        ctx.attribute("material", material);
+
+        ctx.render("adminSite.html");
+    }
+
+    private static void getMaterialByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String name = ctx.formParam("materialbyname");
+        Material material = AdminMapper.getMaterialByName(name, connectionPool);
+        ctx.attribute("material", material);
+
         ctx.render("adminSite.html");
     }
 
