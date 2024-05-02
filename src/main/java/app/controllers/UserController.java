@@ -15,8 +15,8 @@ public class UserController {
         app.get("login", ctx -> {
             ctx.render("login.html");
         });
-        app.get("index.html", ctx -> {
-            ctx.render("index.html");
+        app.get("carportspecs.html", ctx -> {
+            ctx.render("carportspecs.html");
         });
         app.get("logout", ctx -> logout(ctx, ConnectionPool.getInstance()));
         app.post("createuser", ctx -> createUser(ctx, ConnectionPool.getInstance()));
@@ -64,7 +64,7 @@ public class UserController {
     private static void logout(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
             // Her sletter jeg alle sessionAttributter
             ctx.req().getSession().invalidate();
-            // Her sender jeg brugeren tilbage til forsiden index.html
+            // Her sender jeg brugeren tilbage til forsiden carportspecs.html
             ctx.redirect("/");
     }
 
@@ -85,8 +85,8 @@ public class UserController {
             if (user.isAdmin()) {
                 ctx.render("adminSite.html");
             } else {
-                // Her sender jeg brugeren tilbage til index.html
-                ctx.render("index.html");
+                // Her sender jeg brugeren tilbage til carportspecs.html
+                ctx.render("carportspecs.html");
             }
         } catch (DatabaseException e) {
             // Her sætter jeg attributten til true hvilket gør at javascriptet vises
