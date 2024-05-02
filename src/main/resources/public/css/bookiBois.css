@@ -39,7 +39,7 @@ header a {
 }
 
 header a img {
-    width: 95%;
+    width: 100%;
     background-color: #3C1460;
 }
 
@@ -280,7 +280,7 @@ div {
 }
 
 img {
-    max-width: 95%;
+    max-width: 100%;
 }
 
 table {
