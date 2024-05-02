@@ -20,12 +20,10 @@ public class AdminController
         app.post("/getOrderByName", ctx -> getOrderByName(ctx, ConnectionPool.getInstance()));
         app.post("/getCustomerByName", ctx -> getCustomerByName(ctx, ConnectionPool.getInstance()));
         app.post("/getCustomerByEmail", ctx -> getCustomerByEmail(ctx, ConnectionPool.getInstance()));
-        app.post("/showCustomer", ctx -> showCustomer(ctx, ConnectionPool.getInstance()));
         app.post("/getMaterialById", ctx -> getMaterialById(ctx, ConnectionPool.getInstance()));
         app.post("/getMaterialByName", ctx -> getMaterialByName(ctx, ConnectionPool.getInstance()));
-        app.post("/showCustomerOrders", ctx -> showCustomerOrders(ctx, ConnectionPool.getInstance()));
         app.post("/getAllMaterials", ctx -> showMaterials(ctx, ConnectionPool.getInstance()));
-        app.post("/addToBalance", ctx -> addMoneyToCustomerBalance(ctx, ConnectionPool.getInstance()));
+
     }
 
     private static void index(Context ctx)
