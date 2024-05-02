@@ -14,7 +14,6 @@ public class AdminController
     public static void addRoutes(Javalin app)
     {
         app.get("/adminSite", ctx -> index(ctx));
-
         app.post("/getAllOrders", ctx -> getAllOrders(ctx, ConnectionPool.getInstance()));
         app.post("/getOrderByEmail", ctx -> getOrderByEmail(ctx, ConnectionPool.getInstance()));
         app.post("/getOrderByName", ctx -> getOrderByName(ctx, ConnectionPool.getInstance()));

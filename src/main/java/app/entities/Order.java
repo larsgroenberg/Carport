@@ -1,91 +1,77 @@
 package app.entities;
 
 public class Order {
-    private static int lastOrderId = 0;
     private int orderId;
+    private double materialCost;
+    private double salesPrice;
+    private double carportWidth;
+    private double carportLength;
+    private double carportHeight;
     private int userId;
-    //private int orderId;
-    private String email;
-    private String name;
-    private String mobile;
-    private int balance;
-    private String topping;
-    private String bottom;
-    private int quantity;
-    private int orderlinePrice;
+    private String status;
+    private double shedWidth;
+    private double shedLength;
+    private String userEmail;
 
-    public Order(int userId, String email, String name, String mobile, int balance, String topping, String bottom, int quantity, int orderlinePrice) {
-        this.orderId = generateNextOrderId();
+    public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String status, double shedWidth, double shedLength, String userEmail) {
+        this.orderId = orderId;
+        this.materialCost = materialCost;
+        this.salesPrice = salesPrice;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.carportHeight = carportHeight;
         this.userId = userId;
-        this.email = email;
-        this.name = name;
-        this.mobile = mobile;
-        this.balance = balance;
-        this.topping = topping;
-        this.bottom = bottom;
-        this.quantity = quantity;
-        this.orderlinePrice = orderlinePrice;
-    }
-
-    private static synchronized int generateNextOrderId() {
-        return ++lastOrderId;
+        this.status = status;
+        this.shedWidth = shedWidth;
+        this.shedLength = shedLength;
+        this.userEmail = userEmail;
     }
 
     public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public double getMaterialCost() {
+        return materialCost;
+    }
+
+    public double getSalesPrice() {
+        return salesPrice;
+    }
+
+    public double getCarportWidth() {
+        return carportWidth;
+    }
+
+    public double getCarportLength() {
+        return carportLength;
+    }
+
+    public double getCarportHeight() {
+        return carportHeight;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public String getEmail() {
-        return email;
+    public String getStatus() {
+        return status;
     }
 
-    public String getName() {
-        return name;
+    public double getShedWidth() {
+        return shedWidth;
     }
 
-    public String getMobile() {
-        return mobile;
+    public double getShedLength() {
+        return shedLength;
     }
 
-    public int getBalance() {
-        return balance;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public String getTopping() {
-        return topping;
-    }
-
-    public String getBottom() {
-        return bottom;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public int getOrderlinePrice() {
-        return orderlinePrice;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", balance=" + balance +
-                ", topping='" + topping + '\'' +
-                ", bottom='" + bottom + '\'' +
-                ", quantity=" + quantity +
-                ", orderlinePrice=" + orderlinePrice +
-                '}';
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

@@ -3,7 +3,6 @@ package app.persistence;
 import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,73 +11,63 @@ import java.util.ArrayList;
 
 public class AdminMapper {
 
-    public static Order getOrderByEmail(String email,ConnectionPool connectionPool) throws DatabaseException {
+    public static Order getOrderByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "select * from public.ordrene where email=?";
         try
-        (
-            Connection connection = connectionPool.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)
-        )
-        {
+                (
+                        Connection connection = connectionPool.getConnection();
+                        PreparedStatement ps = connection.prepareStatement(sql)
+                ) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-            if (rs.next())
-            {
+            if (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int orderId = rs.getInt("order_id");
                 int carportLength = rs.getInt("carportLength");
                 int carportWidth = rs.getInt("carportWidth");
                 int carportHeight = rs.getInt("carportHeight");
                 int materialCost = rs.getInt("materialCost");
-                String status= rs.getString("status");
+                String status = rs.getString("status");
                 int shedWidth = rs.getInt("shedWidth");
                 int shedLength = rs.getInt("shedLength");
                 int salesPrice = rs.getInt("salesPrice");
                 return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
-
-            } else
-            {
+            } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new DatabaseException("DB fejl", e.getMessage());
         }
     }
 
-    public static Order getOrderByName(String userName,ConnectionPool connectionPool) throws DatabaseException {
+    public static Order getOrderByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "select * from public.ordrene where name=?";
         try
                 (
                         Connection connection = connectionPool.getConnection();
                         PreparedStatement ps = connection.prepareStatement(sql)
-                )
-        {
+                ) {
             ps.setString(1, userName);
             ResultSet rs = ps.executeQuery();
-            if (rs.next())
-            {
+            if (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int orderId = rs.getInt("order_id");
                 int carportLength = rs.getInt("carportLength");
                 int carportWidth = rs.getInt("carportWidth");
                 int carportHeight = rs.getInt("carportHeight");
                 int materialCost = rs.getInt("materialCost");
-                String status= rs.getString("status");
+                String status = rs.getString("status");
                 int shedWidth = rs.getInt("shedWidth");
                 int shedLength = rs.getInt("shedLength");
                 int salesPrice = rs.getInt("salesPrice");
                 String email = rs.getString("email");
                 return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
-
-            } else
-            {
+            } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new DatabaseException("DB fejl", e.getMessage());
         }
     }
@@ -115,15 +104,14 @@ public class AdminMapper {
         return orderList;
     }
 
-    public static User getCustomerByName(String userName,ConnectionPool connectionPool) throws DatabaseException {
+    public static User getCustomerByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "select * from public.users where name=?";
 
         try (
                 Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
-        )
-        {
+        ) {
             ps.setString(1, userName);
 
             ResultSet rs = ps.executeQuery();
@@ -136,24 +124,22 @@ public class AdminMapper {
                 String address = rs.getString("address");
                 String zipcode = rs.getString("zipcode");
                 return new User(user_ID, email, password, is_admin, userName, userMobile, address, zipcode);
-             } else {
+            } else {
                 throw new DatabaseException("Fejl i hentning af kundeinfo!");
             }
         } catch (SQLException e) {
             throw new DatabaseException("DB fejl", e.getMessage());
         }
-
     }
 
-    public static User getCustomerByEmail(String email,ConnectionPool connectionPool) throws DatabaseException {
+    public static User getCustomerByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "select * from public.users where email=?";
 
         try (
                 Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
-        )
-        {
+        ) {
             ps.setString(1, email);
 
             ResultSet rs = ps.executeQuery();
@@ -172,6 +158,5 @@ public class AdminMapper {
         } catch (SQLException e) {
             throw new DatabaseException("DB fejl", e.getMessage());
         }
-
     }
 }
