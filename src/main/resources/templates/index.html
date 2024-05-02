@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>BookingBois</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../public/css/bookiBois.css" th:href="@{/css/bookiBois.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<div class="page">
+    <header>
+        <div>
+            <a href="../index.html" th:href="@{/}">
+                <img alt="logo" src="../public/images/olskersscupcakelogo.png"
+                     th:src="@{/images/olskersscupcakelogo.png}"/>
+            </a>
+            <a href="../index.html" th:href="@{/}">
+                <img alt="logo" src="../public/images/cupcakelogo.png" th:src="@{/images/cupcakelogo.png}"/>
+            </a>
+        </div>
+    </header>
+
+    <div class="topnav">
+        <div class="left">
+            <a th:if="${session.currentUser == null}" href="login.html" th:href="@{/login/}">Login</a>
+            <a th:if="${session.currentUser != null}" href="index.html" th:href="@{/logout/}">Logout</a>
+        </div>
+        <div class="basket-right">
+            <form method="get">
+                <label th:text="${session.orderCount}"></label>
+                <button type="submit" class="basket" formaction="/showcupcakes">
+                    <img src="../public/images/shopping-bag.png" th:src="@{/images/shopping-bag.png}"
+                         alt="Shopping Bag"/>
+                </button>
+            </form>
+        </div>
+        <div class="right">
+            <a th:if="${session.currentUser != null}" th:text="${session.currentUser.email}"></a>
+        </div>
+    </div>
+
+
+    <form class="form-table" id="myForm" action="" method="post">
+        <h1>Design din Carport hos FOG</h1>
+        <h2>Konstruktionsstørrelse:</h2>
+
+        <div class="dropdown-container">
+            <select name="width" id="width" required>
+                <option value="" disabled selected>Vælg bredde</option>
+                <option value="0.9">0.9</option>
+                <option value="1.2">1.2</option>
+                <option value="1.5">1.5</option>
+                <option value="1.8">1.8</option>
+                <option value="2.1">2.1</option>
+                <option value="2.4">2.4</option>
+                <option value="2.7">2.7</option>
+                <option value="3.0">3.0</option>
+                <option value="3.3">3.3</option>
+                <option value="3.6">3.6</option>
+                <option value="3.9">3.9</option>
+                <option value="4.2">4.2</option>
+                <option value="4.5">4.5</option>
+                <option value="4.8">4.8</option>
+                <option value="5.1">5.1</option>
+                <option value="5.4">5.4</option>
+                <option value="5.7">5.7</option>
+                <option value="6.0">6.0</option>
+                <option value="6.3">6.3</option>
+                <option value="6.6">6.6</option>
+                <option value="6.9">6.9</option>
+                <option value="7.2">7.2</option>
+                <option value="7.5">7.5</option>
+                <option value="7.8">7.8</option>
+            </select>
+
+            <select name="length" id="length" required>
+                <option value="" disabled selected>Vælg længde</option>
+                <option value="0.9">0.9</option>
+                <option value="1.2">1.2</option>
+                <option value="1.5">1.5</option>
+                <option value="1.8">1.8</option>
+                <option value="2.1">2.1</option>
+                <option value="2.4">2.4</option>
+                <option value="2.7">2.7</option>
+                <option value="3.0">3.0</option>
+                <option value="3.3">3.3</option>
+                <option value="3.6">3.6</option>
+                <option value="3.9">3.9</option>
+                <option value="4.2">4.2</option>
+                <option value="4.5">4.5</option>
+                <option value="4.8">4.8</option>
+                <option value="5.1">5.1</option>
+                <option value="5.4">5.4</option>
+                <option value="5.7">5.7</option>
+                <option value="6.0">6.0</option>
+                <option value="6.3">6.3</option>
+                <option value="6.6">6.6</option>
+                <option value="6.9">6.9</option>
+                <option value="7.2">7.2</option>
+                <option value="7.5">7.5</option>
+                <option value="7.8">7.8</option>
+            </select>
+
+            <select name="height" id="height" required>
+                <option value="" disabled selected>Vælg højde</option>
+                <option value="1.8">1.8</option>
+                <option value="2.1">2.1</option>
+                <option value="2.4">2.4</option>
+                <option value="2.7">2.7</option>
+                <option value="3.0">3.0</option>
+            </select>
+        </div>
+        <div class="button-container">
+            <input class="betal" type="submit" value="Send Forespørgsel" formaction="/createorder">
+        </div>
+    </form>
+</div>
+</body>
+</html>
