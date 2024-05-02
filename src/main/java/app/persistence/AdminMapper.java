@@ -1,5 +1,6 @@
 package app.persistence;
 
+import app.entities.Material;
 import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
@@ -8,11 +9,123 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdminMapper {
 
-    public static Order getOrderByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
+    public static ArrayList<Material> showMaterials(ConnectionPool connectionPool) throws DatabaseException {
+        ArrayList<Material> materialList = new ArrayList<>();
+        String sql = "select * from materials";
 
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        )
+        {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+            {
+                int material_id = rs.getInt("material_id");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                String description = rs.getString("description");
+                int length = rs.getInt("length");
+                int height = rs.getInt("height");
+                int width = rs.getInt("width");
+                String type = rs.getString("type");
+                materialList.add(new Material(material_id, name, price, description, length, height, width, type));
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl!!!!", e.getMessage());
+        }
+        return materialList;
+    }
+
+    public static Material getMaterialById(int materialId, ConnectionPool connectionPool) throws DatabaseException {
+        Material material = null;
+
+        String sql = "SELECT * FROM materials WHERE material_id = ?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setInt(1, materialId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                String description = rs.getString("description");
+                int length = rs.getInt("length");
+                int height = rs.getInt("height");
+                int width = rs.getInt("width");
+                String type = rs.getString("type");
+                material = new Material(materialId, name, price, description, length, height, width, type);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error retrieving material with id = " + materialId, e.getMessage());
+        }
+        return material;
+    }
+
+    public static Material getMaterialByName(String name, ConnectionPool connectionPool) throws DatabaseException {
+        Material material = null;
+
+        String sql = "SELECT * FROM materials WHERE name = ?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int materialId = rs.getInt("material_id");
+                int price = rs.getInt("price");
+                String description = rs.getString("description");
+                int length = rs.getInt("length");
+                int height = rs.getInt("height");
+                int width = rs.getInt("width");
+                String type = rs.getString("type");
+                material = new Material(materialId, name, price, description, length, height, width, type);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error retrieving material with name = " + name, e.getMessage());
+        }
+        return material;
+    }
+
+
+    public static void insertMaterial(String name, int price, String description, int length, int height, int width, String type, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "INSERT INTO orders (name, price, description, length, height, width, type) VALUES (?,?,?,?,?,?,?)";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        )
+        {
+            ps.setString(1, name);
+            ps.setInt(2, price);
+            ps.setString(3, description);
+            ps.setInt(4, length);
+            ps.setInt(5, height);
+            ps.setInt(6, width);
+            ps.setString(7, type);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Fejl ved indsættelse af et nyt styk materiale");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+
+  
+    public static Order getOrderByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "select * from public.ordrene where email=?";
         try
                 (

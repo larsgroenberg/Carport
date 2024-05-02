@@ -44,119 +44,79 @@
 
 
     <form class="form-table" id="myForm" action="" method="post">
-        <h1>Velkommen ombord</h1>
-        <h2>Øens bedste cupcakes. Vælg og bestil her:</h2>
+        <h1>Design din Carport hos FOG</h1>
+        <h2>Konstruktionsstørrelse:</h2>
 
         <div class="dropdown-container">
-            <select name="bund" id="bund" required>
-                <option value="" disabled selected>Vælg bund</option>
-                <option th:each="bottom : ${bottomList}" th:value="${bottom.bottomId}"
-                        th:text="${bottom.bottom} + ' - ' + ${bottom.price} + ' kr.'">
-
-                </option>
+            <select name="width" id="width" required>
+                <option value="" disabled selected>Vælg bredde</option>
+                <option value="0.9">0.9</option>
+                <option value="1.2">1.2</option>
+                <option value="1.5">1.5</option>
+                <option value="1.8">1.8</option>
+                <option value="2.1">2.1</option>
+                <option value="2.4">2.4</option>
+                <option value="2.7">2.7</option>
+                <option value="3.0">3.0</option>
+                <option value="3.3">3.3</option>
+                <option value="3.6">3.6</option>
+                <option value="3.9">3.9</option>
+                <option value="4.2">4.2</option>
+                <option value="4.5">4.5</option>
+                <option value="4.8">4.8</option>
+                <option value="5.1">5.1</option>
+                <option value="5.4">5.4</option>
+                <option value="5.7">5.7</option>
+                <option value="6.0">6.0</option>
+                <option value="6.3">6.3</option>
+                <option value="6.6">6.6</option>
+                <option value="6.9">6.9</option>
+                <option value="7.2">7.2</option>
+                <option value="7.5">7.5</option>
+                <option value="7.8">7.8</option>
             </select>
-            <select name="topping" id="topping" required>
-                <option value="" disabled selected>Vælg topping</option>
-                <option th:each="topping : ${toppingList}" th:value="${topping.toppingId}"
-                        th:text="${topping.topping} + ' - ' + ${topping.price} + ' kr.'">
 
-                </option>
-
+            <select name="length" id="length" required>
+                <option value="" disabled selected>Vælg længde</option>
+                <option value="0.9">0.9</option>
+                <option value="1.2">1.2</option>
+                <option value="1.5">1.5</option>
+                <option value="1.8">1.8</option>
+                <option value="2.1">2.1</option>
+                <option value="2.4">2.4</option>
+                <option value="2.7">2.7</option>
+                <option value="3.0">3.0</option>
+                <option value="3.3">3.3</option>
+                <option value="3.6">3.6</option>
+                <option value="3.9">3.9</option>
+                <option value="4.2">4.2</option>
+                <option value="4.5">4.5</option>
+                <option value="4.8">4.8</option>
+                <option value="5.1">5.1</option>
+                <option value="5.4">5.4</option>
+                <option value="5.7">5.7</option>
+                <option value="6.0">6.0</option>
+                <option value="6.3">6.3</option>
+                <option value="6.6">6.6</option>
+                <option value="6.9">6.9</option>
+                <option value="7.2">7.2</option>
+                <option value="7.5">7.5</option>
+                <option value="7.8">7.8</option>
             </select>
-            <select name="antal" id="antal" required>
-                <!-- <option th:text="${antal}" th:value="${antal}">Vælg antal</option> -->
-                <option value="" disabled selected>Vælg antal</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
+
+            <select name="height" id="height" required>
+                <option value="" disabled selected>Vælg højde</option>
+                <option value="1.8">1.8</option>
+                <option value="2.1">2.1</option>
+                <option value="2.4">2.4</option>
+                <option value="2.7">2.7</option>
+                <option value="3.0">3.0</option>
             </select>
         </div>
-
         <div class="button-container">
-            <input class="betal" type="submit" value="Læg i kurv" formaction="/createorder">
-        </div>
-
-        <div id="hiddenDiv" class="modal" th:if="${ordercreated}">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <p id="messageText" th:text="${message}"></p>
-            </div>
+            <input class="betal" type="submit" value="Send Forespørgsel" formaction="/createorder">
         </div>
     </form>
 </div>
-
-<script th:inline="javascript">
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var ordercreated = [[${ordercreated}]];
-        if (ordercreated) {
-            // Hvis noget er booket, vis det skjulte div-element
-            var hiddenDiv = document.getElementById("hiddenDiv");
-            hiddenDiv.style.display = "block";
-            showMessage([[${message}]]);
-        }
-    });
-</script>
-
-
-<script>
-    var today = new Date();
-    var dd = today.getDate() + 1;
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    if (dd < 10) {
-        dd = '0' + dd;
-    }
-
-    if (mm < 10) {
-        mm = '0' + mm;
-    }
-
-    today = yyyy + '-' + mm + '-' + dd;
-    var dateInput = document.getElementById('dato');
-
-    dateInput.setAttribute("min", today);
-
-    // Get reference to the date input field
-
-    var form = document.getElementById('myForm');
-
-    // Add event listener for change event
-    dateInput.addEventListener('change', function () {
-        // Set the form action dynamically
-        form.action = "/gettimeslots";
-        // Submit the form
-        form.submit();
-    });
-
-</script>
-<script>
-    // Funktion for at vise meddelelsen
-    function showMessage(message) {
-        var modal = document.getElementById("hiddenDiv");
-        var messageText = document.getElementById("messageText");
-        messageText.textContent = message; // Sæt meddelelsesindholdet
-        modal.style.display = "block"; // Vis modalen
-    }
-
-    // Funktion for at lukke modalen
-    function closeModal() {
-        var modal = document.getElementById("hiddenDiv");
-        modal.style.display = "none"; // Skjul modalen
-    }
-
-
-</script>
-
-
 </body>
-
 </html>
