@@ -26,14 +26,15 @@ public class AdminMapper {
             while (rs.next())
             {
                 int material_id = rs.getInt("material_id");
-                String name = rs.getString("name");
                 int price = rs.getInt("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
                 int height = rs.getInt("height");
                 int width = rs.getInt("width");
                 String type = rs.getString("type");
-                materialList.add(new Material(material_id, name, price, description, length, height, width, type));
+                String material = rs.getString("material");
+                String unit = rs.getString("unit");
+                materialList.add(new Material(material_id, price, description, length, height, width, type, material, unit));
             }
         }
         catch (SQLException e)
@@ -44,8 +45,8 @@ public class AdminMapper {
     }
 
     public static Material getMaterialById(int materialId, ConnectionPool connectionPool) throws DatabaseException {
-        Material material = null;
 
+        Material material = null;
         String sql = "SELECT * FROM materials WHERE material_id = ?";
 
         try (
@@ -55,14 +56,16 @@ public class AdminMapper {
             ps.setInt(1, materialId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                String name = rs.getString("name");
+                int material_id = rs.getInt("material_id");
                 int price = rs.getInt("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
                 int height = rs.getInt("height");
                 int width = rs.getInt("width");
                 String type = rs.getString("type");
-                material = new Material(materialId, name, price, description, length, height, width, type);
+                String material_name = rs.getString("material");
+                String unit = rs.getString("unit");
+                material = new Material(material_id, price, description, length, height, width, type, material_name, unit));
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + materialId, e.getMessage());
@@ -71,8 +74,8 @@ public class AdminMapper {
     }
 
     public static Material getMaterialByName(String name, ConnectionPool connectionPool) throws DatabaseException {
-        Material material = null;
 
+        Material material = null;
         String sql = "SELECT * FROM materials WHERE name = ?";
 
         try (
@@ -82,14 +85,16 @@ public class AdminMapper {
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int materialId = rs.getInt("material_id");
+                int material_id = rs.getInt("material_id");
                 int price = rs.getInt("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
                 int height = rs.getInt("height");
                 int width = rs.getInt("width");
                 String type = rs.getString("type");
-                material = new Material(materialId, name, price, description, length, height, width, type);
+                String material_name = rs.getString("material");
+                String unit = rs.getString("unit");
+                material = new Material(material_id, price, description, length, height, width, type, material_name, unit));
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with name = " + name, e.getMessage());
@@ -98,8 +103,8 @@ public class AdminMapper {
     }
 
 
-    public static void insertMaterial(String name, int price, String description, int length, int height, int width, String type, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "INSERT INTO orders (name, price, description, length, height, width, type) VALUES (?,?,?,?,?,?,?)";
+    public static void insertMaterial(String name, int price, String description, int length, int height, int width, String type, String material, String unit, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "INSERT INTO orders (price, description, length, height, width, type, material, unit) VALUES (?,?,?,?,?,?,?)";
 
         try (
                 Connection connection = connectionPool.getConnection();
@@ -113,6 +118,8 @@ public class AdminMapper {
             ps.setInt(5, height);
             ps.setInt(6, width);
             ps.setString(7, type);
+            ps.setString(8, material);
+            ps.setString(9, unit);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
@@ -137,14 +144,14 @@ public class AdminMapper {
             if (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int orderId = rs.getInt("order_id");
-                int carportLength = rs.getInt("carportLength");
-                int carportWidth = rs.getInt("carportWidth");
-                int carportHeight = rs.getInt("carportHeight");
-                int materialCost = rs.getInt("materialCost");
-                String status = rs.getString("status");
-                int shedWidth = rs.getInt("shedWidth");
-                int shedLength = rs.getInt("shedLength");
-                int salesPrice = rs.getInt("salesPrice");
+                int carportLength = rs.getInt("carport_length");
+                int carportWidth = rs.getInt("carport_width");
+                int carportHeight = rs.getInt("carport_height");
+                int materialCost = rs.getInt("material_cost");
+                String status = rs.getString("order_status");
+                int shedWidth = rs.getInt("shed_width");
+                int shedLength = rs.getInt("shed_length");
+                int salesPrice = rs.getInt("sales_price");
                 return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
             } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
@@ -167,14 +174,14 @@ public class AdminMapper {
             if (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int orderId = rs.getInt("order_id");
-                int carportLength = rs.getInt("carportLength");
-                int carportWidth = rs.getInt("carportWidth");
-                int carportHeight = rs.getInt("carportHeight");
-                int materialCost = rs.getInt("materialCost");
-                String status = rs.getString("status");
-                int shedWidth = rs.getInt("shedWidth");
-                int shedLength = rs.getInt("shedLength");
-                int salesPrice = rs.getInt("salesPrice");
+                int carportLength = rs.getInt("carport_length");
+                int carportWidth = rs.getInt("carport_width");
+                int carportHeight = rs.getInt("carport_height");
+                int materialCost = rs.getInt("material_cost");
+                String status = rs.getString("order_status");
+                int shedWidth = rs.getInt("shed_width");
+                int shedLength = rs.getInt("shed_length");
+                int salesPrice = rs.getInt("sales_price");
                 String email = rs.getString("email");
                 return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
             } else {
@@ -194,21 +201,21 @@ public class AdminMapper {
                         Connection connection = connectionPool.getConnection();
                         PreparedStatement ps = connection.prepareStatement(query)
                 ) {
-            ResultSet resultSet = ps.executeQuery();
-            while (resultSet.next()) {
-                int userId = resultSet.getInt("user_id");
-                int orderId = resultSet.getInt("order_id");
-                String email = resultSet.getString("email");
-                int carportLength = resultSet.getInt("carportLength");
-                int carportWidth = resultSet.getInt("carportWidth");
-                int carportHeight = resultSet.getInt("carportHeight");
-                int materialCost = resultSet.getInt("materialCost");
-                String status = resultSet.getString("status");
-                int shedWidth = resultSet.getInt("shedWidth");
-                int shedLength = resultSet.getInt("shedLength");
-                int salesPrice = resultSet.getInt("salesPrice");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int userId = rs.getInt("user_id");
+                int orderId = rs.getInt("order_id");
+                int carportLength = rs.getInt("carport_length");
+                int carportWidth = rs.getInt("carport_width");
+                int carportHeight = rs.getInt("carport_height");
+                int materialCost = rs.getInt("material_cost");
+                String orderStatus = rs.getString("order_status");
+                int shedWidth = rs.getInt("shed_width");
+                int shedLength = rs.getInt("shed_length");
+                int salesPrice = rs.getInt("sales_price");
+                String email = rs.getString("email");
 
-                Order newOrder = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
+                Order newOrder = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email);
                 orderList.add(newOrder);
             }
         } catch (SQLException e) {

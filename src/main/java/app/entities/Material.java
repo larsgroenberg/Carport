@@ -2,23 +2,26 @@ package app.entities;
 
 public class Material {
 
-    private int materialId;
-    private String name;
+    private int materialId;    private String name;
     private int price;
     private String description;
     private int length;
     private int height;
     private int width;
     private String type;
-    public Material(int materialId, String name, int price, String description, int length, int height, int width, String type) {
+    private String material;
+    private String unit;
+
+    public Material(int materialId, int price, String description, int length, int height, int width, String type, String material, String unit) {
         this.materialId = materialId;
-        this.name = name;
         this.price = price;
         this.description = description;
         this.length = length;
         this.height = height;
         this.width = width;
         this.type = type;
+        this.material = material;
+        this.unit = unit;
     }
 
     public int getMaterialId() {
@@ -83,6 +86,22 @@ public class Material {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }
 
