@@ -6,6 +6,7 @@ import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.AdminMapper;
 import app.persistence.ConnectionPool;
+import app.persistence.OrdersMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.util.ArrayList;
@@ -56,8 +57,7 @@ public class AdminController
     }
 
     private static void getAllOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        AdminMapper.showAllOrders(connectionPool);
-        ArrayList<Order> customerOrders = AdminMapper.showAllOrders(connectionPool);
+        ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
         ctx.attribute("customerOrders", customerOrders);
         ctx.render("adminSite.html");
     }
@@ -71,7 +71,7 @@ public class AdminController
 
     private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
-        Order customerOrder = AdminMapper.getOrderByEmail(userName, connectionPool);
+        Order customerOrder = AdminMapper.getOrderByName(userName, connectionPool);
         ctx.attribute("customerOrders", customerOrder);
         ctx.render("adminSite.html");
     }

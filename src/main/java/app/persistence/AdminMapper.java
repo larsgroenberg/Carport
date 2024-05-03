@@ -152,7 +152,8 @@ public class AdminMapper {
                 int shedWidth = rs.getInt("shed_width");
                 int shedLength = rs.getInt("shed_length");
                 int salesPrice = rs.getInt("sales_price");
-                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
+                String orderDate = rs.getString("orderdate");
+                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email, orderDate);
             } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
             }
@@ -183,7 +184,8 @@ public class AdminMapper {
                 int shedLength = rs.getInt("shed_length");
                 int salesPrice = rs.getInt("sales_price");
                 String email = rs.getString("email");
-                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email);
+                String orderDate = rs.getString("orderdate");
+                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email, orderDate);
             } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
             }
@@ -194,8 +196,7 @@ public class AdminMapper {
 
     public static ArrayList<Order> showAllOrders(ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<Order> orderList = new ArrayList<>();
-        String query = "SELECT u.user_id, o.order_id, u.email, o.c_length AS carportLength, o.c_width AS carportWidth, o.c_height AS carportHeight, o.material_cost AS materialCost, o.status, o.s_width AS shedWidth, o.s_length AS shedLength, o.sales_price AS salesPrice" +
-                "FROM public.ordrene o JOIN public.users u ON o.user_id = u.user_id";
+        String query = "SELECT * FROM public.ordrene";
         try
                 (
                         Connection connection = connectionPool.getConnection();
@@ -214,8 +215,9 @@ public class AdminMapper {
                 int shedLength = rs.getInt("shed_length");
                 int salesPrice = rs.getInt("sales_price");
                 String email = rs.getString("email");
+                String orderDate = rs.getString("orderdate");
 
-                Order newOrder = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email);
+                Order newOrder = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate);
                 orderList.add(newOrder);
             }
         } catch (SQLException e) {

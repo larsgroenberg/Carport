@@ -8,12 +8,13 @@ public class Order {
     private double carportLength;
     private double carportHeight;
     private int userId;
-    private String status;
+    private String orderStatus;
     private double shedWidth;
     private double shedLength;
     private String userEmail;
+    private String orderDate;
 
-    public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String status, double shedWidth, double shedLength, String userEmail) {
+    public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String userEmail, String orderDate) {
         this.orderId = orderId;
         this.materialCost = materialCost;
         this.salesPrice = salesPrice;
@@ -21,50 +22,91 @@ public class Order {
         this.carportLength = carportLength;
         this.carportHeight = carportHeight;
         this.userId = userId;
-        this.status = status;
+        this.orderStatus = orderStatus;
         this.shedWidth = shedWidth;
         this.shedLength = shedLength;
         this.userEmail = userEmail;
+        this.orderDate = orderDate;
     }
 
     public int getOrderId() {
         return orderId;
     }
 
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
     public double getMaterialCost() {
         return materialCost;
+    }
+
+    public void setMaterialCost(double materialCost) {
+        this.materialCost = materialCost;
     }
 
     public double getSalesPrice() {
         return salesPrice;
     }
 
+    public void setSalesPrice(double salesPrice) {
+        this.salesPrice = salesPrice;
+    }
+
     public double getCarportWidth() {
         return carportWidth;
+    }
+
+    public void setCarportWidth(double carportWidth) {
+        this.carportWidth = carportWidth;
     }
 
     public double getCarportLength() {
         return carportLength;
     }
 
+    public void setCarportLength(double carportLength) {
+        this.carportLength = carportLength;
+    }
+
     public double getCarportHeight() {
         return carportHeight;
+    }
+
+    public void setCarportHeight(double carportHeight) {
+        this.carportHeight = carportHeight;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public String getStatus() {
-        return status;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public double getShedWidth() {
         return shedWidth;
     }
 
+    public void setShedWidth(double shedWidth) {
+        this.shedWidth = shedWidth;
+    }
+
     public double getShedLength() {
         return shedLength;
+    }
+
+    public void setShedLength(double shedLength) {
+        this.shedLength = shedLength;
     }
 
     public String getUserEmail() {
@@ -73,6 +115,14 @@ public class Order {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 }
 
