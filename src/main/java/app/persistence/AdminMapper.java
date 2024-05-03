@@ -65,7 +65,7 @@ public class AdminMapper {
                 String type = rs.getString("type");
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
-                material = new Material(material_id, price, description, length, height, width, type, material_name, unit));
+                material = new Material(material_id, price, description, length, height, width, type, material_name, unit);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + materialId, e.getMessage());
@@ -94,7 +94,7 @@ public class AdminMapper {
                 String type = rs.getString("type");
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
-                material = new Material(material_id, price, description, length, height, width, type, material_name, unit));
+                material = new Material(material_id, price, description, length, height, width, type, material_name, unit);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with name = " + name, e.getMessage());
