@@ -1,12 +1,10 @@
 package app.controllers;
 
-import app.entities.Material;
+import app.entities.Part;
 import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
-import app.persistence.AdminMapper;
-import app.persistence.ConnectionPool;
-import app.persistence.OrdersMapper;
+import app.persistence.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.util.ArrayList;
@@ -33,26 +31,24 @@ public class AdminController
     }
 
     private static void showMaterials(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        AdminMapper.showMaterials(connectionPool);
-        ArrayList<Material> materialList = AdminMapper.showMaterials(connectionPool);
-        ctx.attribute("materiallist", materialList);
+        PartsMapper.showMaterials(connectionPool);
+        ArrayList<Part> partList = PartsMapper.showMaterials(connectionPool);
+        ctx.attribute("partslist", partList);
 
         ctx.render("adminSite.html");
     }
 
     private static void getMaterialById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        int materialId = Integer.parseInt(ctx.formParam("materialid"));
-        Material material = AdminMapper.getMaterialById(materialId, connectionPool);
-        ctx.attribute("material", material);
-
+        int materialId = Integer.parseInt(ctx.formParam("partid"));
+        Part part = PartsMapper.getMaterialById(materialId, connectionPool);
+        ctx.attribute("part", part);
         ctx.render("adminSite.html");
     }
 
     private static void getMaterialByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        String name = ctx.formParam("materialbyname");
-        Material material = AdminMapper.getMaterialByName(name, connectionPool);
-        ctx.attribute("material", material);
-
+        String name = ctx.formParam("partbyname");
+        Part part = PartsMapper.getMaterialByName(name, connectionPool);
+        ctx.attribute("part", part);
         ctx.render("adminSite.html");
     }
 
@@ -64,28 +60,28 @@ public class AdminController
 
     private static void getOrderByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
-        Order customerOrder = AdminMapper.getOrderByEmail(email, connectionPool);
+        Order customerOrder = OrdersMapper.getOrderByEmail(email, connectionPool);
         ctx.attribute("customerOrders", customerOrder);
         ctx.render("adminSite.html");
     }
 
     private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
-        Order customerOrder = AdminMapper.getOrderByName(userName, connectionPool);
+        Order customerOrder = OrdersMapper.getOrderByName(userName, connectionPool);
         ctx.attribute("customerOrders", customerOrder);
         ctx.render("adminSite.html");
     }
 
     private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
-        User currentUser = AdminMapper.getCustomerByName(userName, connectionPool);
+        User currentUser = UserMapper.getCustomerByName(userName, connectionPool);
         ctx.attribute("currentuser", currentUser);
         ctx.render("adminSite.html");
     }
 
     private static void getCustomerByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
-        User currentUser = AdminMapper.getCustomerByEmail(email, connectionPool);
+        User currentUser = UserMapper.getCustomerByEmail(email, connectionPool);
         ctx.attribute("currentuser", currentUser);
         ctx.render("adminSite.html");
     }
