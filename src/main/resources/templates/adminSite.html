@@ -29,12 +29,12 @@
     </form>
 
     <form class="form-table" th:action="@{/changePrice}" th:method="POST">
-    <div th:if="${materiallist}">
+    <div th:if="${partslist}">
         <h2>Material List:</h2>
         <table>
             <thead>
             <tr>
-                <th>Materialid</th>
+                <th>Partid</th>
                 <th>Description</th>
                 <th>Length</th>
                 <th>Height</th>
@@ -47,18 +47,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="material : ${materiallist}">
-                <td th:text="${material.materialId}">MaterialId</td>
-                <td style="text-align: left;" th:text="${material.description}">Description</td>
-                <td th:text="${material.length}">Length</td>
-                <td th:text="${material.height}">Height</td>
-                <td th:text="${material.width}">Width</td>
-                <td th:text="${material.type}">Type</td>
-                <td th:text="${material.material}">Material</td>
-                <td th:text="${material.unit}">Unit</td>
-                <td th:text="${material.price}">Price</td>
+            <tr th:each="part : ${partslist}">
+                <td th:text="${part.partId}">PartId</td>
+                <td style="text-align: left;" th:text="${part.description}">Description</td>
+                <td th:text="${part.length}">Length</td>
+                <td th:text="${part.height}">Height</td>
+                <td th:text="${part.width}">Width</td>
+                <td th:text="${part.type}">Type</td>
+                <td th:text="${part.material}">Material</td>
+                <td th:text="${part.unit}">Unit</td>
+                <td th:text="${part.price}">Price</td>
                 <td>
-                    <button type="submit" name="materialId" th:value="${material.materialId}" formaction="/changeMaterial"
+                    <button type="submit" name="partId" th:value="${part.partId}" formaction="/changeMaterial"
                             class="produced-button">Edit
                     </button>
                 </td>
