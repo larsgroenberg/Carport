@@ -72,7 +72,6 @@ public class CarportSvg {
     @Override
     public String toString() {
         carportOuterSvg.addSvg(carportSvg);
-        System.out.println(carportOuterSvg);
         return carportOuterSvg.toString();
     }
 
