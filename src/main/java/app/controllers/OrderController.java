@@ -19,7 +19,7 @@ public class OrderController {
     static String formattedDate = formatter.format(today);
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("index.html");
+            ctx.render("adminSite.html");
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx);
@@ -64,7 +64,7 @@ public class OrderController {
         // her skal vi sevfølgelig trække på nogle formParam-data fra den kundeindtastningessiden som vi ikke har lavet endnu
         int currentOrderId;
         int userId = 1001;
-        String email = "ole@gmail.com";
+        String email = "oleOlsen@gmail.com";
         double shedWidth = 0;
         double shedLength = 0;
         String orderDate = formattedDate;

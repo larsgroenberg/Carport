@@ -21,6 +21,16 @@ public class AdminController
         app.post("/getCustomerByEmail", ctx -> getCustomerByEmail(ctx, ConnectionPool.getInstance()));
         app.post("/getPartById", ctx -> getPartById(ctx, ConnectionPool.getInstance()));
         app.post("/getAllParts", ctx -> showPartsList(ctx, ConnectionPool.getInstance()));
+        app.post("/changeorderstatus", ctx -> {
+            changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
+            ctx.render("adminSite.html");
+        });
+        app.post("/orderpickedup", ctx -> {
+            changeOrderStatusToPickedUp(ctx, ConnectionPool.getInstance());
+            ctx.render("adminSite.html");
+        });
+
+
     }
 
     private static void index(Context ctx)
@@ -75,4 +85,19 @@ public class AdminController
         ctx.attribute("currentuser", currentUser);
         ctx.render("adminSite.html");
     }
+
+    private static void changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String orderStatus = "produceret";
+        int orderId = Integer.parseInt(ctx.formParam("orderId"));
+        OrdersMapper.changeStatusOnOrder(orderStatus, orderId, connectionPool);
+        getAllOrders(ctx, connectionPool);
+    }
+
+    private static void changeOrderStatusToPickedUp(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String orderStatus = "leveret";
+        int orderId = Integer.parseInt(ctx.formParam("orderId"));
+        OrdersMapper.changeStatusOnOrder(orderStatus, orderId, connectionPool);
+        getAllOrders(ctx, connectionPool);
+    }
+
 }

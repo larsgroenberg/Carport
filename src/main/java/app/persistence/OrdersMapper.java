@@ -23,7 +23,7 @@ public class OrdersMapper {
                 ps.setDouble(4, carportLength);
                 ps.setDouble(5, carportHeight);
                 ps.setInt(6, userId);
-                ps.setString(7, "Creating");
+                ps.setString(7, "modtaget");
                 ps.setDouble(8, shedWidth);
                 ps.setDouble(9, shedLength);
                 ps.setString(10, email);
@@ -106,7 +106,7 @@ public class OrdersMapper {
     public static ArrayList<Order> getAllOrders(ConnectionPool connectionPool) throws DatabaseException {
 
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT * FROM ordrene";
+        String sql = "SELECT * FROM public.ordrene";
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql)){
                 ResultSet rs = ps.executeQuery();
@@ -212,7 +212,7 @@ public class OrdersMapper {
         }
     }
 
-    public static void changeStatusByOrderId(String orderStatus, int order_id, ConnectionPool connectionPool) throws DatabaseException {
+    public static void changeStatusOnOrder(String orderStatus, int order_id, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "UPDATE ordrene SET order_status = ? WHERE order_id = ?";
 
