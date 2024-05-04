@@ -1,24 +1,24 @@
 package app.entities;
 
 public class Partslistline {
-    private int materialId;
+    private int partId;
     private int orderId;
     private int quantity;
     private double partlistlineprice;
 
-    public Partslistline(int materialId, int orderId, int quantity, double partlistlineprice) {
-        this.materialId = materialId;
+    public Partslistline(int partId, int orderId, int quantity, double partlistlineprice) {
+        this.partId = partId;
         this.orderId = orderId;
         this.quantity = quantity;
         this.partlistlineprice = partlistlineprice;
     }
 
-    public int getMaterialId() {
-        return materialId;
+    public int getPartId() {
+        return partId;
     }
 
-    public void setMaterialId(int materialId) {
-        this.materialId = materialId;
+    public void setPartId(int partId) {
+        this.partId = partId;
     }
 
     public int getOrderId() {
