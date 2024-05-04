@@ -159,44 +159,46 @@ public class OrdersMapper {
                 }
             }
         } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på brugerid", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på ordreid", e.getMessage());
         }
         return order;
     }
 
-    public static List<Order> getOrdersByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException{
+    public static Order getOrderByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException {
 
-        List<Order> orderList = new ArrayList<>();
+        Order order = null;
         String sql = "SELECT * FROM ordrene WHERE user_id = ?";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setInt(1,userId);
+        try (Connection connection = connectionPool.getConnection() ){
+            try (PreparedStatement ps = connection.prepareStatement(sql)){
+                ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();
-                while (rs.next()){
-                    int orderId = rs.getInt("order_id");
+                if(rs.next()) {
                     double materialCost = rs.getDouble("material_cost");
                     double salesPrice = rs.getDouble("sales_price");
                     double carportWidth = rs.getDouble("carport_width");
                     double carportLength = rs.getDouble("carport_length");
                     double carportHeight = rs.getDouble("carport_height");
+                    int orderId = rs.getInt("order_id");
                     String orderStatus = rs.getString("order_status");
                     double shedWidth = rs.getDouble("shed_width");
                     double shedLength = rs.getDouble("shed_length");
                     String email = rs.getString("email");
                     String orderDate = rs.getString("orderdate");
-                    orderList.add(new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate));
+                    order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate);
+                } else {
+                    throw new DatabaseException("Der findes ikke en ordre med det userId i databasen");
                 }
             }
         } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på brugerid", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på userid", e.getMessage());
         }
-        return orderList;
+        return order;
     }
 
     public static void adjustSalesPrice(int orderId, double newSalesPrice, ConnectionPool connectionPool) throws DatabaseException{
 
-        String sql = "UPDATE ordrene SET sales_price = (?) WHERE order_id = ?";
+        String sql = "UPDATE ordrene SET sales_price = ? WHERE order_id = ?";
 
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql)){
@@ -206,18 +208,17 @@ public class OrdersMapper {
              ps.executeUpdate();
             }
         } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at justere på salgsprisen", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at justere salgsprisen", e.getMessage());
         }
     }
 
-    // De næste 5 metoder refactorerer jeg til en metode men det kræver ændringer i admincontroller og adminmapper og adminsite.html
-    public static void changeStatusByOrderIdToCancelled(int order_id, ConnectionPool connectionPool) throws DatabaseException {
+    public static void changeStatusByOrderId(String orderStatus, int order_id, ConnectionPool connectionPool) throws DatabaseException {
 
-        String sql = "UPDATE ordrene SET order_status = (?) WHERE order_id = ?";
+        String sql = "UPDATE ordrene SET order_status = ? WHERE order_id = ?";
 
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,"Cancelled");
+                ps.setString(1, orderStatus);
                 ps.setInt(2, order_id);
                 ps.executeUpdate();
             }
@@ -226,65 +227,6 @@ public class OrdersMapper {
         }
     }
 
-    public static void changeStatusByOrderIdToOrderCreating(int order_id, ConnectionPool connectionPool) throws DatabaseException {
-
-        String sql = "UPDATE ordrene SET order_status = (?) WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,"Creating");
-                ps.setInt(2, order_id);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at ændre status på ordren", e.getMessage());
-        }
-    }
-
-    public static void changeStatusByOrderIdToAccepted(int orderId, ConnectionPool connectionPool) throws DatabaseException{
-
-        String sql = "UPDATE ordrene SET order_status = (?) WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,"Accepted");
-                ps.setInt(2,orderId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at ændre status på ordren", e.getMessage());
-        }
-    }
-
-    public static void changeStatusByOrderIdToPending(int orderId, ConnectionPool connectionPool) throws DatabaseException{
-
-        String sql = "UPDATE ordrene SET order_status = (?) WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,"Pending");
-                ps.setInt(2,orderId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at ændre status på ordren", e.getMessage());
-        }
-    }
-
-    public static void changeStatusByOrderIdToOrderPlaced(int orderId, ConnectionPool connectionPool) throws DatabaseException{
-
-        String sql = "UPDATE ordrene SET order_status = (?) WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,"Order_placed");
-                ps.setInt(2,orderId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at ændre status på ordren", e.getMessage());
-        }
-    }
 
     public static void updateSpecificOrderById(int orderId, double carportWidth, double carportLength, double carportHeight, ConnectionPool connectionPool) throws DatabaseException {
 

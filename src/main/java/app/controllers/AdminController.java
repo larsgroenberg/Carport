@@ -19,10 +19,8 @@ public class AdminController
         app.post("/getOrderByName", ctx -> getOrderByName(ctx, ConnectionPool.getInstance()));
         app.post("/getCustomerByName", ctx -> getCustomerByName(ctx, ConnectionPool.getInstance()));
         app.post("/getCustomerByEmail", ctx -> getCustomerByEmail(ctx, ConnectionPool.getInstance()));
-        app.post("/getMaterialById", ctx -> getMaterialById(ctx, ConnectionPool.getInstance()));
-        app.post("/getMaterialByName", ctx -> getMaterialByName(ctx, ConnectionPool.getInstance()));
-        app.post("/getAllMaterials", ctx -> showMaterials(ctx, ConnectionPool.getInstance()));
-
+        app.post("/getPartById", ctx -> getPartById(ctx, ConnectionPool.getInstance()));
+        app.post("/getAllParts", ctx -> showPartsList(ctx, ConnectionPool.getInstance()));
     }
 
     private static void index(Context ctx)
@@ -30,24 +28,16 @@ public class AdminController
         ctx.render("adminSite.html");
     }
 
-    private static void showMaterials(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        PartsMapper.showMaterials(connectionPool);
-        ArrayList<Part> partList = PartsMapper.showMaterials(connectionPool);
+    private static void showPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        PartsMapper.showPartsList(connectionPool);
+        ArrayList<Part> partList = PartsMapper.showPartsList(connectionPool);
         ctx.attribute("partslist", partList);
-
         ctx.render("adminSite.html");
     }
 
-    private static void getMaterialById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        int materialId = Integer.parseInt(ctx.formParam("partid"));
-        Part part = PartsMapper.getMaterialById(materialId, connectionPool);
-        ctx.attribute("part", part);
-        ctx.render("adminSite.html");
-    }
-
-    private static void getMaterialByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        String name = ctx.formParam("partbyname");
-        Part part = PartsMapper.getMaterialByName(name, connectionPool);
+    private static void getPartById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        int partId = Integer.parseInt(ctx.formParam("partid"));
+        Part part = PartsMapper.getPartById(partId, connectionPool);
         ctx.attribute("part", part);
         ctx.render("adminSite.html");
     }

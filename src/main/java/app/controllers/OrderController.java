@@ -35,8 +35,12 @@ public class OrderController {
         ctx.render("adminSite.html");
     }
 
-    public static Order getOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException{
+    public static Order getOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         return OrdersMapper.getOrderByOrderId(orderId, connectionPool);
+    }
+
+    public static Order getOrderByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException {
+        return OrdersMapper.getOrderByUserId(userId, connectionPool);
     }
 
     public static void showOrder(Context ctx) {

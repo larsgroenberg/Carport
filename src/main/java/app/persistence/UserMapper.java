@@ -15,7 +15,8 @@ public class UserMapper
     {
         String sql = "select * from public.\"users\" where email=? and password=?";
 
-        try (
+        try
+        (
                 Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
         )
@@ -103,6 +104,63 @@ public class UserMapper
 
         }
 
+    }
+
+
+    public static User getCustomerByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
+
+        String sql = "select * from public.users where name=?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setString(1, userName);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int user_ID = rs.getInt("user_id");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                boolean is_admin = rs.getBoolean("is_admin");
+                String userMobile = rs.getString("mobile");
+                String address = rs.getString("address");
+                String zipcode = rs.getString("zipcode");
+                return new User(user_ID, email, password, is_admin, userName, userMobile, address, zipcode);
+            } else {
+                throw new DatabaseException("Fejl i hentning af kundeinfo!");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("DB fejl", e.getMessage());
+        }
+    }
+
+    public static User getCustomerByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
+
+        String sql = "select * from public.users where email=?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int user_ID = rs.getInt("user_id");
+                String userName = rs.getString("name");
+                String password = rs.getString("password");
+                boolean is_admin = rs.getBoolean("is_admin");
+                String userMobile = rs.getString("mobile");
+                String address = rs.getString("address");
+                String zipcode = rs.getString("zipcode");
+                return new User(user_ID, email, password, is_admin, userName, userMobile, address, zipcode);
+            } else {
+                throw new DatabaseException("Fejl i hentning af kundeinfo!");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("DB fejl", e.getMessage());
+        }
     }
 
 }
