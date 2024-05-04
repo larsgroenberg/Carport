@@ -6,6 +6,8 @@ public class CarportSvg {
     private int height;
     private Svg carportSvg;
     private Svg carportOuterSvg;
+    private int x1 = 0;
+    private int x2 = 0;
 
     public CarportSvg(int width, int length, int height) {
         this.length = length;
@@ -21,7 +23,8 @@ public class CarportSvg {
         addLine(width, length);
         addArrows(width, length);
         addTextV((length / 2) + 30, width + 55, 0, "" + length + " cm");
-        addTextH(30, (width / 2) - 20, 0, "" + width + " cm");
+        addTextH(40, (width / 2) - 20, 0, "" + width + " cm");
+        addTextH(10, (width / 2) - 20, 0, "" + (width-65) + " cm");
     }
 
     private void addBeams(int width, int length) {
@@ -45,10 +48,12 @@ public class CarportSvg {
     public void addPoles(int width, int length) {
         if ((length - 102) > 310) {
             for (int h = 51; h < length; h += 310) {
+                x1 = h;
                 carportSvg.addRectangle(h, 31, 12, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
                 carportSvg.addRectangle(h, width - 38, 12, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
             }
         } else {
+            x2 = length-51;
             carportSvg.addRectangle(51, 31, 12, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
             carportSvg.addRectangle(51, width - 38, 12, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
             carportSvg.addRectangle(length - 51, 31, 12, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
@@ -59,6 +64,8 @@ public class CarportSvg {
     public void addArrows(int width, int length) {
         carportOuterSvg.addArrow(50, width, 50, 0, "stroke:#000000; marker-end: url(#endArrow);");
         carportOuterSvg.addArrow(75, width + 30, length + 75, width + 30, "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addArrow(20, width-28, 20, 32, "stroke:#000000; marker-end: url(#endArrow);");
+
     }
 
     public void addTextH(int width, int length, int rotate, String text) {
