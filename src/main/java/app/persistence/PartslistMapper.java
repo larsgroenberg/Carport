@@ -49,9 +49,9 @@ public class PartslistMapper {
             while (rs.next()) {
                 int partId = rs.getInt("part_id");
                 int quantity = rs.getInt("quantity");
-                int price = rs.getInt("price");
+                int partslistprice = rs.getInt("partslistprice");
 
-                Partslistline partslistLine = new Partslistline(partId, orderId, quantity, price);
+                Partslistline partslistLine = new Partslistline(partId, orderId, quantity,partslistprice);
                 partslistLines.add(partslistLine);
             }
 
