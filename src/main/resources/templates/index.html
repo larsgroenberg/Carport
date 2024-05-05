@@ -38,18 +38,13 @@
         </div>
     </div>
 
-
+    <div class="table-form">
     <form class="form-table" id="myForm" action="" method="post">
         <h1>Design din Carport hos FOG</h1>
-        <h2>Konstruktionsstørrelse:</h2>
 
-        <div class="dropdown-container">
+        <div class="dropdown-container-carport">
             <select name="width" id="width" required>
-                <option value="" disabled selected>Vælg bredde</option>
-                <option value="0.9">0.9</option>
-                <option value="1.2">1.2</option>
-                <option value="1.5">1.5</option>
-                <option value="1.8">1.8</option>
+                <option value="" disabled selected>Vælg bredden på carporten</option>
                 <option value="2.1">2.1</option>
                 <option value="2.4">2.4</option>
                 <option value="2.7">2.7</option>
@@ -71,14 +66,8 @@
                 <option value="7.5">7.5</option>
                 <option value="7.8">7.8</option>
             </select>
-
             <select name="length" id="length" required>
-                <option value="" disabled selected>Vælg længde</option>
-                <option value="0.9">0.9</option>
-                <option value="1.2">1.2</option>
-                <option value="1.5">1.5</option>
-                <option value="1.8">1.8</option>
-                <option value="2.1">2.1</option>
+                <option value="" disabled selected>Vælg længden på carporten</option>
                 <option value="2.4">2.4</option>
                 <option value="2.7">2.7</option>
                 <option value="3.0">3.0</option>
@@ -99,20 +88,61 @@
                 <option value="7.5">7.5</option>
                 <option value="7.8">7.8</option>
             </select>
-          
             <select name="height" id="height" required>
-                <option value="" disabled selected>Vælg højde</option>
-                <option value="1.8">1.8</option>
+                <option value="" disabled selected>Vælg højden på carporten</option>
                 <option value="2.1">2.1</option>
                 <option value="2.4">2.4</option>
                 <option value="2.7">2.7</option>
                 <option value="3.0">3.0</option>
             </select>
         </div>
-
-        <div class="button-container">
-           <input class="betal" type="submit" value="Send Forespørgsel" formaction="/createcarport">
+        <div class="with-shed">
+            <label class="with-shed" for="with-shed"> Med skur</label>
+            <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike">
         </div>
+        <div class="dropdown-container-shed-wrapper">
+            <div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
+                <div class="flex-container-shed-div">
+                    <select name="length-shed" id="length-shed" required>
+                        <option value="" disabled selected>Vælg længden på skuret</option>
+                        <option value="1.8">1.8</option>
+                        <option value="2.1">2.1</option>
+                        <option value="2.4">2.4</option>
+                        <option value="2.7">2.7</option>
+                        <option value="3.0">3.0</option>
+                    </select>
+                </div>
+                <div class="flex-container-shed-div">
+                    <select name="height-shed" id="height-shed" required>
+                        <option value="" disabled selected>Vælg højden på skuret</option>
+                        <option value="1.8">1.8</option>
+                        <option value="2.1">2.1</option>
+                        <option value="2.4">2.4</option>
+                        <option value="2.7">2.7</option>
+                        <option value="3.0">3.0</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <form method="post">
+        <div class="button-container" style="margin-top: 20px;"> <!-- Tilføjet margin-top -->
+            <input class="betal" type="submit" value="Send Forespørgsel" formaction="/createcarport">
+        </div>
+        </form>
+        <script>
+            function toggleShedDropdown() {
+                var shedCheckbox = document.getElementById("with-shed");
+                var shedDropdown = document.getElementById("dropdown-container-shed");
+
+                if (shedCheckbox.checked) {
+                    shedDropdown.style.display = "inline-block";
+                } else {
+                    shedDropdown.style.display = "none";
+                }
+            }
+        </script>
+
+
     </form>
 </div>
 </body>
