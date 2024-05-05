@@ -50,6 +50,7 @@ public class OrderController {
 
         double length_shed = Double.parseDouble(ctx.formParam("length_shed")) * 100;
         double width_shed = Double.parseDouble(ctx.formParam("width_shed")) * 100;
+        String roof = ctx.formParam("roof");
 
 
         Locale.setDefault(new Locale("US"));
@@ -60,6 +61,7 @@ public class OrderController {
         ctx.sessionAttribute("length", length);
         ctx.sessionAttribute("width", width);
         ctx.sessionAttribute("height", height);
+        ctx.sessionAttribute("roof", roof);
     }
 
     // er klar og testet

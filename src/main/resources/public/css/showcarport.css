@@ -118,7 +118,6 @@ label {
 }
 
 .form-table {
-    margin-top: 10px;
     padding: 40px;
     width: 100%;
     max-width: 100%;
@@ -176,6 +175,22 @@ h3 {
     background-color: #555;
 }
 
+.betal {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 25px 8px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 22px;
+    transition: background-color 0.4s, transform 0.2s;
+}
+
+.betal:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
 .dropdown-container {
     display: flex;
     flex-wrap: wrap;
@@ -198,8 +213,6 @@ select {
     text-align: right;
     margin-top: 20px;
 }
-
-
 
 input[type="text"],
 input[type="date"],
@@ -241,7 +254,6 @@ button.edit-buttons:hover {
     border-radius: 8px;
     cursor: pointer;
     font-size: 22px;
-    cursor: pointer;
     transition: background-color 0.4s;
 }
 
@@ -259,13 +271,12 @@ button.edit-buttons:hover {
     margin-right: 5px;
     cursor: pointer;
     font-size: 22px;
-    cursor: pointer;
-    transition: background-color 0.4s;
+    transition: background-color 0.4s, transform 0.2s;
 }
 
 .shopping:hover {
     background-color: #0056b3;
-    border-color: #0056b3;
+    transform: scale(1.05);
 }
 
 

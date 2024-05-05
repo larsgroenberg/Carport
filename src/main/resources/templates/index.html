@@ -40,7 +40,8 @@
 
     <div class="table-form">
     <form class="form-table" id="myForm" action="" method="post">
-        <h1>Design din Carport hos FOG</h1>
+        <h1 >Design din Carport hos FOG</h1>
+
 
         <div class="dropdown-container-carport">
             <select name="width" id="width" required>
@@ -94,7 +95,17 @@
                 <option value="2.7">2.7</option>
                 <option value="3.0">3.0</option>
             </select>
+
         </div>
+        <div>
+            <select style="width: 250px;" name="roof" id="roof" required>
+                <option value="nej" selected>Tilvalg af tag</option>
+                <option value="ja">Plastmo Ecolite Trapezplade</option>
+                <option value="nej">nej tak</option>
+            </select>
+        </div>
+
+
         <div class="with-shed">
             <label class="with-shed" for="with-shed"> Med skur</label>
             <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike">
@@ -135,7 +146,7 @@
         </div>
         <form method="post">
         <div class="button-container" style="margin-top: 20px;"> <!-- Tilføjet margin-top -->
-            <input class="betal" type="submit" value="Send Forespørgsel" formaction="/createcarport">
+            <input class="betal" type="submit" value="Se Tegning" formaction="/createcarport">
         </div>
         </form>
         <script>
