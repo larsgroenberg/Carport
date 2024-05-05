@@ -254,12 +254,12 @@ button.edit-buttons:hover {
     border-radius: 8px;
     cursor: pointer;
     font-size: 22px;
-    transition: background-color 0.4s;
+    transition: background-color 0.4s, transform 0.2s;
 }
 
 .betal:hover {
     background-color: #218838;;
-    border-color: #0056b3;
+    transform: scale(1.05);
 }
 
 .shopping {
