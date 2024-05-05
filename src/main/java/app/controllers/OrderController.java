@@ -48,9 +48,15 @@ public class OrderController {
         double width = Double.parseDouble(ctx.formParam("width")) * 100;
         double height = Double.parseDouble(ctx.formParam("height")) * 100;
 
+        double length_shed = Double.parseDouble(ctx.formParam("length_shed")) * 100;
+        double width_shed = Double.parseDouble(ctx.formParam("width_shed")) * 100;
+
+
         Locale.setDefault(new Locale("US"));
         CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
         ctx.attribute("svg", svg.toString());
+        ctx.sessionAttribute("length_shed", length_shed);
+        ctx.sessionAttribute("width_shed", width_shed);
         ctx.sessionAttribute("length", length);
         ctx.sessionAttribute("width", width);
         ctx.sessionAttribute("height", height);
@@ -61,12 +67,15 @@ public class OrderController {
         double carportWidth = ctx.sessionAttribute("length");
         double carportLength = ctx.sessionAttribute("width");
         double carportHeight = ctx.sessionAttribute("height");
+        double shedWidth = ctx.sessionAttribute("width_shed");
+        double shedLength = ctx.sessionAttribute("length_shed");
+
         // her skal vi sevfølgelig trække på nogle formParam-data fra den kundeindtastningessiden som vi ikke har lavet endnu
         int currentOrderId;
         int userId = 1001;
         String email = "oleOlsen@gmail.com";
-        double shedWidth = 0;
-        double shedLength = 0;
+        //double shedWidth = 0;
+        //double shedLength = 0;
         String orderDate = formattedDate;
         //int userId = ctx.attribute("userid");
         //String email = ctx.formParam("email");
