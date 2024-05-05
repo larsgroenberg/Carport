@@ -19,7 +19,7 @@ public class OrderController {
     static String formattedDate = formatter.format(today);
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("index.html");
+            ctx.render("adminSite.html");
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx);
