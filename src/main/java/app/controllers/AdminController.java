@@ -29,8 +29,6 @@ public class AdminController
             changeOrderStatusToPickedUp(ctx, ConnectionPool.getInstance());
             ctx.render("adminSite.html");
         });
-
-
     }
 
     private static void index(Context ctx)

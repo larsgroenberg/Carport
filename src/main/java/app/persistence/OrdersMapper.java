@@ -11,9 +11,9 @@ import java.util.List;
 
 public class OrdersMapper {
 
-    public static int addOrder(double carportWidth, double carportLength, double carportHeight, int userId, double shedWidth, double shedLength, String email, String orderDate, ConnectionPool connectionPool) throws DatabaseException{
+    public static int addOrder(double carportWidth, double carportLength, double carportHeight, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, ConnectionPool connectionPool) throws DatabaseException{
 
-        String sql = "INSERT INTO ordrene (material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO ordrene (carport_width, carport_length, carport_height, order_status, shed_width, shed_length, email, orderdate) VALUES (?,?,?,?,?,?,?,?)";
 
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)){
@@ -22,8 +22,7 @@ public class OrdersMapper {
                 ps.setDouble(3, carportWidth);
                 ps.setDouble(4, carportLength);
                 ps.setDouble(5, carportHeight);
-                ps.setInt(6, userId);
-                ps.setString(7, "modtaget");
+                ps.setString(7, orderStatus);
                 ps.setDouble(8, shedWidth);
                 ps.setDouble(9, shedLength);
                 ps.setString(10, email);
@@ -32,6 +31,7 @@ public class OrdersMapper {
                 ps.executeUpdate();
                 ResultSet rs = ps.getGeneratedKeys(); // order_id er autogenereret
                 rs.next();
+                System.out.println(rs.getInt(1));
                 return rs.getInt(1);
             } catch (SQLException e){
                 e.printStackTrace();

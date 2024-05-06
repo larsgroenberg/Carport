@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>BookingBois</title>
+    <title>FOG Carport</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/bookiBois.css" th:href="@{/css/bookiBois.css}" rel="stylesheet"/>
@@ -41,13 +41,9 @@
     <div class="table-form">
     <form class="form-table" id="myForm" action="" method="post">
         <h1 >Design din Carport hos FOG</h1>
-
-
         <div class="dropdown-container-carport">
             <select name="width" id="width" required>
                 <option value="" disabled selected>Vælg bredden på carporten</option>
-                <option value="2.4">2.4</option>
-                <option value="2.7">2.7</option>
                 <option value="3.0">3.0</option>
                 <option value="3.3">3.3</option>
                 <option value="3.6">3.6</option>
@@ -59,12 +55,6 @@
                 <option value="5.4">5.4</option>
                 <option value="5.7">5.7</option>
                 <option value="6.0">6.0</option>
-                <option value="6.3">6.3</option>
-                <option value="6.6">6.6</option>
-                <option value="6.9">6.9</option>
-                <option value="7.2">7.2</option>
-                <option value="7.5">7.5</option>
-                <option value="7.8">7.8</option>
             </select>
             <select name="length" id="length" required>
                 <option value="" disabled selected>Vælg længden på carporten</option>
@@ -93,9 +83,7 @@
                 <option value="2.1">2.1</option>
                 <option value="2.4">2.4</option>
                 <option value="2.7">2.7</option>
-                <option value="3.0">3.0</option>
             </select>
-
         </div>
         <div>
             <select style="width: 250px;" name="roof" id="roof" required>
@@ -104,8 +92,6 @@
                 <option value="nej">nej tak</option>
             </select>
         </div>
-
-
         <div class="with-shed">
             <label class="with-shed" for="with-shed"> Med skur</label>
             <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike">
@@ -120,15 +106,11 @@
                         <option value="2.4">2.4</option>
                         <option value="2.7">2.7</option>
                         <option value="3.0">3.0</option>
-                        <option value="3.3">3.3</option>
-                        <option value="3.6">3.6</option>
                     </select>
                 </div>
                 <div class="flex-container-shed-div">
                     <select name="width_shed" id="width-shed" required>
                         <option value="0" selected>Vælg bredden på skuret</option>
-                        <option value="2.4">2.4</option>
-                        <option value="2.7">2.7</option>
                         <option value="3.0">3.0</option>
                         <option value="3.3">3.3</option>
                         <option value="3.6">3.6</option>
@@ -161,9 +143,8 @@
                 }
             }
         </script>
-
-
     </form>
+</div>
 </div>
 </body>
 </html>

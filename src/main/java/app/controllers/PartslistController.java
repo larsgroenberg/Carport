@@ -37,7 +37,7 @@ public class PartslistController {
         if (ctx.sessionAttribute("partslist") != null) {
             partslistLines = ctx.sessionAttribute("partslist");
         }
-        Partslistline newpartslistline = new Partslistline(partslistline.getPartId(), partslistline.getOrderId(), partslistline.getQuantity(), partslistline.getPartlistlineprice());
+        Partslistline newpartslistline = new Partslistline(partslistline.getPartId(), partslistline.getOrderId(), partslistline.getQuantity(), partslistline.getPartlistlineprice(), partslistline.getDescription());
         partslistLines.add(newpartslistline);
         PartslistMapper.insertPartslistLine(newpartslistline, connectionPool);
         ctx.attribute("partslist", partslistLines);
