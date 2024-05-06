@@ -2,12 +2,44 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>BookingBois</title>
+    <title>Checkout</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/bookiBois.css" th:href="@{/css/bookiBois.css}" rel="stylesheet"/>
 </head>
+<body>
+<header>
+    <h1>Checkout Page</h1>
+</header>
+<!-- Carport length width with roof -->
+<h2>Carport Specifications</h2>
+<p>Width: <span th:text="${session.carport_width}">0</span> cm</p>
+<p>Length: <span th:text="${session.carport_length}">0</span> cm</p>
+<p>Roof Type: <span th:text="${session.carport_trapeztag}"></span></p>
 
+<!-- Show 2d drawing again? -->
+<div class="carport-svg-topview">
+    <div th:utext="${svg}"></div>
+</div>
+
+<!-- User info -->
+<h2>Personal Details</h2>
+<p>Name: <span th:text="${session.currentUser.name}">Name not found</span></p>
+<p>Email: <span th:text="${session.currentUser.email}">Email not found</span></p>
+<p>Mobile Number: <span th:text="${session.currentUser.mobile}">Mobile number not found</span></p>
+<p>Address: <span th:text="${session.currentUser.address}">Address not found</span></p>
+<p>Zipcode: <span th:text="${session.currentUser.zipcode}">Zipcode not found</span></p>
+
+<!-- Money offer on the carport -->
+
+
+
+
+
+
+</body>
+
+<!--
 <body>
 
 <div class="page">
@@ -120,4 +152,5 @@
     }
 </script>
 </body>
+-->
 </html>
