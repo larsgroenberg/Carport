@@ -57,6 +57,12 @@ public class OrderController {
         double length_shed = Double.parseDouble(ctx.formParam("length_shed"));
         double width_shed = Double.parseDouble(ctx.formParam("width_shed"));
         String roof = (ctx.formParam("roof"));
+
+        // TODO: gør dette pænere
+        boolean withRoof = !roof.contains("nej");
+        boolean withShed = length_shed>0;
+
+
         ctx.sessionAttribute("length", length);
         ctx.sessionAttribute("width", width);
         ctx.sessionAttribute("height", height);
@@ -66,8 +72,19 @@ public class OrderController {
         ctx.sessionAttribute("roof", roof);
 
         Locale.setDefault(new Locale("US"));
+
         CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
+
         ctx.attribute("svg", svg.toString());
+
+        //todo: fiks således at shed ikke bliver tilføjet når flueben tjekkes på og af.
+        Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed,0);
+        newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, svg.getMaterialQuantity().get("totalPoles")));
+        newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.BEAM, svg.getMaterialQuantity().get("totalBeams")));
+        newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.RAFT, svg.getMaterialQuantity().get("totalRafters")));
+        newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svg.getMaterialQuantity().get("totalCrossSupports")));
+
+        System.out.println(newCarport);
     }
     // TODO: Skal fjernes/laves ordentligt
     public static void createCarport(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
