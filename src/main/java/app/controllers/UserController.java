@@ -83,7 +83,7 @@ public class UserController {
 
             // Hvis brugeren er admin, sendes han videre til adminsite.html
             if (user.isAdmin()) {
-                ctx.render("adminSite.html");
+                ctx.render("adminsite.html");
             } else {
                 // Her sender jeg brugeren tilbage til carportspecs.html
                 ctx.render("carportspecs.html");

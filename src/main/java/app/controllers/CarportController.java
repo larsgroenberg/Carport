@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CarportController {
 
-        public static void addRoutes(Javalin app)
+        /*public static void addRoutes(Javalin app)
         {
             app.get("/", ctx -> {
 
@@ -55,7 +55,7 @@ public class CarportController {
 
         CarportMapper.InsertIntoOrders(userId,orderDate,orderprice,status,length,width,trapeztag);
 
-    }
+    }*/
 
     /*public static void showOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         List<Carport> orderList = CarportMapper.showOrders(connectionPool);
@@ -64,5 +64,5 @@ public class CarportController {
 
 
 
-    }
 }
+

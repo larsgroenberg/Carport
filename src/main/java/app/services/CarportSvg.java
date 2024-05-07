@@ -1,6 +1,6 @@
 package app.services;
 
-import app.controllers.QuantityOFEachMaterialController;
+//import app.controllers.QuantityOFEachMaterialController;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import io.javalin.http.Context;
@@ -33,6 +33,7 @@ public class CarportSvg {
         addTextV((length / 2) + 30, width + 55, 0, "" + length + " cm");
         addTextH(40, (width / 2) - 20, 0, "" + width + " cm");
         addTextH(10, (width / 2) - 20, 0, "" + (width-65) + " cm");
+        // TODO: opret opjekt der indeholder alle poles, beams, rafters osv. så denne kan gemme i session attribute.
    }
 
    // Remme er placeret 35 nede og går på tværs og er lige så lange spm den indtastede længde

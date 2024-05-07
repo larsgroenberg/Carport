@@ -25,8 +25,8 @@ public class OrderController {
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx);
-            createCarport(ctx, ConnectionPool.getInstance());
-            createPartsList(ctx, ConnectionPool.getInstance());
+            //createCarport(ctx, ConnectionPool.getInstance());
+            //createPartsList(ctx, ConnectionPool.getInstance());
             ctx.render("showOrder.html");
         });
         app.post("/ordercarport", ctx -> {
@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     private static void index(Context ctx) {
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     public static Order getOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
@@ -69,7 +69,7 @@ public class OrderController {
         CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
         ctx.attribute("svg", svg.toString());
     }
-
+    // TODO: Skal fjernes/laves ordentligt
     public static void createCarport(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         double carportWidth = ctx.sessionAttribute("length");
         double carportLength = ctx.sessionAttribute("width");
@@ -90,7 +90,7 @@ public class OrderController {
             ctx.attribute("message", "Fejl i oprettelse af ordren!! Prøv igen!");
         }
     }
-
+    //TODO: Skal fjernes/laves ordentligt
     public static void createPartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {
         double carportWidth = ctx.sessionAttribute("width");
         double carportLength = ctx.sessionAttribute("length");

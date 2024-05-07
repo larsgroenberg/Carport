@@ -23,65 +23,65 @@ public class AdminController
         app.post("/getAllParts", ctx -> showPartsList(ctx, ConnectionPool.getInstance()));
         app.post("/changeorderstatus", ctx -> {
             changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
-            ctx.render("adminSite.html");
+            ctx.render("adminsite.html");
         });
         app.post("/orderpickedup", ctx -> {
             changeOrderStatusToPickedUp(ctx, ConnectionPool.getInstance());
-            ctx.render("adminSite.html");
+            ctx.render("adminsite.html");
         });
     }
 
     private static void index(Context ctx)
     {
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void showPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         PartsMapper.showPartsList(connectionPool);
         ArrayList<Part> partList = PartsMapper.showPartsList(connectionPool);
         ctx.attribute("partslist", partList);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void getPartById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int partId = Integer.parseInt(ctx.formParam("partid"));
         Part part = PartsMapper.getPartById(partId, connectionPool);
         ctx.attribute("part", part);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void getAllOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
         ctx.attribute("customerOrders", customerOrders);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void getOrderByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
         Order customerOrder = OrdersMapper.getOrderByEmail(email, connectionPool);
         ctx.attribute("customerOrders", customerOrder);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
         Order customerOrder = OrdersMapper.getOrderByName(userName, connectionPool);
         ctx.attribute("customerOrders", customerOrder);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
         User currentUser = UserMapper.getCustomerByName(userName, connectionPool);
         ctx.attribute("currentuser", currentUser);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void getCustomerByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
         User currentUser = UserMapper.getCustomerByEmail(email, connectionPool);
         ctx.attribute("currentuser", currentUser);
-        ctx.render("adminSite.html");
+        ctx.render("adminsite.html");
     }
 
     private static void changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException {

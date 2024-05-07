@@ -4,6 +4,7 @@ package app;
 import app.config.ThymeleafConfig;
 import app.controllers.AdminController;
 import app.controllers.CarportController;
+import app.controllers.OrderController;
 import app.controllers.UserController;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
@@ -20,8 +21,8 @@ public class Main
         }).start(7070);
 
         //Routing
-
         //CarportController.addRoutes(app);
+        OrderController.addRoutes(app);
         UserController.addRoutes(app);
         AdminController.addRoutes(app);
     }
