@@ -8,9 +8,9 @@ public class Partslistline {
     private String description;
     private String unit;
     private int partLength;
+    private String name;
 
-
-    public Partslistline(int partId, int orderId, int quantity, double partlistlineprice, String description, String unit, int partLength) {
+    public Partslistline(int partId, int orderId, int quantity, double partlistlineprice, String description, String unit, int partLength, String name) {
         this.partId = partId;
         this.orderId = orderId;
         this.quantity = quantity;
@@ -18,7 +18,7 @@ public class Partslistline {
         this.description = description;
         this.unit = unit;
         this.partLength = partLength;
-
+        this.name = name;
     }
 
     public int getPartId() {
@@ -75,5 +75,13 @@ public class Partslistline {
 
     public void setPartLength(int partLength) {
         this.partLength = partLength;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

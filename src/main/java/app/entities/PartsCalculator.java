@@ -28,7 +28,6 @@ public class PartsCalculator {
         for(double i = 0; i < length; i = i + raftWidth + spaceBetweenEachRaft){
             numberOfRafters++;
         }
-
         return numberOfRafters;
     }
 

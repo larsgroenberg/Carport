@@ -11,9 +11,9 @@ import java.util.List;
 
 public class OrdersMapper {
 
-    public static int addOrder(double carportWidth, double carportLength, double carportHeight, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, ConnectionPool connectionPool) throws DatabaseException{
+    public static int addOrder(double carportWidth, double carportLength, double carportHeight, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, String roof, ConnectionPool connectionPool) throws DatabaseException{
 
-        String sql = "INSERT INTO ordrene (carport_width, carport_length, carport_height, order_status, shed_width, shed_length, email, orderdate) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO ordrene (material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)){
@@ -22,16 +22,18 @@ public class OrdersMapper {
                 ps.setDouble(3, carportWidth);
                 ps.setDouble(4, carportLength);
                 ps.setDouble(5, carportHeight);
+                ps.setInt(6,0);
                 ps.setString(7, orderStatus);
                 ps.setDouble(8, shedWidth);
                 ps.setDouble(9, shedLength);
                 ps.setString(10, email);
                 ps.setString(11, orderDate);
+                ps.setString(12, roof);
+                ps.setBoolean(13, false);
 
                 ps.executeUpdate();
                 ResultSet rs = ps.getGeneratedKeys(); // order_id er autogenereret
                 rs.next();
-                System.out.println(rs.getInt(1));
                 return rs.getInt(1);
             } catch (SQLException e){
                 e.printStackTrace();
@@ -58,12 +60,14 @@ public class OrdersMapper {
                 int carportWidth = rs.getInt("carport_width");
                 int carportHeight = rs.getInt("carport_height");
                 int materialCost = rs.getInt("material_cost");
-                String status = rs.getString("order_status");
+                String orderStatus = rs.getString("order_status");
                 int shedWidth = rs.getInt("shed_width");
                 int shedLength = rs.getInt("shed_length");
                 int salesPrice = rs.getInt("sales_price");
                 String orderDate = rs.getString("orderdate");
-                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email, orderDate);
+                String roof = rs.getString("roof");
+                boolean wall = rs.getBoolean("wall");
+                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
             } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
             }
@@ -89,13 +93,16 @@ public class OrdersMapper {
                 int carportWidth = rs.getInt("carport_width");
                 int carportHeight = rs.getInt("carport_height");
                 int materialCost = rs.getInt("material_cost");
-                String status = rs.getString("order_status");
+                String orderStatus = rs.getString("order_status");
                 int shedWidth = rs.getInt("shed_width");
                 int shedLength = rs.getInt("shed_length");
                 int salesPrice = rs.getInt("sales_price");
                 String email = rs.getString("email");
                 String orderDate = rs.getString("orderdate");
-                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, status, shedWidth, shedLength, email, orderDate);
+                String roof = rs.getString("roof");
+                boolean wall = rs.getBoolean("wall");
+                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
+
             } else {
                 throw new DatabaseException("Fejl i hentning af ordre!");
             }
@@ -123,7 +130,9 @@ public class OrdersMapper {
                     double shedLength = rs.getDouble("shed_length");
                     String email = rs.getString("email");
                     String orderDate = rs.getString("orderdate");
-                    orderList.add(new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate));
+                    String roof = rs.getString("roof");
+                    boolean wall = rs.getBoolean("wall");
+                    orderList.add(new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall));
                 }
             }
         }catch (SQLException e){
@@ -153,7 +162,9 @@ public class OrdersMapper {
                     double shedLength = rs.getDouble("shed_length");
                     String email = rs.getString("email");
                     String orderDate = rs.getString("orderdate");
-                    order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate);
+                    String roof = rs.getString("roof");
+                    boolean wall = rs.getBoolean("wall");
+                    order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
                 } else {
                     throw new DatabaseException("Der findes ikke ordre med det ordreId i databasen");
                 }
@@ -174,18 +185,20 @@ public class OrdersMapper {
                 ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();
                 if(rs.next()) {
+                    int orderId = rs.getInt("order_id");
                     double materialCost = rs.getDouble("material_cost");
                     double salesPrice = rs.getDouble("sales_price");
                     double carportWidth = rs.getDouble("carport_width");
                     double carportLength = rs.getDouble("carport_length");
                     double carportHeight = rs.getDouble("carport_height");
-                    int orderId = rs.getInt("order_id");
                     String orderStatus = rs.getString("order_status");
                     double shedWidth = rs.getDouble("shed_width");
                     double shedLength = rs.getDouble("shed_length");
                     String email = rs.getString("email");
                     String orderDate = rs.getString("orderdate");
-                    order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate);
+                    String roof = rs.getString("roof");
+                    boolean wall = rs.getBoolean("wall");
+                    order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
                 } else {
                     throw new DatabaseException("Der findes ikke en ordre med det userId i databasen");
                 }

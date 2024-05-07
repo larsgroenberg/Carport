@@ -11,8 +11,9 @@ public class Part {
     private String type;
     private String material;
     private String unit;
+    private String name;
 
-    public Part(int partId, int price, String description, int length, int height, int width, String type, String material, String unit) {
+    public Part(int partId, int price, String description, int length, int height, int width, String type, String material, String unit, String name) {
         this.partId = partId;
         this.price = price;
         this.description = description;
@@ -22,6 +23,7 @@ public class Part {
         this.type = type;
         this.material = material;
         this.unit = unit;
+        this. name = name;
     }
 
     public int getPartId() {
@@ -94,6 +96,14 @@ public class Part {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

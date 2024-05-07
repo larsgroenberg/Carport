@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 html * {
     box-sizing: border-box;
     padding: 0;
     background-color: white;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
@@ -10,6 +13,7 @@ body {
     align-items: center;
     background-color: lightgray;
     padding-bottom: 30px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .page {
@@ -25,11 +29,13 @@ body {
     border-radius: 5px;
     background-color: white;
     margin: 40px 10px 10px 10px;
+    font-family: 'Roboto', sans-serif;
 }
 
 header {
     background-color: #3C1460;
     text-align: center;
+    font-family: 'Roboto', sans-serif;
 }
 
 header a {
@@ -37,6 +43,7 @@ header a {
     flex-direction: column;
     align-items: center;
     background-color: #3C1460;
+    font-family: 'Roboto', sans-serif;
 }
 
 header a img {
@@ -56,6 +63,7 @@ header div {
     width: 100%;
     background-color: #f9f9f9;
     font-size: 22px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .topnav a {
@@ -71,6 +79,7 @@ label {
     background-color: #f9f9f9;
     font-size: 16px;
     font-weight: bold;
+    font-family: 'Roboto', sans-serif;
 }
 
 .topnav .right {
@@ -86,6 +95,7 @@ label {
     padding-left: 40px;
     padding-top: 15px;
     padding-bottom: 15px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .basket {
@@ -148,9 +158,8 @@ label {
     color: black;
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
-
     padding-left: 5px;
-    text-shadow: 1px 1px 2px #888888;
+
 }
 
 h1 {
@@ -259,7 +268,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: bold;
+
     font-family: 'Roboto', sans-serif;
 }
 

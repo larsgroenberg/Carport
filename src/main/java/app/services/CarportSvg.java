@@ -21,9 +21,10 @@ public class CarportSvg {
         this.length = length;
         this.width = width;
         this.height = height;
-        carportSvg = new Svg(75, 0, "0 0 900 870", "100%");
-        carportOuterSvg = new Svg(0, 0, "0 0 900 870", "100%");
-        carportSvg.addRectangle(0, 0, width, length, "stroke-width:1px; stroke:#000000; fill: #ffffff");
+       carportSvg = new Svg(75, 0, "0 0 " + (length+80) + " " + (width+80), "100%");
+       carportOuterSvg = new Svg(0, 0, "0 0 " + (length+90) + " " + (width+80), "100%");
+
+       carportSvg.addRectangle(0, 0, width, length, "stroke-width:1px; stroke:#000000; fill: #ffffff");
         addPoles(width, length, height);
         addBeams(length, width);
         addRafters(width, length);

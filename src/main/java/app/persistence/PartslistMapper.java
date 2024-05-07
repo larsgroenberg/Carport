@@ -11,7 +11,7 @@ public class PartslistMapper {
 
     public static void insertPartslistLine(Partslistline partslistline, ConnectionPool connectionPool) throws DatabaseException {
 
-        String sql = "insert into partslist(part_id, order_id, quantity, partslistprice, description) values (?,?,?,?,?)";
+        String sql = "insert into partslist(part_id, order_id, quantity, partslistprice, description, unit, part_length, name) values (?,?,?,?,?,?,?,?)";
 
         try (
                 Connection connection = connectionPool.getConnection();
@@ -22,7 +22,10 @@ public class PartslistMapper {
             ps.setInt(2, partslistline.getOrderId());
             ps.setInt(3, partslistline.getQuantity());
             ps.setDouble(4, partslistline.getPartlistlineprice());
-            ps.setString(5,partslistline.getDescription());
+            ps.setString(5, partslistline.getDescription());
+            ps.setString(6, partslistline.getUnit());
+            ps.setInt(7, partslistline.getPartLength());
+            ps.setString(8, partslistline.getName());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1)
@@ -54,8 +57,39 @@ public class PartslistMapper {
                 String description = rs.getString("description");
                 String unit = rs.getString("unit");
                 int partLength = rs.getInt("part_length");
+                String name = rs.getString("name");
 
-                Partslistline partslistLine = new Partslistline(partId, orderId, quantity, partslistlineprice, description, unit, partLength);
+                Partslistline partslistLine = new Partslistline(partId, orderId, quantity, partslistlineprice, description, unit, partLength, name);
+                partslistLines.add(partslistLine);
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error retrieving topping with id = " + e.getMessage());
+        }
+        return partslistLines;
+    }
+
+    public static ArrayList<Partslistline> getPartsListByOrderid(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        ArrayList<Partslistline> partslistLines = new ArrayList<>();
+
+        String sql = "SELECT * FROM partslist WHERE order_id = ?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int partId = rs.getInt("part_id");
+                int quantity = rs.getInt("quantity");
+                int partslistlineprice = rs.getInt("partslistprice");
+                String description = rs.getString("description");
+                String unit = rs.getString("unit");
+                int partLength = rs.getInt("part_length");
+                String name = rs.getString("name");
+
+                Partslistline partslistLine = new Partslistline(partId, orderId, quantity, partslistlineprice, description, unit, partLength, name);
                 partslistLines.add(partslistLine);
             }
 
@@ -100,7 +134,8 @@ public class PartslistMapper {
                     String type = rs.getString("type");
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
-                    partList.add(new Part(part_id, price, description, length, height, width, type, material_name, unit));
+                    String name = rs.getString("name");
+                    partList.add(new Part(part_id, price, description, length, height, width, type, material_name, unit, name));
                 }
             }
         }catch (SQLException e){
@@ -129,8 +164,10 @@ public class PartslistMapper {
                     int width = rs.getInt("width");
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
-                    part = new Part(part_id, price, description, length, height, width, type, material_name, unit);
+                    String name = rs.getString("name");
+                    part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
                 }
+
             }
         }catch (SQLException e){
             throw new DatabaseException( "We couldnt get the material", e.getMessage());
@@ -159,7 +196,8 @@ public class PartslistMapper {
                     int width = rs.getInt("width");
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
-                    part = new Part(part_id, price, description, length, height, width, type, material_name, unit);
+                    String name = rs.getString("name");
+                    part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
                 }
             }
         }catch (SQLException e){
@@ -187,7 +225,8 @@ public class PartslistMapper {
                     String type = rs.getString("type");
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
-                    partList.add(new Part(part_id, price, description, length, height, width, type, material_name, unit));
+                    String name = rs.getString("name");
+                    partList.add(new Part(part_id, price, description, length, height, width, type, material_name, unit, name));
                 }
             }
         }catch (SQLException e){
@@ -218,7 +257,8 @@ public class PartslistMapper {
                 String type = rs.getString("type");
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
-                part = new Part(part_id, price, description, length, height, width, type, material_name, unit);
+                String name = rs.getString("name");
+                part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
@@ -247,7 +287,7 @@ public class PartslistMapper {
                 String type = rs.getString("type");
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
-                part = new Part(part_id, price, description, length, height, width, type, material_name, unit);
+                part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with name = " + name, e.getMessage());
@@ -256,8 +296,8 @@ public class PartslistMapper {
     }
 
 
-    public static void addPart(int price, String description, int length, int height, int width, String type, String material, String unit, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit) VALUES (?,?,?,?,?,?,?,?)";
+    public static void addPart(int price, String description, int length, int height, int width, String type, String material, String unit, String name, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit, name) VALUES (?,?,?,?,?,?,?,?,?)";
 
         try (
                 Connection connection = connectionPool.getConnection();
@@ -272,6 +312,7 @@ public class PartslistMapper {
             ps.setString(6, type);
             ps.setString(7, material);
             ps.setString(8, unit);
+            ps.setString(9, name);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
