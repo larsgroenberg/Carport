@@ -20,10 +20,10 @@ public class PartslistController {
                 ctx.render("checkoutpage.html");
             });
 
-            app.get("/insertpartlistline", ctx -> {
-                insertPartsListLine(ctx,ConnectionPool.getInstance());
-                ctx.render("checkoutpage.html");
-            });
+            //app.get("/insertpartlistline", ctx -> {
+            //    insertPartsListLine(ctx,ConnectionPool.getInstance());
+            //    ctx.render("checkoutpage.html");
+            //});
         }
 
     public static void showPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
@@ -32,14 +32,17 @@ public class PartslistController {
         ctx.attribute("partslist", partslist);
     }
 
+    /*
     public static void insertPartsListLine(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         Partslistline partslistline = ctx.sessionAttribute("partlistline");
         if (ctx.sessionAttribute("partslist") != null) {
             partslistLines = ctx.sessionAttribute("partslist");
         }
-        Partslistline newpartslistline = new Partslistline(partslistline.getPartId(), partslistline.getOrderId(), partslistline.getQuantity(), partslistline.getPartlistlineprice());
+        Partslistline newpartslistline = new Partslistline(partslistline.getPartId(), partslistline.getOrderId(), partslistline.getQuantity(), partslistline.getPartlistlineprice(), partslistline.getDescription());
         partslistLines.add(newpartslistline);
         PartslistMapper.insertPartslistLine(newpartslistline, connectionPool);
         ctx.attribute("partslist", partslistLines);
     }
+
+     */
 }

@@ -13,8 +13,10 @@ public class Order {
     private double shedLength;
     private String userEmail;
     private String orderDate;
+    private String roof;
+    private boolean wall;
 
-    public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String userEmail, String orderDate) {
+    public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String userEmail, String orderDate, String roof, boolean wall) {
         this.orderId = orderId;
         this.materialCost = materialCost;
         this.salesPrice = salesPrice;
@@ -27,6 +29,8 @@ public class Order {
         this.shedLength = shedLength;
         this.userEmail = userEmail;
         this.orderDate = orderDate;
+        this.roof = roof;
+        this. wall = wall;
     }
 
     public int getOrderId() {
@@ -123,6 +127,22 @@ public class Order {
 
     public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getRoof() {
+        return roof;
+    }
+
+    public void setRoof(String roof) {
+        this.roof = roof;
+    }
+
+    public boolean isWall() {
+        return wall;
+    }
+
+    public void setWall(boolean wall) {
+        this.wall = wall;
     }
 }
 
