@@ -41,8 +41,8 @@
         </table>
 
 
-        <div id="hiddenDiv" class="modal" th:if="${session.showpartslist}">
-            <span class="close" onclick="closeModal()">&times;</span>
+        <div th:if="${session.showpartslist}">
+            <!--span class="close" onclick="closeModal()">&times;</span-->
 
                 <h4>Stykliste til Carporten:</h4>
                 <table id="partsTable" class="table">
@@ -50,18 +50,24 @@
                     <tr>
                         <th>Materiale</th>
                         <th>Længde</th>
+                        <th>Højde</th>
+                        <th>Bredde</th>
                         <th>Antal</th>
-                        <th>Enhed</th>
+                        <th>Unit</th>
                         <th>Beskrivelse</th>
+                        <th>Pris</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="part : ${session.partslist}">
-                        <td th:text="${part.description}">Name</td>
-                        <td th:text="${part.partLength}">Length</td>
+                        <td th:text="${part.DBdescription}">Name</td>
+                        <td th:text="${part.DBlength}">Length</td>
+                        <td th:text="${part.DBheight}">Height</td>
+                        <td th:text="${part.DBwidth}">Width</td>
                         <td th:text="${part.quantity}">Quantity</td>
-                        <td th:text="${part.unit}">Unit</td>
-                        <td th:text="${part.name}">Beskrivelse</td>
+                        <td th:text="${part.DBunit}">Unit</td>
+                        <td th:text="${part.DBname}">Beskrivelse</td>
+                        <td th:text="${part.DBprice}">Pris</td>
                     </tr>
                     </tbody>
                 </table>
@@ -83,7 +89,7 @@
 <script>
 
     // Funktion til at vise modalen
-
+/*
 
     document.addEventListener("DOMContentLoaded", function () {
         var showpartslist = [[${session.showpartslist}]];
@@ -100,7 +106,7 @@
     }
 
 
-
+*/
 
 
 </script>

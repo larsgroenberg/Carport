@@ -1,61 +1,144 @@
 package app.entities;
 
+import app.exceptions.DatabaseException;
+import app.persistence.ConnectionPool;
+import io.javalin.Javalin;
+import io.javalin.http.Context;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PartsCalculator {
+    private ArrayList<CarportPart> partNeededList;
+    private ArrayList<CarportPart> dbPartsList;
+    private Carport carport = null;
+    private ArrayList<CarportPart> cheapestPartList;
+    private double totalPrice = 0;
+    //Context ctx;
 
-    public static int calculateNumberOfPosts(double length, double width) {
-        //Posts = stolper
+    public PartsCalculator(Context _ctx, ConnectionPool _connectionPool) throws DatabaseException {
+        carport = _ctx.sessionAttribute("newCarport");
 
-        int numberOfPosts = 4;
-        double maxSpaceBetweenPosts = 310; //each posts can carry 3.1 meter of roof
+        partNeededList = carport.getCarportPartList();
 
-        //adds additional posts, since corners are already added
-        for (double i = maxSpaceBetweenPosts; length >= i; i = i + maxSpaceBetweenPosts){
-            numberOfPosts = numberOfPosts+2;
-        }
-        return numberOfPosts;
+        dbPartsList = getDBParts(_connectionPool);
+
+        simpleCompareLists();
     }
 
-    public static int calculateNumberOfRafts(double length) {
-        //Rafts = spær
-        //We assume that our rafts are 4.5 cm in width and that there needs to be 55 cm between each
+    public ArrayList<CarportPart> getDBParts(ConnectionPool connectionPool) throws DatabaseException {
+        ArrayList<CarportPart> partList = new ArrayList<>();
+        String sql = "SELECT * FROM parts";
 
-        //numbers are in CM
-        double raftWidth = 4.5;
-        double spaceBetweenEachRaft = 55;
+        try(Connection connection = connectionPool.getConnection()){
+            try(PreparedStatement ps = connection.prepareStatement(sql)){
+                ResultSet rs = ps.executeQuery();
 
-        int numberOfRafters = 1;
-
-        for(double i = 0; i < length; i = i + raftWidth + spaceBetweenEachRaft){
-            numberOfRafters++;
+                while (rs.next()){
+                    int partId = rs.getInt("part_id");
+                    int price = rs.getInt("price");
+                    String description = rs.getString("description");
+                    int length = rs.getInt("length");
+                    int height = rs.getInt("height");
+                    int width = rs.getInt("width");
+                    String type = rs.getString("type");
+                    String material_name = rs.getString("material");
+                    String unit = rs.getString("unit");
+                    String name = rs.getString("name");
+                    CarportPart.CarportPartType partType = null;
+                    switch (type) {
+                        case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
+                        case "spær" -> partType = CarportPart.CarportPartType.BEAM;
+                        case "brædder" -> partType = CarportPart.CarportPartType.RAFT;
+                    }
+                    partList.add(new CarportPart(partType,0, price, length, height, width, description, material_name, unit, name));
+                }
+            }
+        }catch (SQLException e){
+            throw new DatabaseException("We couldn't get the part", e.getMessage());
         }
-        return numberOfRafters;
-    }
-
-    public static int calculateNumberOfRoofPlates(double length, double width) {
-        //Roofplates = tagplast
-        //we assume that a "standard" plate is 109 cm x 360 cm
-
-        double roofPlatesWidth = 109;
-        double roofPlatesLength = 360;
-
-        int numberOfRoofPlates;
-        int numberOfPlatesForLength = 0;
-        int numberOfPlatesForWidth = 0;
-
-        for (double i = 0; i < length; i=i+roofPlatesLength){
-            numberOfPlatesForLength++;
-        }
-
-        for (double i = 0; i < width; i=i+roofPlatesWidth){
-            numberOfPlatesForWidth++;
-        }
-
-        //we multiply the number needed for the width with the number needed in the length to fill the whole area
-        numberOfRoofPlates = numberOfPlatesForLength*numberOfPlatesForWidth;
-
-        //use description: tagplader	monteres	på	spær
-        return numberOfRoofPlates;
+        return partList;
     }
 
 
+    public void simpleCompareLists(){
+        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0, 10000, 0,0,0,"","","","");
+        cheapestPartList = new ArrayList<>();
+
+        for (CarportPart part : dbPartsList){
+            if(part.getType() == cheapestBeam.getType() && part.getDBprice() < cheapestBeam.getDBprice()){
+                cheapestBeam = part;
+            }
+            if(part.getType() == cheapestSupport.getType() && part.getDBprice() < cheapestSupport.getDBprice()){
+                cheapestSupport = part;
+            }
+            if(part.getType() == cheapestRaft.getType() && part.getDBprice() < cheapestRaft.getDBprice()){
+                cheapestRaft = part;
+            }
+        }
+
+        cheapestBeam.setQuantity(carport.getBEAM().getQuantity());
+        cheapestSupport.setQuantity(carport.getSUPPORTPOST().getQuantity());
+        cheapestRaft.setQuantity(carport.getRAFT().getQuantity());
+
+
+
+        cheapestPartList.add(cheapestBeam);
+        cheapestPartList.add(cheapestSupport);
+        cheapestPartList.add(cheapestRaft);
+
+        totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity()) + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity()) + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity());
+    }
+
+    public void CompareLists(){
+        double supportPostLength = (90 + carport.getHeight()) * carport.getSUPPORTPOST().getQuantity();
+        double beamLength = carport.getLength() * carport.getBEAM().getQuantity();
+        double raftLength = carport.getWidth() * carport.getRAFT().getQuantity();
+
+        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0, 10000, 0,0,0,"","","","");
+        cheapestPartList = new ArrayList<>();
+
+        for (CarportPart part : dbPartsList){
+            if(part.getType() == cheapestBeam.getType() && part.getDBlength() > cheapestBeam.getDBlength()){
+                cheapestBeam = part;
+            }
+            if(part.getType() == cheapestSupport.getType() && part.getDBlength() > cheapestSupport.getDBlength()){
+                cheapestSupport = part;
+            }
+            if(part.getType() == cheapestRaft.getType() && part.getDBlength() > cheapestRaft.getDBlength()){
+                cheapestRaft = part;
+            }
+        }
+        int beamQuantityNeeded = (int) (beamLength / cheapestBeam.getDBlength());
+
+        cheapestBeam.setQuantity(carport.getBEAM().getQuantity());
+        cheapestSupport.setQuantity(carport.getSUPPORTPOST().getQuantity());
+        cheapestRaft.setQuantity(carport.getRAFT().getQuantity());
+
+
+
+        cheapestPartList.add(cheapestBeam);
+        cheapestPartList.add(cheapestSupport);
+        cheapestPartList.add(cheapestRaft);
+
+        totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity()) + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity()) + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity());
+    }
+
+
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public ArrayList<CarportPart> getCheapestPartList() {
+        return cheapestPartList;
+    }
 }

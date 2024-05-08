@@ -50,7 +50,7 @@ public class OrderController {
         return OrdersMapper.getOrderByUserId(userId, connectionPool);
     }
 
-    public static void showOrder(Context ctx) {
+    public static void showOrder(Context ctx) throws DatabaseException {
         double length = Double.parseDouble(ctx.formParam("length"));
         double width = Double.parseDouble(ctx.formParam("width"));
         double height = Double.parseDouble(ctx.formParam("height"));
@@ -84,7 +84,25 @@ public class OrderController {
         newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.RAFT, svg.getMaterialQuantity().get("totalRafters")));
         newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svg.getMaterialQuantity().get("totalCrossSupports")));
 
-        System.out.println(newCarport);
+        newCarport.setBEAM(new CarportPart(CarportPart.CarportPartType.BEAM, svg.getMaterialQuantity().get("totalBeams")));
+        newCarport.setSUPPORTPOST(new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, svg.getMaterialQuantity().get("totalPoles")));
+        newCarport.setRAFT(new CarportPart(CarportPart.CarportPartType.RAFT, svg.getMaterialQuantity().get("totalRafters")));
+        newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svg.getMaterialQuantity().get("totalCrossSupports")));
+
+        ctx.sessionAttribute("newCarport", newCarport);
+
+        PartsCalculator partsCalculator = new PartsCalculator(ctx, ConnectionPool.getInstance());
+
+        ctx.sessionAttribute("carportprice", partsCalculator.getTotalPrice());
+
+        System.out.println(partsCalculator.getCheapestPartList());
+
+        ctx.sessionAttribute("partslist", partsCalculator.getCheapestPartList());
+        ctx.sessionAttribute("showpartslist", true);
+        //ctx.sessionAttribute("partslist", partslist);
+
+
+        //System.out.println(newCarport);
     }
     // TODO: Skal fjernes/laves ordentligt
     public static void createCarport(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
@@ -108,7 +126,7 @@ public class OrderController {
         }
     }
     //TODO: Skal fjernes/laves ordentligt
-    public static void createPartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {
+    /*public static void createPartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {
         double carportWidth = ctx.sessionAttribute("width");
         double carportLength = ctx.sessionAttribute("length");
         double carportHeight = ctx.sessionAttribute("height");
@@ -174,5 +192,5 @@ public class OrderController {
         } catch (DatabaseException e) {
             ctx.attribute("message", "Fejl i oprettelse af PartsListen!");
         }
-    }
+    }*/
 }
