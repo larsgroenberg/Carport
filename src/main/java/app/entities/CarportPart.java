@@ -19,6 +19,7 @@ public class CarportPart {
     private String DBmaterial;
     private String DBunit;
     private String DBname;
+    private double DBtotalQuantityPrice;
 
     public CarportPart(CarportPartType type, int quantity) {
         this.type = type;
@@ -80,6 +81,14 @@ public class CarportPart {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getDBtotalQuantityPrice() {
+        return DBprice * quantity;
+    }
+
+    public void setDBtotalQuantityPrice(double DBtotalQuantityPrice) {
+        this.DBtotalQuantityPrice = DBtotalQuantityPrice;
     }
 
     @Override

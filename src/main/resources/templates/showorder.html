@@ -55,7 +55,8 @@
                         <th>Antal</th>
                         <th>Unit</th>
                         <th>Beskrivelse</th>
-                        <th>Pris</th>
+                        <th>Enkel Pris</th>
+                        <th>Samlede Pris</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,7 +68,8 @@
                         <td th:text="${part.quantity}">Quantity</td>
                         <td th:text="${part.DBunit}">Unit</td>
                         <td th:text="${part.DBname}">Beskrivelse</td>
-                        <td th:text="${part.DBprice}">Pris</td>
+                        <td th:text="${part.DBprice}">Enkel Pris</td>
+                        <td th:text="${part.DBtotalQuantityPrice}">Samlede Pris</td>
                     </tr>
                     </tbody>
                 </table>
