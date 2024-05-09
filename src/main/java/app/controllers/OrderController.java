@@ -45,13 +45,14 @@ public class OrderController {
             //createCarport(ctx, ConnectionPool.getInstance());
 
             User user = ctx.sessionAttribute("currentUser");
-            UserMapper.createuser(user.getEmail(), user.getPassword(), user.getName(), user.getMobile(), user.getAddress(), user.getZipcode(), ConnectionPool.getInstance());
-            int orderID = createOrder(ctx, ConnectionPool.getInstance());
-
-
-            System.out.println(orderID);
-
+            int user_id = UserMapper.createuser(user.getEmail(), user.getPassword(), user.getName(), user.getMobile(), user.getAddress(), user.getZipcode(), ConnectionPool.getInstance());
+            int orderID = createOrder(user_id, ctx, ConnectionPool.getInstance());
             insertPartsNeededForOrder(orderID, ctx, ConnectionPool.getInstance());
+
+            ctx.sessionAttribute("confirmed", true);
+
+            ctx.render("checkoutpage.html");
+            //todo: skal nok lige kigges igennem og laves check for diverse ting og sager.
         });
 
         //todo: find på smart måde således at brugere ikke bliver ført videre såfremt de ikke er nået dertil i processen.
@@ -163,7 +164,7 @@ public class OrderController {
         }
     }
 
-    public static int createOrder(Context ctx, ConnectionPool connectionPool) {
+    public static int createOrder(int userID, Context ctx, ConnectionPool connectionPool) {
         String sql = "insert into ordrene(material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try (
@@ -178,7 +179,7 @@ public class OrderController {
             ps.setDouble(3, carport.getWidth());
             ps.setDouble(4, carport.getLength());
             ps.setDouble(5, carport.getHeight());
-            ps.setInt(6, UserMapper.getCustomerId(user.getEmail(), connectionPool)); //todo: hent currentUsers user id
+            ps.setInt(6, userID); //todo: hent currentUsers user id
             ps.setString(7, "modtaget");
             ps.setDouble(8, carport.getShedWidth());
             ps.setDouble(9, carport.getShedLength());
