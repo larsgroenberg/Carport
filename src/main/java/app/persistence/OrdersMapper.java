@@ -11,25 +11,24 @@ import java.util.List;
 
 public class OrdersMapper {
 
-    public static int addOrder(double carportWidth, double carportLength, double carportHeight, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, String roof, ConnectionPool connectionPool) throws DatabaseException{
-
+    public static int addOrder(double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, String roof, boolean iswall, ConnectionPool connectionPool) throws DatabaseException{
         String sql = "INSERT INTO ordrene (material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)){
-                ps.setDouble(1, 0);
-                ps.setDouble(2, 0);
+                ps.setDouble(1, materialCost);
+                ps.setDouble(2, salesPrice);
                 ps.setDouble(3, carportWidth);
                 ps.setDouble(4, carportLength);
                 ps.setDouble(5, carportHeight);
-                ps.setInt(6,0);
+                ps.setInt(6, userId);
                 ps.setString(7, orderStatus);
                 ps.setDouble(8, shedWidth);
                 ps.setDouble(9, shedLength);
                 ps.setString(10, email);
                 ps.setString(11, orderDate);
                 ps.setString(12, roof);
-                ps.setBoolean(13, false);
+                ps.setBoolean(13, iswall);
 
                 ps.executeUpdate();
                 ResultSet rs = ps.getGeneratedKeys(); // order_id er autogenereret
@@ -76,19 +75,19 @@ public class OrdersMapper {
         }
     }
 
-    public static Order getOrderByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
+    public static Order getOrderByName(String name, ConnectionPool connectionPool) throws DatabaseException {
 
-        String sql = "select * from public.ordrene where name=?";
+        String sql = "select * from public.ordrene where user_id=?";
         try
                 (
                         Connection connection = connectionPool.getConnection();
                         PreparedStatement ps = connection.prepareStatement(sql)
                 ) {
-            ps.setString(1, userName);
+            ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int userId = rs.getInt("user_id");
                 int orderId = rs.getInt("order_id");
+                int userId = rs.getInt("user_id");
                 int carportLength = rs.getInt("carport_length");
                 int carportWidth = rs.getInt("carport_width");
                 int carportHeight = rs.getInt("carport_height");
@@ -175,6 +174,7 @@ public class OrdersMapper {
         return order;
     }
 
+    // Vi går ikke udfra at en kunde har mere end en ordre i systemet
     public static Order getOrderByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException {
 
         Order order = null;
@@ -225,6 +225,22 @@ public class OrdersMapper {
         }
     }
 
+    public static void adjustMaterialCostPrice(int orderId, double newMaterialCostPrice, ConnectionPool connectionPool) throws DatabaseException{
+
+        String sql = "UPDATE ordrene SET material_cost = ? WHERE order_id = ?";
+
+        try(Connection connection = connectionPool.getConnection()){
+            try(PreparedStatement ps = connection.prepareStatement(sql)){
+                ps.setDouble(1 ,newMaterialCostPrice);
+                ps.setInt(2,orderId);
+
+                ps.executeUpdate();
+            }
+        } catch (SQLException e){
+            throw new DatabaseException("Det lykkedes ikke at justere salgsprisen", e.getMessage());
+        }
+    }
+
     public static void changeStatusOnOrder(String orderStatus, int order_id, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "UPDATE ordrene SET order_status = ? WHERE order_id = ?";
@@ -240,7 +256,7 @@ public class OrdersMapper {
         }
     }
 
-
+    // Denne metode er ikke tilpasset den nye kode
     public static void updateSpecificOrderById(int orderId, double carportWidth, double carportLength, double carportHeight, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "UPDATE ordrene SET carport_width = ?, carport_length = ?, carport_height = ? WHERE order_id = ?";

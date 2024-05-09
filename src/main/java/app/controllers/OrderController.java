@@ -10,30 +10,46 @@ import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.OrdersMapper;
 import app.persistence.PartslistMapper;
+import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import app.services.CarportSvg;
 
 public class OrderController {
-    static Carport carport;
-    static Date today = new Date();
-    static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-    static String formattedDate = formatter.format(today);
+    private static Carport carport;
+    private static Date today = new Date();
+    private static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    private static String formattedDate = formatter.format(today);
+
+    private static Order order;
+
+
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("index.html");
+            ctx.render("adminSite.html");
         });
-        app.post("/createcarport", ctx -> {
+        app.post("/createdrawing", ctx -> {
             showOrder(ctx);
-            createCarport(ctx, ConnectionPool.getInstance());
             createPartsList(ctx, ConnectionPool.getInstance());
             ctx.render("showOrder.html");
         });
-        app.post("/ordercarport", ctx -> {
-            //createCarport(ctx, ConnectionPool.getInstance());
-            //createPartsList(ctx, ConnectionPool.getInstance());
+        app.post("/askforcredentials", ctx -> {
+            ctx.sessionAttribute("showinputcredentials", true);
             ctx.render("showOrder.html");
         });
+        app.post("/createuser", ctx -> {
+            createUser(ctx, ConnectionPool.getInstance());
+            createCarport(ctx, ConnectionPool.getInstance());
+            savePartsList(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("showinputcredentials", false);
+            ctx.render("showOrder.html");
+        });
+        app.post("/ordercarport", ctx -> {
+
+            createPartsList(ctx, ConnectionPool.getInstance());
+            ctx.render("showOrder.html");
+        });
+
         app.post("/changeorder", ctx -> {
             ctx.render("index.html");
         });
@@ -50,109 +66,164 @@ public class OrderController {
         return OrdersMapper.getOrderByUserId(userId, connectionPool);
     }
 
+    public static void createUser(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String name = ctx.formParam("name");
+        String email = ctx.formParam("email");
+        String password1 = ctx.formParam("password1");
+        String password2 = ctx.formParam("password2");
+        String address = ctx.formParam("address");
+        String mobile = ctx.formParam("mobile");
+        String zip = ctx.formParam("zip");
+        UserMapper.createuser(email, password1, name, mobile, address, zip, connectionPool);
+        int userId = UserMapper.getUseridByEmail(email, connectionPool);
+        order.setUserId(userId);
+        order.setUserEmail(email);
+        ctx.sessionAttribute("order", order);
+        ctx.sessionAttribute("userId");
+        ctx.sessionAttribute("email");
+        /*if(password1.equals(password2)) {
+            UserMapper.createuser(email, password1, name, mobile, address, zip, connectionPool);
+
+        } else {
+            ctx.sessionAttribute("passwordnotequal", false);
+            ctx.render("showOrder.html");
+        }*/
+
+
+    }
     public static void showOrder(Context ctx) {
         double length = Double.parseDouble(ctx.formParam("length"));
         double width = Double.parseDouble(ctx.formParam("width"));
         double height = Double.parseDouble(ctx.formParam("height"));
         double length_shed = Double.parseDouble(ctx.formParam("length_shed"));
         double width_shed = Double.parseDouble(ctx.formParam("width_shed"));
-        String roof = (ctx.formParam("roof"));
-        ctx.sessionAttribute("length", length);
-        ctx.sessionAttribute("width", width);
-        ctx.sessionAttribute("height", height);
-        ctx.sessionAttribute("width_shed", length_shed);
-        ctx.sessionAttribute("length_shed", width_shed);
-        ctx.sessionAttribute("email", "oleolesen@gmail.com");
-        ctx.sessionAttribute("roof", roof);
+        String roof = ctx.formParam("roof");
+        boolean walls = Boolean.parseBoolean(ctx.formParam("walls"));
+        int orderId = 0;
+        double materialCost = 0;
+        double salesPrice = 0;
+        int userId = 0;
+        System.out.println(roof);
+        String orderStatus = "modtaget";
+        String email = "";
+        String orderDate = "";
+
+        order = new Order(orderId, materialCost, salesPrice, width,length,height,userId,orderStatus, width_shed, length_shed, email, orderDate, roof, walls);
+        ctx.sessionAttribute("order", order);
+        //ctx.sessionAttribute("length", length);
+        //ctx.sessionAttribute("width", width);
+        //ctx.sessionAttribute("height", height);
+        //ctx.sessionAttribute("width_shed", length_shed);
+        //ctx.sessionAttribute("length_shed", width_shed);
+        //ctx.sessionAttribute("email", "oleolesen@gmail.com");
+        //ctx.sessionAttribute("roof", roof);
 
         Locale.setDefault(new Locale("US"));
         CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
-        ctx.attribute("svg", svg.toString());
+        ctx.sessionAttribute("svg", svg.toString());
     }
 
     public static void createCarport(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        double carportWidth = ctx.sessionAttribute("length");
-        double carportLength = ctx.sessionAttribute("width");
-        double carportHeight = ctx.sessionAttribute("height");
-        double shedWidth = ctx.sessionAttribute("width_shed");
-        double shedLength = ctx.sessionAttribute("length_shed");
-        String roof = ctx.sessionAttribute("roof");
-        String email = ctx.sessionAttribute("email");
+
+        //double carportWidth = ctx.sessionAttribute("length");
+        //double carportLength = ctx.sessionAttribute("width");
+        //double carportHeight = ctx.sessionAttribute("height");
+        //double shedWidth = ctx.sessionAttribute("width_shed");
+        //double shedLength = ctx.sessionAttribute("length_shed");
+        //String roof = ctx.sessionAttribute("roof");
+        //String email = ctx.sessionAttribute("email");
         String orderDate = formattedDate;
+        boolean isWall = false;
+        ctx.sessionAttribute("showpartslist", true);
+
 
         try {
-            OrdersMapper.addOrder(carportWidth, carportLength, carportHeight, "modtaget", shedWidth, shedLength, email, orderDate, roof, connectionPool);
-            Order order = OrdersMapper.getOrderByEmail(email, connectionPool);
-            int currentOrderId = order.getOrderId();
-            ctx.sessionAttribute("current_order_id", currentOrderId);
+
+            OrdersMapper.addOrder(order.getMaterialCost(), order.getSalesPrice(), order.getCarportWidth(), order.getCarportLength(), order.getCarportHeight(), order.getUserId(), order.getOrderStatus(), order.getShedWidth(), order.getShedLength(), order.getUserEmail(), orderDate, order.getRoof(), isWall, connectionPool);
+            Order updatedorder = OrdersMapper.getOrderByEmail(order.getUserEmail(), connectionPool);
+            ctx.sessionAttribute("order", updatedorder);
 
         } catch (DatabaseException e) {
             ctx.attribute("message", "Fejl i oprettelse af ordren!! Prøv igen!");
         }
     }
 
+    public static void savePartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {
+        ArrayList<Partslistline> partslist = ctx.sessionAttribute("partslist");
+        for(Partslistline p: partslist) {
+            PartslistMapper.insertPartslistLine(p, connectionPool);
+        }
+    }
+
+
     public static void createPartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {
-        double carportWidth = ctx.sessionAttribute("width");
-        double carportLength = ctx.sessionAttribute("length");
-        double carportHeight = ctx.sessionAttribute("height");
-        double shedWidth = ctx.sessionAttribute("width_shed");
-        double shedLength = ctx.sessionAttribute("length_shed");
-        int currentOrderId = ctx.sessionAttribute("current_order_id");
-        String roof = ctx.sessionAttribute("roof");
-        String email = ctx.sessionAttribute("email");
+        //double carportWidth = ctx.sessionAttribute("width");
+        //double carportLength = ctx.sessionAttribute("length");
+        //double carportHeight = ctx.sessionAttribute("height");
+        //double shedWidth = ctx.sessionAttribute("width_shed");
+        //double shedLength = ctx.sessionAttribute("length_shed");
+        //int currentOrderId = ctx.sessionAttribute("current_order_id");
+        //String roof = ctx.sessionAttribute("roof");
+        //String email = ctx.sessionAttribute("email");
+        Order order = ctx.sessionAttribute("order");
+        ArrayList<Partslistline> partslistlines = new ArrayList<>();
 
         try {
             // calculating and inserting Posts into Partslist
-            int numberOfPosts = PartsCalculator.calculateNumberOfPosts(carportWidth, carportLength);
-            double metersOfPosts = numberOfPosts*(carportHeight+90);
+            int numberOfPosts = PartsCalculator.calculateNumberOfPosts(order.getCarportWidth(), order.getCarportLength());
+            double metersOfPosts = numberOfPosts*(order.getCarportHeight()+90);
             Part post = PartslistMapper.getPartByType("stolpe", connectionPool);
             double postListPrice = post.getPrice() * (metersOfPosts/100);
-            PartslistMapper.insertPartslistLine(new Partslistline(post.getPartId(), currentOrderId, numberOfPosts, postListPrice, post.getDescription(), post.getUnit(), post.getLength(), post.getName()), connectionPool);
+            partslistlines.add(new Partslistline(post.getPartId(), order.getOrderId(), numberOfPosts, postListPrice, post.getDescription(), post.getUnit(), post.getLength(), post.getName()));
 
             // calculating and inserting Rafts into Partslist
-            int numberOfRafts = PartsCalculator.calculateNumberOfRafts(carportLength);
-            double metersOfRafts = numberOfRafts*carportWidth;
-            Part raft = PartslistMapper.getPartByTypeAndLength("spær", carportWidth, connectionPool);
+            int numberOfRafts = PartsCalculator.calculateNumberOfRafts(order.getCarportLength());
+            double metersOfRafts = numberOfRafts*order.getCarportWidth();
+            Part raft = PartslistMapper.getPartByTypeAndLength("spær", order.getCarportWidth(), connectionPool);
             double raftListPrice = raft.getPrice() * (metersOfRafts/100);
-            PartslistMapper.insertPartslistLine(new Partslistline(raft.getPartId(), currentOrderId, numberOfRafts, raftListPrice, raft.getDescription(), raft.getUnit(), raft.getLength(), raft.getName()), connectionPool);
+            partslistlines.add(new Partslistline(raft.getPartId(), order.getOrderId(), numberOfRafts, raftListPrice, raft.getDescription(), raft.getUnit(), raft.getLength(), raft.getName()));
 
             // calculating and inserting Roofmaterial into PartsList
             if(ctx.sessionAttribute("roof") != null) {
                 double lengthOfRoofPlate = 360;
-                int numberofRoofPlates = PartsCalculator.calculateNumberOfRoofPlates(carportLength, carportWidth);
+                int numberofRoofPlates = PartsCalculator.calculateNumberOfRoofPlates(order.getCarportLength(), order.getCarportWidth());
                 Part roofPart = PartslistMapper.getPartByTypeAndLength("tagplader", lengthOfRoofPlate, connectionPool);
                 double roofListPrice = roofPart.getPrice() * (numberofRoofPlates/100);
-                PartslistMapper.insertPartslistLine(new Partslistline(roofPart.getPartId(), currentOrderId, numberofRoofPlates, roofListPrice, roofPart.getDescription(), roofPart.getUnit(), roofPart.getLength(), roofPart.getName()), connectionPool);
+                partslistlines.add(new Partslistline(roofPart.getPartId(), order.getOrderId(), numberofRoofPlates, roofListPrice, roofPart.getDescription(), roofPart.getUnit(), roofPart.getLength(), roofPart.getName()));
             }
 
             // calculating and inserting vindkryds into PartsList
-            double lenghtOfKryds = 4*(carportLength/100);
+            double lenghtOfKryds = 4*(order.getCarportLength()/100);
             double quantityOfKryds = lenghtOfKryds/10;
             int roundedQuantity = (int) Math.ceil(quantityOfKryds);
             Part kryds = PartslistMapper.getPartByType("hulbånd", connectionPool);
             double krydsListPrice = kryds.getPrice() * roundedQuantity;
-            PartslistMapper.insertPartslistLine(new Partslistline(kryds.getPartId(), currentOrderId, roundedQuantity, krydsListPrice, kryds.getDescription(), kryds.getUnit(), kryds.getLength(), kryds.getName()), connectionPool);
+            partslistlines.add(new Partslistline(kryds.getPartId(), order.getOrderId(), roundedQuantity, krydsListPrice, kryds.getDescription(), kryds.getUnit(), kryds.getLength(), kryds.getName()));
 
             // calculating and inserting Beams into Partslist
-            double metersOfBeams = 2*carportLength;
+            double metersOfBeams = 2*order.getCarportLength();
             double beamsListPrice = raft.getPrice() * (metersOfBeams/100);
-            PartslistMapper.insertPartslistLine(new Partslistline(raft.getPartId(), currentOrderId, 2, beamsListPrice, raft.getDescription(), raft.getUnit(), raft.getLength(), raft.getName()), connectionPool);
+            partslistlines.add(new Partslistline(raft.getPartId(), order.getOrderId(), 2, beamsListPrice, raft.getDescription(), raft.getUnit(), raft.getLength(), raft.getName()));
 
             // Updating the price for the Carport
-            ArrayList<Partslistline> partslist = PartslistMapper.getPartsListByOrderid(currentOrderId, connectionPool);
-            double sum = 0;
-            for(Partslistline partslistline: partslist) {
-                sum += partslistline.getPartlistlineprice();
+            double materialCostPrice = 0;
+            for(Partslistline partslistline: partslistlines) {
+                materialCostPrice += partslistline.getPartlistlineprice();
             }
-            System.out.println(""+sum);
-            ctx.sessionAttribute("carportprice", sum);
-            ctx.sessionAttribute("partslist", partslist);
 
-            //creating the partlist and add it to a sessionattribut
+            // Her sætter vi salgsprisen med en avance på 40%, runder af så der kun er 2 decimaler og gemmer dem i order-instansen
+            String afrundetKostPris = String.format("%.2f", materialCostPrice);
+            String afrundetSalgspris = String.format("%.2f", (materialCostPrice*1.4));
+            double salesPrice = Double.parseDouble(afrundetSalgspris);
+            double costPrice = Double.parseDouble(afrundetKostPris);
+            order.setSalesPrice((salesPrice));
+            order.setMaterialCost(costPrice);
 
+            // Her opdaterer vi order-sessionattributten med salgspris og materialekostpris
+            ctx.sessionAttribute("order", order);
 
-
-            //ctx.sessionAttribute("showpartslist", true);
+            // Her sætter vi sessionattributten partslist med de udregninger vi har lavet
+            ctx.sessionAttribute("partslist", partslistlines);
 
         } catch (DatabaseException e) {
             ctx.attribute("message", "Fejl i oprettelse af PartsListen!");

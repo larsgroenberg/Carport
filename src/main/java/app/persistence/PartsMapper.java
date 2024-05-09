@@ -159,6 +159,29 @@ public class PartsMapper {
         return partList;
     }
 
+    public static void updatePart(Part part, ConnectionPool connectionPool) throws DatabaseException {
+
+        String sql = "UPDATE parts SET price = ?, description = ?, length = ?, height = ?, width = ?, type = ?, material = ?, unit = ?, name = ? WHERE part_id = ?;";
+
+        try(Connection connection = connectionPool.getConnection()){
+            try(PreparedStatement ps = connection.prepareStatement(sql)){
+                ps.setDouble(1, part.getPrice());
+                ps.setString(2, part.getDescription());
+                ps.setInt(3, part.getLength());
+                ps.setInt(4, part.getHeight());
+                ps.setInt(5, part.getWidth());
+                ps.setString(6, part.getType());
+                ps.setString(7, part.getMaterial());
+                ps.setString(8, part.getUnit());
+                ps.setString(9, part.getName());
+                ps.setInt(10, part.getPartId());
+
+                ps.executeUpdate();
+            }
+        }catch (SQLException e){
+            throw new DatabaseException("We couldn't update the parts costprice", e.getMessage());
+        }
+    }
     static void adjustCostPrice(int partId, double newCostPrice, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "UPDATE parts SET price = ? WHERE part_id = ?";
@@ -207,32 +230,32 @@ public class PartsMapper {
         return partList;
     }
 
-    public static Part getPartById(int materialId, ConnectionPool connectionPool) throws DatabaseException {
+    public static Part getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
 
         Part part = null;
-        String sql = "SELECT * FROM materials WHERE material_id = ?";
+        String sql = "SELECT * FROM parts WHERE part_id = ?";
 
         try (
                 Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
         ) {
-            ps.setInt(1, materialId);
+            ps.setInt(1, partId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int material_id = rs.getInt("material_id");
+                //int partId = rs.getInt("part_id");
                 int price = rs.getInt("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
                 int height = rs.getInt("height");
                 int width = rs.getInt("width");
                 String type = rs.getString("type");
-                String material_name = rs.getString("material");
+                String material = rs.getString("material");
                 String unit = rs.getString("unit");
                 String name = rs.getString("name");
-                part = new Part(material_id, price, description, length, height, width, type, material_name, unit, name);
+                part = new Part(partId, price, description, length, height, width, type, material, unit, name);
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error retrieving material with id = " + materialId, e.getMessage());
+            throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
         }
         return part;
     }
