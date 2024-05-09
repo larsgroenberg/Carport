@@ -21,7 +21,7 @@ public class OrderController {
     static String formattedDate = formatter.format(today);
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("index.html");
+            ctx.render("carportspecs.html");
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx);
@@ -35,7 +35,27 @@ public class OrderController {
             ctx.render("showOrder.html");
         });
         app.post("/changeorder", ctx -> {
-            ctx.render("index.html");
+            ctx.render("carportspecs.html");
+        });
+
+        //todo: find på smart måde således at brugere ikke bliver ført videre såfremt de ikke er nået dertil i processen.
+        app.get("/carport-drawing", ctx -> {
+            if(ctx.sessionAttribute("newCarport") != null){
+                ctx.render("showOrder.html");
+            } else ctx.render("carportspecs.html");
+        });
+
+        app.get("/user-details", ctx -> {
+            if(ctx.sessionAttribute("newCarport") != null){
+                ctx.render("createuser.html");
+            } else ctx.render("carportspecs.html");
+
+        });
+
+        app.get("/confirmation", ctx -> {
+            if(ctx.sessionAttribute("newCarport") != null && ctx.sessionAttribute("currentUser") != null){
+                ctx.render("checkoutpage.html");
+            } else ctx.render("carportspecs.html");
         });
     }
 
@@ -51,15 +71,15 @@ public class OrderController {
     }
 
     public static void showOrder(Context ctx) throws DatabaseException {
-        double length = Double.parseDouble(ctx.formParam("length"));
-        double width = Double.parseDouble(ctx.formParam("width"));
-        double height = Double.parseDouble(ctx.formParam("height"));
+        double length = Double.parseDouble(ctx.formParam("carport_length"));
+        double width = Double.parseDouble(ctx.formParam("carport_width"));
+        double height = Double.parseDouble(ctx.formParam("carport_height"));
         double length_shed = Double.parseDouble(ctx.formParam("length_shed"));
         double width_shed = Double.parseDouble(ctx.formParam("width_shed"));
-        String roof = (ctx.formParam("roof"));
+        String roof = (ctx.formParam("carport_trapeztag"));
 
         // TODO: gør dette pænere
-        boolean withRoof = !roof.contains("nej");
+        boolean withRoof = !roof.contains("Uden");
         boolean withShed = length_shed>0;
 
 
@@ -90,7 +110,6 @@ public class OrderController {
         newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svg.getMaterialQuantity().get("totalCrossSupports")));
 
         ctx.sessionAttribute("newCarport", newCarport);
-
         PartsCalculator partsCalculator = new PartsCalculator(ctx, ConnectionPool.getInstance());
 
         ctx.sessionAttribute("carportprice", partsCalculator.getTotalPrice());
