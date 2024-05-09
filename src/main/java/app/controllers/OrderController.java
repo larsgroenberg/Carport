@@ -1,5 +1,6 @@
 package app.controllers;
 
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +10,7 @@ import app.entities.*;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.OrdersMapper;
-import app.persistence.PartslistMapper;
+import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import app.services.CarportSvg;
@@ -19,6 +20,7 @@ public class OrderController {
     static Date today = new Date();
     static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
     static String formattedDate = formatter.format(today);
+
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
             ctx.render("carportspecs.html");
@@ -38,22 +40,36 @@ public class OrderController {
             ctx.render("carportspecs.html");
         });
 
+        app.post("/finishOrder", ctx -> {
+            //ctx.render("carportspecs.html");
+            //createCarport(ctx, ConnectionPool.getInstance());
+
+            User user = ctx.sessionAttribute("currentUser");
+            UserMapper.createuser(user.getEmail(), user.getPassword(), user.getName(), user.getMobile(), user.getAddress(), user.getZipcode(), ConnectionPool.getInstance());
+            int orderID = createOrder(ctx, ConnectionPool.getInstance());
+
+
+            System.out.println(orderID);
+
+            insertPartsNeededForOrder(orderID, ctx, ConnectionPool.getInstance());
+        });
+
         //todo: find på smart måde således at brugere ikke bliver ført videre såfremt de ikke er nået dertil i processen.
         app.get("/carport-drawing", ctx -> {
-            if(ctx.sessionAttribute("newCarport") != null){
+            if (ctx.sessionAttribute("newCarport") != null) {
                 ctx.render("showOrder.html");
             } else ctx.render("carportspecs.html");
         });
 
         app.get("/user-details", ctx -> {
-            if(ctx.sessionAttribute("newCarport") != null){
+            if (ctx.sessionAttribute("newCarport") != null) {
                 ctx.render("createuser.html");
             } else ctx.render("carportspecs.html");
 
         });
 
         app.get("/confirmation", ctx -> {
-            if(ctx.sessionAttribute("newCarport") != null && ctx.sessionAttribute("currentUser") != null){
+            if (ctx.sessionAttribute("newCarport") != null && ctx.sessionAttribute("currentUser") != null) {
                 ctx.render("checkoutpage.html");
             } else ctx.render("carportspecs.html");
         });
@@ -66,6 +82,7 @@ public class OrderController {
     public static Order getOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         return OrdersMapper.getOrderByOrderId(orderId, connectionPool);
     }
+
     public static Order getOrderByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException {
         return OrdersMapper.getOrderByUserId(userId, connectionPool);
     }
@@ -80,7 +97,7 @@ public class OrderController {
 
         // TODO: gør dette pænere
         boolean withRoof = !roof.contains("Uden");
-        boolean withShed = length_shed>0;
+        boolean withShed = length_shed > 0;
 
 
         ctx.sessionAttribute("length", length);
@@ -98,7 +115,7 @@ public class OrderController {
         ctx.attribute("svg", svg.toString());
 
         //todo: fiks således at shed ikke bliver tilføjet når flueben tjekkes på og af.
-        Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed,0);
+        Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed, 0);
         newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, svg.getMaterialQuantity().get("totalPoles")));
         newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.BEAM, svg.getMaterialQuantity().get("totalBeams")));
         newCarport.addToCarportPartList(new CarportPart(CarportPart.CarportPartType.RAFT, svg.getMaterialQuantity().get("totalRafters")));
@@ -123,6 +140,7 @@ public class OrderController {
 
         //System.out.println(newCarport);
     }
+
     // TODO: Skal fjernes/laves ordentligt
     public static void createCarport(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         double carportWidth = ctx.sessionAttribute("length");
@@ -144,7 +162,89 @@ public class OrderController {
             ctx.attribute("message", "Fejl i oprettelse af ordren!! Prøv igen!");
         }
     }
-    //TODO: Skal fjernes/laves ordentligt
+
+    public static int createOrder(Context ctx, ConnectionPool connectionPool) {
+        String sql = "insert into ordrene(material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ) {
+            Carport carport = ctx.sessionAttribute("newCarport");
+            User user = ctx.sessionAttribute("currentUser");
+
+            ps.setDouble(1, 99999);
+            ps.setDouble(2, 99999);
+            ps.setDouble(3, carport.getWidth());
+            ps.setDouble(4, carport.getLength());
+            ps.setDouble(5, carport.getHeight());
+            ps.setInt(6, user.getUserId()); //todo: hent currentUsers user id
+            ps.setString(7, "modtaget");
+            ps.setDouble(8, carport.getShedWidth());
+            ps.setDouble(9, carport.getShedLength());
+            ps.setString(10, user.getEmail());
+            ps.setString(11, formattedDate);
+            ps.setBoolean(12, carport.isWithRoof());
+            ps.setBoolean(13, carport.isWithShed());
+
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
+            }
+
+            int id = 0;
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            return id;
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static void insertPartsNeededForOrder(int orderID, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+
+        ArrayList<CarportPart> carportPartList = ctx.sessionAttribute("partslist");
+
+
+        for (CarportPart part : carportPartList) {
+
+            String sql = "insert into partslist(part_id, order_id, quantity, partslistprice, description, unit, part_length, name) values (?,?,?,?,?,?,?,?)";
+
+            try (
+                    Connection connection = connectionPool.getConnection();
+                    PreparedStatement ps = connection.prepareStatement(sql)
+            ) {
+                ps.setInt(1, part.getPartId());
+                ps.setInt(2, orderID); //todo: virker ikke skal fikses.
+                ps.setInt(3, part.getQuantity());
+                ps.setDouble(4, part.getDBprice());
+                ps.setString(5, part.getDBdescription());
+                ps.setString(6, part.getDBunit());
+                ps.setInt(7, part.getDBlength());
+                ps.setString(8, part.getDBname());
+
+
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected != 1) {
+                    throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException(e.getMessage());
+            }
+        }
+    }
+
+
+//TODO: Skal fjernes/laves ordentligt
     /*public static void createPartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {
         double carportWidth = ctx.sessionAttribute("width");
         double carportLength = ctx.sessionAttribute("length");

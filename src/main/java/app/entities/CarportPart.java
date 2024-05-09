@@ -10,6 +10,7 @@ public class CarportPart {
     }
 
     private CarportPartType type;
+    private int partId;
     private int quantity;
     private double DBprice;
     private int DBlength;
@@ -26,9 +27,10 @@ public class CarportPart {
         this.quantity = quantity;
     }
 
-    public CarportPart(CarportPartType type, int quantity, double DBprice, int DBlength, int DBheight, int DBwidth, String DBdescription, String DBmaterial, String DBunit, String DBname) {
+    public CarportPart(CarportPartType type, int quantity,int partId,double DBprice, int DBlength, int DBheight, int DBwidth, String DBdescription, String DBmaterial, String DBunit, String DBname) {
         this.type = type;
         this.quantity = quantity;
+        this.partId = partId;
         this.DBprice = DBprice;
         this.DBlength = DBlength;
         this.DBheight = DBheight;
@@ -37,6 +39,14 @@ public class CarportPart {
         this.DBmaterial = DBmaterial;
         this.DBunit = DBunit;
         this.DBname = DBname;
+    }
+
+    public int getPartId() {
+        return partId;
+    }
+
+    public void setPartId(int partId) {
+        this.partId = partId;
     }
 
     public CarportPartType getType() {

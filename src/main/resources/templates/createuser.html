@@ -29,23 +29,23 @@
         <h1>User Info</h1>
         <form class="generic-form" method="post">
             <div class="form-group">
-                <input type="text" name="email" placeholder="Enter your email" />
+                <input type="text" name="email" placeholder="Enter your email" th:value="${currentUser != null ? currentUser.email : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="name" placeholder="Enter your name" />
+                <input type="text" name="name" placeholder="Enter your name" th:value="${currentUser != null ? currentUser.name : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="mobile" placeholder="Enter your mobilenumber" />
+                <input type="text" name="mobile" placeholder="Enter your mobilenumber" th:value="${currentUser != null ? currentUser.mobile : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="address" placeholder="Enter your address" />
+                <input type="text" name="address" placeholder="Enter your address" th:value="${currentUser != null ? currentUser.address : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="zipcode" placeholder="Enter your zipcode" />
+                <input type="text" name="zipcode" placeholder="Enter your zipcode" th:value="${currentUser != null ? currentUser.zipcode : ''}" />
             </div>
 
             <div class="form-group">
@@ -56,8 +56,9 @@
                 <input type="password" name="password2" placeholder="Enter your password again" />
             </div>
 
+
             <div class="button-container">
-                <button type="submit" formaction="/createuser" class="betal">Create User</button>
+                <button type="submit" formaction="/ToConfirmation" class="betal">Videre</button>
             </div>
 
         </form>

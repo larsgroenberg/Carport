@@ -25,9 +25,10 @@
 <h1>Checkout Page</h1>
 <!-- Carport length width with roof -->
 <h2>Carport Specifications</h2>
-<p>Width: <span th:text="${session.carport_width}">0</span> cm</p>
-<p>Length: <span th:text="${session.carport_length}">0</span> cm</p>
-<p>Roof Type: <span th:text="${session.carport_trapeztag}"></span></p>
+<p>Width: <span th:text="${session.newCarport.width}">0</span> cm</p>
+<p>Length: <span th:text="${session.newCarport.length}">0</span> cm</p>
+<p>Height: <span th:text="${session.newCarport.height}">0</span> cm</p>
+<p>Roof Type: <span th:if="${session.newCarport.withRoof}">Plastic Trapeztag</span></p>
 
 <!-- Show 2d drawing again? -->
 <div class="carport-svg-topview">
@@ -46,7 +47,11 @@
 
 
 
-
+<form method="post">
+<div class="button-container">
+    <button type="submit" formaction="/finishOrder" class="betal">Bekræft</button>
+</div>
+</form>
 
 
 </body>

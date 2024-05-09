@@ -57,7 +57,7 @@ public class PartsCalculator {
                         case "brædder" -> partType = CarportPart.CarportPartType.RAFT;
                         case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
                     }
-                    partList.add(new CarportPart(partType,0, price, length, height, width, description, material_name, unit, name));
+                    partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
                 }
             }
         }catch (SQLException e){
@@ -68,9 +68,9 @@ public class PartsCalculator {
 
 
     public void simpleCompareLists(){
-        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0,0, 10000, 0,0,0,"","","","");
         cheapestPartList = new ArrayList<>();
 
         for (CarportPart part : dbPartsList){
@@ -105,10 +105,10 @@ public class PartsCalculator {
         double beamLength = carport.getLength() * carport.getBEAM().getQuantity();
         double raftLength = carport.getWidth() * carport.getRAFT().getQuantity();
 
-        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestCrossSupport = new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, 0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestCrossSupport = new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, 0,0, 10000, 0,0,0,"","","","");
         cheapestPartList = new ArrayList<>();
 
         for (CarportPart part : dbPartsList){

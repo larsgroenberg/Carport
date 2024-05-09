@@ -26,7 +26,7 @@
 
 <body>
 <div class="page">
-    <form class="form-table" th:action="@{/ordercarport}" th:method="POST">
+    <form class="form-table"  th:method="get">
         <h1>Tegning af din carport</h1>
 
         <div class="carport-svg-topview">
@@ -56,7 +56,7 @@
             </tr>
         </table>
 
-
+        <p>SKAL IKKE VÆRE HER, DETTE ER BLOT TIL TESTE FORMÅL<p>
         <div th:if="${session.showpartslist}">
             <!--span class="close" onclick="closeModal()">&times;</span-->
 
@@ -97,9 +97,7 @@
         <div class="button-container-checkout">
             <input class="shopping" style="margin-right: 20px;" type="submit" value="Ændre Bestilling"
                    formaction="/changeorder">
-            <button class="betal" type="submit" name="ordercarport" th:value="${length}" formaction="/ordercarport">
-                Bestil din Carport
-            </button>
+            <button class="betal" type="submit" name="ordercarport" th:value="${length}" formaction="/user-details">Videre</button>
         </div>
 
     </form>
