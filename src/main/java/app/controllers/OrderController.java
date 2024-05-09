@@ -178,7 +178,7 @@ public class OrderController {
             ps.setDouble(3, carport.getWidth());
             ps.setDouble(4, carport.getLength());
             ps.setDouble(5, carport.getHeight());
-            ps.setInt(6, user.getUserId()); //todo: hent currentUsers user id
+            ps.setInt(6, UserMapper.getCustomerId(user.getEmail(), connectionPool)); //todo: hent currentUsers user id
             ps.setString(7, "modtaget");
             ps.setDouble(8, carport.getShedWidth());
             ps.setDouble(9, carport.getShedLength());

@@ -163,4 +163,27 @@ public class UserMapper
         }
     }
 
+    public static int getCustomerId(String email, ConnectionPool connectionPool) throws DatabaseException {
+
+        int id = 0;
+        String sql = "select id from public.users where email=?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("user_id");
+            } else {
+                throw new DatabaseException("Fejl i hentning af kundeinfo!");
+            }
+            return id;
+        } catch (SQLException e) {
+            throw new DatabaseException("DB fejl", e.getMessage());
+        }
+    }
+
 }
