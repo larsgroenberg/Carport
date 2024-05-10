@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.entities.Part;
+import app.entities.CarportPart;
 import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
@@ -37,15 +37,15 @@ public class AdminController
     }
 
     private static void showPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        PartsMapper.showPartsList(connectionPool);
-        ArrayList<Part> partList = PartsMapper.showPartsList(connectionPool);
+        //CarportPartMapper.getAllParts(connectionPool);
+        ArrayList<CarportPart> partList = CarportPartMapper.getAllParts(connectionPool);
         ctx.attribute("partslist", partList);
         ctx.render("adminsite.html");
     }
 
     private static void getPartById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int partId = Integer.parseInt(ctx.formParam("partid"));
-        Part part = PartsMapper.getPartById(partId, connectionPool);
+        CarportPart part = CarportPartMapper.getPartById(partId, connectionPool);
         ctx.attribute("part", part);
         ctx.render("adminsite.html");
     }

@@ -1,46 +1,14 @@
 package app.persistence;
 
-import app.entities.Part;
-import app.entities.Partslistline;
+import app.entities.CarportPart;
 import app.exceptions.DatabaseException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
-public class PartslistMapper {
+public class CarportPartMapper {
 
-    public static void insertPartslistLine(Partslistline partslistline, ConnectionPool connectionPool) throws DatabaseException {
-
-        String sql = "insert into partslist(part_id, order_id, quantity, partslistprice, description, unit, part_length, name) values (?,?,?,?,?,?,?,?)";
-
-        try (
-                Connection connection = connectionPool.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)
-        )
-        {
-            ps.setInt(1, partslistline.getPartId());
-            ps.setInt(2, partslistline.getOrderId());
-            ps.setInt(3, partslistline.getQuantity());
-            ps.setDouble(4, partslistline.getPartlistlineprice());
-            ps.setString(5, partslistline.getDescription());
-            ps.setString(6, partslistline.getUnit());
-            ps.setInt(7, partslistline.getPartLength());
-            ps.setString(8, partslistline.getName());
-
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected != 1)
-            {
-                throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new DatabaseException(e.getMessage());
-        }
-    }
-
-    public static ArrayList<Partslistline> getPartsList(int orderId, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<Partslistline> partslistLines = new ArrayList<>();
+    public static ArrayList<CarportPart> getPartsList(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        ArrayList<CarportPart> partslistLines = new ArrayList<>();
 
         String sql = "SELECT * FROM partslist WHERE order_id = ?";
 
@@ -59,7 +27,7 @@ public class PartslistMapper {
                 int partLength = rs.getInt("part_length");
                 String name = rs.getString("name");
 
-                Partslistline partslistLine = new Partslistline(partId, orderId, quantity, partslistlineprice, description, unit, partLength, name);
+                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name);
                 partslistLines.add(partslistLine);
             }
 
@@ -69,8 +37,8 @@ public class PartslistMapper {
         return partslistLines;
     }
 
-    public static ArrayList<Partslistline> getPartsListByOrderid(int orderId, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<Partslistline> partslistLines = new ArrayList<>();
+    public static ArrayList<CarportPart> getPartsListByOrderid(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        ArrayList<CarportPart> partslistLines = new ArrayList<>();
 
         String sql = "SELECT * FROM partslist WHERE order_id = ?";
 
@@ -89,7 +57,7 @@ public class PartslistMapper {
                 int partLength = rs.getInt("part_length");
                 String name = rs.getString("name");
 
-                Partslistline partslistLine = new Partslistline(partId, orderId, quantity, partslistlineprice, description, unit, partLength, name);
+                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name);
                 partslistLines.add(partslistLine);
             }
 
@@ -115,9 +83,9 @@ public class PartslistMapper {
         }
     }
 
-    public static List<Part> getAllParts(ConnectionPool connectionPool) throws DatabaseException {
+    public static ArrayList<CarportPart> getAllParts(ConnectionPool connectionPool) throws DatabaseException {
 
-        List<Part> partList = new ArrayList<>();
+        ArrayList<CarportPart> partList = new ArrayList<>();
         String sql = "SELECT * FROM parts";
 
         try(Connection connection = connectionPool.getConnection()){
@@ -135,7 +103,8 @@ public class PartslistMapper {
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    partList.add(new Part(part_id, price, description, length, height, width, type, material_name, unit, name));
+                    partList.add(new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name));
+
                 }
             }
         }catch (SQLException e){
@@ -144,9 +113,9 @@ public class PartslistMapper {
         return partList;
     }
 
-    public static Part getPartByType(String type, ConnectionPool connectionPool) throws DatabaseException {
+    public static CarportPart getPartByType(String type, ConnectionPool connectionPool) throws DatabaseException {
 
-        Part part = null;
+        CarportPart part = null;
 
         String sql = "SELECT * FROM parts WHERE type = ?";
 
@@ -165,7 +134,7 @@ public class PartslistMapper {
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
+                    part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
                 }
 
             }
@@ -175,9 +144,9 @@ public class PartslistMapper {
         return part;
     }
 
-    public static Part getPartByTypeAndLength(String type, double carportWidth, ConnectionPool connectionPool) throws DatabaseException {
+    public static CarportPart getPartByTypeAndLength(String type, double carportWidth, ConnectionPool connectionPool) throws DatabaseException {
 
-        Part part = null;
+        CarportPart part = null;
 
         String sql = "SELECT * FROM parts WHERE type = ? AND length = ?";
 
@@ -197,7 +166,7 @@ public class PartslistMapper {
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
+                    part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
                 }
             }
         }catch (SQLException e){
@@ -206,9 +175,9 @@ public class PartslistMapper {
         return part;
     }
 
-    public static List<Part> gePartsByDescription(String description, ConnectionPool connectionPool) throws DatabaseException {
+    public static ArrayList<CarportPart> gePartsByDescription(String description, ConnectionPool connectionPool) throws DatabaseException {
 
-        List<Part> partList = new ArrayList<>();
+        ArrayList<CarportPart> partList = new ArrayList<>();
         String sql = "SELECT * FROM parts WHERE description = ?";
 
         try(Connection connection = connectionPool.getConnection()){
@@ -226,7 +195,7 @@ public class PartslistMapper {
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    partList.add(new Part(part_id, price, description, length, height, width, type, material_name, unit, name));
+                    partList.add(new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name));
                 }
             }
         }catch (SQLException e){
@@ -236,9 +205,9 @@ public class PartslistMapper {
     }
 
 
-    public static Part getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
+    public static CarportPart getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
 
-        Part part = null;
+        CarportPart part = null;
         String sql = "SELECT * FROM parts WHERE part_id = ?";
 
         try (
@@ -258,7 +227,7 @@ public class PartslistMapper {
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
                 String name = rs.getString("name");
-                part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
+                part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
@@ -266,9 +235,9 @@ public class PartslistMapper {
         return part;
     }
 
-    public static Part getPartByName(String name, ConnectionPool connectionPool) throws DatabaseException {
+    public static CarportPart getPartByName(String name, ConnectionPool connectionPool) throws DatabaseException {
 
-        Part part = null;
+        CarportPart part = null;
         String sql = "SELECT * FROM parts WHERE name = ?";
 
         try (
@@ -287,7 +256,7 @@ public class PartslistMapper {
                 String type = rs.getString("type");
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
-                part = new Part(part_id, price, description, length, height, width, type, material_name, unit, name);
+                part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with name = " + name, e.getMessage());

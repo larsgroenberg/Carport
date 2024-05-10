@@ -23,14 +23,20 @@ public class PartsCalculator {
     public PartsCalculator(Context _ctx, ConnectionPool _connectionPool) throws DatabaseException {
         carport = _ctx.sessionAttribute("newCarport");
 
-        partNeededList = carport.getCarportPartList();
+        partNeededList = new ArrayList<CarportPart>();
+        partNeededList.add(carport.getBEAM());
+        partNeededList.add(carport.getCROSSSUPPORT());
+        partNeededList.add(carport.getRAFT());
+        partNeededList.add(carport.getSUPPORTPOST());
+
+
 
         dbPartsList = getDBParts(_connectionPool);
 
         //simpleCompareLists();
         MaterialCalculationOnlyMaxLength();
     }
-
+//todo: tjek efter lignende functioner og erstat eller andet
     public ArrayList<CarportPart> getDBParts(ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<CarportPart> partList = new ArrayList<>();
         String sql = "SELECT * FROM parts";

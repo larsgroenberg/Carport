@@ -1,47 +1,97 @@
 package app.persistence;
 
+import app.entities.Carport;
+import app.entities.CarportPart;
 import app.entities.Order;
+import app.entities.User;
 import app.exceptions.DatabaseException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import io.javalin.http.Context;
+
+import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OrdersMapper {
+    static java.util.Date today = new Date();
+    static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    static String formattedDate = formatter.format(today);
+    public static int createOrder(int userID, Context ctx, ConnectionPool connectionPool) {
+        String sql = "insert into ordrene(material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    public static int addOrder(double carportWidth, double carportLength, double carportHeight, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, String roof, ConnectionPool connectionPool) throws DatabaseException{
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ) {
+            Carport carport = ctx.sessionAttribute("newCarport");
+            User user = ctx.sessionAttribute("currentUser");
 
-        String sql = "INSERT INTO ordrene (material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ps.setDouble(1, 99999);
+            ps.setDouble(2, 99999);
+            ps.setDouble(3, carport.getWidth());
+            ps.setDouble(4, carport.getLength());
+            ps.setDouble(5, carport.getHeight());
+            ps.setInt(6, userID);
+            ps.setString(7, "modtaget");
+            ps.setDouble(8, carport.getShedWidth());
+            ps.setDouble(9, carport.getShedLength());
+            ps.setString(10, user.getEmail());
+            ps.setString(11, formattedDate);
+            ps.setBoolean(12, carport.isWithRoof());
+            ps.setBoolean(13, carport.isWithShed());
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)){
-                ps.setDouble(1, 0);
-                ps.setDouble(2, 0);
-                ps.setDouble(3, carportWidth);
-                ps.setDouble(4, carportLength);
-                ps.setDouble(5, carportHeight);
-                ps.setInt(6,0);
-                ps.setString(7, orderStatus);
-                ps.setDouble(8, shedWidth);
-                ps.setDouble(9, shedLength);
-                ps.setString(10, email);
-                ps.setString(11, orderDate);
-                ps.setString(12, roof);
-                ps.setBoolean(13, false);
 
-                ps.executeUpdate();
-                ResultSet rs = ps.getGeneratedKeys(); // order_id er autogenereret
-                rs.next();
-                return rs.getInt(1);
-            } catch (SQLException e){
-                e.printStackTrace();
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
             }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at gemme ordren", e.getMessage());
+
+            int id = 0;
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            return id;
+
+
+        } catch (SQLException | DatabaseException e) {
+            throw new RuntimeException(e);
         }
-        return 0;
+    }
+
+    public static void insertPartsNeededForOrder(int orderID, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+
+        ArrayList<CarportPart> carportPartList = ctx.sessionAttribute("partslist");
+
+
+        for (CarportPart part : carportPartList) {
+
+            String sql = "insert into partslist(part_id, order_id, quantity, partslistprice, description, unit, part_length, name) values (?,?,?,?,?,?,?,?)";
+
+            try (
+                    Connection connection = connectionPool.getConnection();
+                    PreparedStatement ps = connection.prepareStatement(sql)
+            ) {
+                ps.setInt(1, part.getPartId());
+                ps.setInt(2, orderID);
+                ps.setInt(3, part.getQuantity());
+                ps.setDouble(4, part.getDBprice());
+                ps.setString(5, part.getDBdescription());
+                ps.setString(6, part.getDBunit());
+                ps.setInt(7, part.getDBlength());
+                ps.setString(8, part.getDBname());
+
+
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected != 1) {
+                    throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException(e.getMessage());
+            }
+        }
     }
 
     public static Order getOrderByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
