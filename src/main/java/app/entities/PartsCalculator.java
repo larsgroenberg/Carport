@@ -121,128 +121,125 @@ public class PartsCalculator {
 
 //**********************************CHATGPT CALC******************************************************************************************************
     public void chatGPTCalculation(){
-        double supportPostLength = (90 + carport.getHeight()) * carport.getSUPPORTPOST().getQuantity();
-        double beamLength = carport.getLength() * carport.getBEAM().getQuantity();
-        double raftLength = carport.getWidth() * carport.getRAFT().getQuantity();
+        double beamLength = carport.getLength();
+        double supportPostLength = 90 + carport.getHeight();
+        double raftLength = carport.getWidth();
 
-        CarportPart cheapestBeam1 = null;
-        CarportPart cheapestBeam2 = null;
-        CarportPart cheapestSupport1 = null;
-        CarportPart cheapestSupport2 = null;
-        CarportPart cheapestRaft1 = null;
-        CarportPart cheapestRaft2 = null;
-        CarportPart cheapestCrossSupport1 = null;
-        CarportPart cheapestCrossSupport2 = null;
-        cheapestPartList = new ArrayList<>();
+        // Initialize variables for cheapest one-piece and two-piece combinations
+        CarportPart cheapestOnePiece = null;
+        CarportPart cheapestTwoPiecesPart1 = null;
+        CarportPart cheapestTwoPiecesPart2 = null;
 
-        double minCost = Double.MAX_VALUE;
+        // Calculate quantities needed for each component
+        int beamQuantityNeeded = (int) Math.ceil(beamLength / getCheapestPartLengthOfType(CarportPart.CarportPartType.BEAM));
+        int supportPostQuantityNeeded = (int) Math.ceil(supportPostLength / getCheapestPartLengthOfType(CarportPart.CarportPartType.SUPPORTPOST));
+        int raftQuantityNeeded = (int) Math.ceil(raftLength / getCheapestPartLengthOfType(CarportPart.CarportPartType.RAFT));
+        int crossSupportQuantityNeeded = (int) Math.ceil(Math.sqrt(beamLength * beamLength + raftLength * raftLength) / getCheapestPartLengthOfType(CarportPart.CarportPartType.CROSSSUPPORT)) * 2;
 
-        // Find the combination of two parts with the lowest cost for each component
-        for (CarportPart beam1 : dbPartsList) {
-            for (CarportPart beam2 : dbPartsList) {
-                for (CarportPart support1 : dbPartsList) {
-                    for (CarportPart support2 : dbPartsList) {
-                        for (CarportPart raft1 : dbPartsList) {
-                            for (CarportPart raft2 : dbPartsList) {
-                                for (CarportPart crossSupport1 : dbPartsList) {
-                                    for (CarportPart crossSupport2 : dbPartsList) {
-                                        int beamQuantityNeeded = (int) Math.ceil(beamLength / (beam1.getDBlength() + beam2.getDBlength()));
-                                        int supportPostQuantityNeeded = (int) Math.ceil(supportPostLength / (support1.getDBlength() + support2.getDBlength()));
-                                        int raftQuantityNeeded = (int) Math.ceil(raftLength / (raft1.getDBlength() + raft2.getDBlength()));
-                                        int crossSupportQuantityNeeded = (int) Math.ceil(Math.sqrt(carport.getWidth() * carport.getWidth() + carport.getLength() * carport.getLength()) / (crossSupport1.getDBlength() + crossSupport2.getDBlength())) * 2;
+        // Calculate total cost using one piece for each component
+        double totalPriceOnePiece = calculateTotalPriceOnePiece(beamQuantityNeeded, supportPostQuantityNeeded, raftQuantityNeeded, crossSupportQuantityNeeded);
 
-                                        double totalPrice = (beam1.getDBprice() * beamQuantityNeeded * beam1.getQuantity()) + (beam2.getDBprice() * beamQuantityNeeded * beam2.getQuantity()) + (raft1.getDBprice() * raftQuantityNeeded * raft1.getQuantity()) + (raft2.getDBprice() * raftQuantityNeeded * raft2.getQuantity()) + (support1.getDBprice() * supportPostQuantityNeeded * support1.getQuantity()) + (support2.getDBprice() * supportPostQuantityNeeded * support2.getQuantity()) + (crossSupport1.getDBprice() * crossSupportQuantityNeeded * crossSupport1.getQuantity()) + (crossSupport2.getDBprice() * crossSupportQuantityNeeded * crossSupport2.getQuantity());
-
-                                        if (totalPrice < minCost) {
-                                            minCost = totalPrice;
-                                            cheapestBeam1 = beam1;
-                                            cheapestBeam2 = beam2;
-                                            cheapestSupport1 = support1;
-                                            cheapestSupport2 = support2;
-                                            cheapestRaft1 = raft1;
-                                            cheapestRaft2 = raft2;
-                                            cheapestCrossSupport1 = crossSupport1;
-                                            cheapestCrossSupport2 = crossSupport2;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Check if using one piece for each component is cheaper than using two pieces
-        boolean onePieceCheaper = true;
-        for (CarportPart part : dbPartsList) {
-            double lengthNeeded = 0.0;
-            if (part.getType() == CarportPart.CarportPartType.BEAM) {
-                lengthNeeded = beamLength;
-            } else if (part.getType() == CarportPart.CarportPartType.SUPPORTPOST) {
-                lengthNeeded = supportPostLength;
-            } else if (part.getType() == CarportPart.CarportPartType.RAFT) {
-                lengthNeeded = raftLength;
-            } else if (part.getType() == CarportPart.CarportPartType.CROSSSUPPORT) {
-                lengthNeeded = Math.sqrt(carport.getWidth() * carport.getWidth() + carport.getLength() * carport.getLength());
-            }
-
-            int quantityNeeded = (int) Math.ceil(lengthNeeded / part.getDBlength());
-            double totalPriceOnePiece = part.getDBprice() * quantityNeeded * part.getQuantity();
-            double totalPriceTwoPieces = Double.MAX_VALUE;
-
-            // Find the cheapest combination of two pieces for this part
+        // Iterate through each part to find the cheapest two-piece combination
+        for (CarportPart part1 : dbPartsList) {
             for (CarportPart part2 : dbPartsList) {
-                if (part != part2) {
-                    int quantityNeeded2 = (int) Math.ceil(lengthNeeded / (part.getDBlength() + part2.getDBlength()));
-                    double totalPrice = part.getDBprice() * quantityNeeded + part2.getDBprice() * quantityNeeded2;
-                    if (totalPrice < totalPriceTwoPieces) {
-                        totalPriceTwoPieces = totalPrice;
+                if (part1 != part2) {
+                    double totalPriceTwoPieces = calculateTotalPriceTwoPieces(part1, part2, beamLength, supportPostLength, raftLength, crossSupportQuantityNeeded);
+                    if (totalPriceTwoPieces < totalPriceOnePiece) {
+                        // Update cheapest two-piece combination if found
+                        totalPriceOnePiece = totalPriceTwoPieces;
+                        cheapestOnePiece = null;
+                        cheapestTwoPiecesPart1 = part1;
+                        cheapestTwoPiecesPart2 = part2;
                     }
                 }
             }
-
-            // If using two pieces is cheaper, set onePieceCheaper to false
-            if (totalPriceTwoPieces < totalPriceOnePiece) {
-                onePieceCheaper = false;
-                break;
-            }
         }
 
-        // Use the appropriate method based on the result
-        if (onePieceCheaper) {
-            // Use only one piece for each component
-            setQuantitiesOnePiece(cheapestBeam1, beamLength);
-            setQuantitiesOnePiece(cheapestSupport1, supportPostLength);
-            setQuantitiesOnePiece(cheapestRaft1, raftLength);
-            setQuantitiesOnePiece(cheapestCrossSupport1, Math.sqrt(carport.getWidth() * carport.getWidth() + carport.getLength() * carport.getLength()));
-        } else {
-            // Use combination of two pieces for each component
-            setQuantitiesTwoPieces(cheapestBeam1, cheapestBeam2, beamLength);
-            setQuantitiesTwoPieces(cheapestSupport1, cheapestSupport2, supportPostLength);
-            setQuantitiesTwoPieces(cheapestRaft1, cheapestRaft2, raftLength);
-            double crossSupportLength = Math.sqrt(carport.getWidth() * carport.getWidth() + carport.getLength() * carport.getLength());
-            setQuantitiesTwoPieces(cheapestCrossSupport1, cheapestCrossSupport2, crossSupportLength);
+        // Set quantities and add parts to the list based on the cheapest option
+        if (cheapestOnePiece != null) {
+            setQuantityAndAddToCheapestList(cheapestOnePiece, beamQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestOnePiece, supportPostQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestOnePiece, raftQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestOnePiece, crossSupportQuantityNeeded);
+        } else if (cheapestTwoPiecesPart1 != null && cheapestTwoPiecesPart2 != null) {
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart1, (int) Math.ceil(beamLength / (2 * cheapestTwoPiecesPart1.getDBlength())));
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart2, (int) Math.ceil(beamLength / (2 * cheapestTwoPiecesPart2.getDBlength())));
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart1, supportPostQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart2, supportPostQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart1, raftQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart2, raftQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart1, crossSupportQuantityNeeded);
+            setQuantityAndAddToCheapestList(cheapestTwoPiecesPart2, crossSupportQuantityNeeded);
         }
 
-        totalPrice = minCost;
+        // Calculate total price
+        totalPrice = calculateTotalPrice();
     }
 
-    // Helper method to set quantities for one piece
-    private void setQuantitiesOnePiece(CarportPart part, double length) {
-        part.setQuantity((int) Math.ceil(length / part.getDBlength()) * part.getQuantity());
+    // Helper method to get the cheapest part length of a specific type
+    private double getCheapestPartLengthOfType(CarportPart.CarportPartType type) {
+        double minDBLength = Double.MAX_VALUE;
+        for (CarportPart part : dbPartsList) {
+            if (part.getType() == type && part.getDBlength() < minDBLength) {
+                minDBLength = part.getDBlength();
+            }
+        }
+        return minDBLength;
+    }
+
+    // Helper method to calculate total price using one piece for each component
+    private double calculateTotalPriceOnePiece(int beamQuantity, int supportPostQuantity, int raftQuantity, int crossSupportQuantity) {
+        double totalPrice = 0.0;
+        for (CarportPart part : dbPartsList) {
+            int quantity = 0;
+            switch (part.getType()) {
+                case BEAM:
+                    quantity = beamQuantity;
+                    break;
+                case SUPPORTPOST:
+                    quantity = supportPostQuantity;
+                    break;
+                case RAFT:
+                    quantity = raftQuantity;
+                    break;
+                case CROSSSUPPORT:
+                    quantity = crossSupportQuantity;
+                    break;
+            }
+            totalPrice += part.getDBprice() * quantity;
+        }
+        return totalPrice;
+    }
+
+    // Helper method to calculate total price using two pieces for each component
+    private double calculateTotalPriceTwoPieces(CarportPart part1, CarportPart part2, double beamLength, double supportPostLength, double raftLength, int crossSupportQuantity) {
+        int quantity1 = (int) Math.ceil(beamLength / (2 * part1.getDBlength()));
+        int quantity2 = (int) Math.ceil(beamLength / (2 * part2.getDBlength()));
+        double totalPrice = (part1.getDBprice() * quantity1 + part2.getDBprice() * quantity2) * 2; // Multiplying by 2 because we're using two parts
+        totalPrice += part1.getDBprice() * supportPostLength / part1.getDBlength(); // Support post cost
+        totalPrice += part2.getDBprice() * supportPostLength / part2.getDBlength(); // Support post cost
+        totalPrice += part1.getDBprice() * raftLength / part1.getDBlength(); // Raft cost
+        totalPrice += part2.getDBprice() * raftLength / part2.getDBlength(); // Raft cost
+        totalPrice += part1.getDBprice() * crossSupportQuantity / part1.getDBlength(); // Cross support cost
+        totalPrice += part2.getDBprice() * crossSupportQuantity / part2.getDBlength(); // Cross support cost
+        return totalPrice;
+    }
+
+    // Helper method to set quantity and add to cheapest list
+    private void setQuantityAndAddToCheapestList(CarportPart part, int quantity) {
+        part.setQuantity(quantity);
         cheapestPartList.add(part);
     }
 
-    // Helper method to set quantities for two pieces
-    private void setQuantitiesTwoPieces(CarportPart part1, CarportPart part2, double length) {
-        int quantity1 = (int) Math.ceil(length / part1.getDBlength()) * part1.getQuantity();
-        int quantity2 = (int) Math.ceil(length / part2.getDBlength()) * part2.getQuantity();
-        part1.setQuantity(quantity1);
-        part2.setQuantity(quantity2);
-        cheapestPartList.add(part1);
-        cheapestPartList.add(part2);
+    // Helper method to calculate total price
+    private double calculateTotalPrice() {
+        double totalPrice = 0.0;
+        for (CarportPart part : cheapestPartList) {
+            totalPrice += part.getDBprice() * part.getQuantity();
+        }
+        return totalPrice;
     }
+
 
 //********************************************************************************************************************
 
