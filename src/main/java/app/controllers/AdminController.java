@@ -38,7 +38,7 @@ public class AdminController
 
     private static void showPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         //CarportPartMapper.getAllParts(connectionPool);
-        ArrayList<CarportPart> partList = CarportPartMapper.getAllParts(connectionPool);
+        ArrayList<CarportPart> partList = CarportPartMapper.getDBParts(connectionPool);
         ctx.attribute("partslist", partList);
         ctx.render("adminsite.html");
     }
