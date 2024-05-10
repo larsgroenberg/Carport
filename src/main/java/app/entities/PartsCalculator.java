@@ -1,6 +1,7 @@
 package app.entities;
 
 import app.exceptions.DatabaseException;
+import app.persistence.CarportPartMapper;
 import app.persistence.ConnectionPool;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -31,46 +32,12 @@ public class PartsCalculator {
 
 
 
-        dbPartsList = getDBParts(_connectionPool);
+        dbPartsList = CarportPartMapper.getDBParts(_connectionPool);
 
         //simpleCompareLists();
         MaterialCalculationOnlyMaxLength();
     }
-//todo: tjek efter lignende functioner og erstat eller andet
-    public ArrayList<CarportPart> getDBParts(ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<CarportPart> partList = new ArrayList<>();
-        String sql = "SELECT * FROM parts";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ResultSet rs = ps.executeQuery();
-
-                while (rs.next()){
-                    int partId = rs.getInt("part_id");
-                    int price = rs.getInt("price");
-                    String description = rs.getString("description");
-                    int length = rs.getInt("length");
-                    int height = rs.getInt("height");
-                    int width = rs.getInt("width");
-                    String type = rs.getString("type");
-                    String material_name = rs.getString("material");
-                    String unit = rs.getString("unit");
-                    String name = rs.getString("name");
-                    CarportPart.CarportPartType partType = null;
-                    switch (type) {
-                        case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
-                        case "spær" -> partType = CarportPart.CarportPartType.BEAM;
-                        case "brædder" -> partType = CarportPart.CarportPartType.RAFT;
-                        case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
-                    }
-                    partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException("We couldn't get the part", e.getMessage());
-        }
-        return partList;
-    }
 
 
     public void simpleCompareLists(){
