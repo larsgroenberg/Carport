@@ -35,7 +35,8 @@ public class PartsCalculator {
         dbPartsList = CarportPartMapper.getDBParts(_connectionPool);
 
         //simpleCompareLists();
-        MaterialCalculationOnlyMaxLength();
+        //MaterialCalculationOnlyMaxLength();
+        MaterialCalculationPreciseMatch();
     }
 
 
@@ -107,6 +108,80 @@ public class PartsCalculator {
 
         cheapestBeam.setQuantity(beamQuantityNeeded);
         cheapestSupport.setQuantity(supportPostQuantityNeeded);
+        cheapestRaft.setQuantity(raftQuantityNeeded);
+        cheapestCrossSupport.setQuantity(crossSupportQuantityNeeded);
+
+
+        cheapestPartList.add(cheapestBeam);
+        cheapestPartList.add(cheapestSupport);
+        cheapestPartList.add(cheapestRaft);
+        cheapestPartList.add(cheapestCrossSupport);
+
+        totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity()) + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity()) + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity()) + (cheapestCrossSupport.getDBprice() * cheapestCrossSupport.getQuantity());
+    }
+
+    // Denne metode tager udregner den samlede længde på de forskellige sorter og derefter finder det længdste stykke træ og dividere dem for at få et antal som er større for at garentere at der er nok træ.
+    public void MaterialCalculationPreciseMatch(){
+        double supportPostLength = (90 + carport.getHeight()); // * carport.getSUPPORTPOST().getQuantity()
+        double beamLength = carport.getLength();// * carport.getBEAM().getQuantity()
+        double raftLength = carport.getWidth();// * carport.getRAFT().getQuantity()
+
+        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestCrossSupport = new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, 0,0, 10000, 0,0,0,"","","","");
+        cheapestPartList = new ArrayList<>();
+
+        double distance = 0;
+        double bestFit = 10000;
+        for (CarportPart part : dbPartsList){
+            if(part.getType() == cheapestBeam.getType() && part.getDBlength() >= cheapestBeam.getDBlength()){
+                distance = beamLength - part.getDBlength();
+
+                if (distance <= 0 && cheapestBeam.getDBprice() > part.getDBprice()) {
+                    // If the part exactly fits and it's cheaper, update cheapestBeam
+                    cheapestBeam = part;
+                    bestFit = distance;
+                } else if (distance > 0 && distance < bestFit) {
+                    // If the part is longer but closer to the target length, update cheapestBeam
+                    cheapestBeam = part;
+                    bestFit = distance;
+                }
+
+            }
+            if(part.getType() == cheapestSupport.getType() && part.getDBlength() >= cheapestSupport.getDBlength()){
+                distance = supportPostLength - part.getDBlength();
+                if(distance <= 0 && cheapestSupport.getDBprice() > part.getDBprice()){
+                    cheapestSupport = part;
+                }
+
+                //cheapestSupport = part;
+            }
+            if(part.getType() == cheapestRaft.getType() && part.getDBlength() >= cheapestRaft.getDBlength()){
+                distance = raftLength - part.getDBlength();
+                if(distance <= 0 && cheapestRaft.getDBprice() > part.getDBprice()){
+                    cheapestRaft = part;
+                }
+
+                //cheapestRaft = part;
+            }
+            if(part.getType() == cheapestCrossSupport.getType() && part.getDBlength() >= cheapestCrossSupport.getDBlength()){
+                distance = beamLength - part.getDBlength();
+                if(distance <= 0 && cheapestCrossSupport.getDBprice() > part.getDBprice()){
+                    cheapestCrossSupport = part;
+                }
+                //cheapestCrossSupport = part;
+            }
+        }
+        int beamQuantityNeeded = (int) Math.ceil(beamLength * carport.getBEAM().getQuantity() / cheapestBeam.getDBlength());
+        int supportPostQuantityNeeded = (int) Math.ceil(supportPostLength * carport.getSUPPORTPOST().getQuantity() / cheapestSupport.getDBlength());
+        int raftQuantityNeeded = (int) Math.ceil(raftLength * carport.getRAFT().getQuantity() / cheapestRaft.getDBlength());
+
+        int crossSupportQuantityNeeded = (int) Math.ceil(Math.sqrt(carport.getWidth()*carport.getWidth() + carport.getLength()* carport.getLength())/cheapestCrossSupport.getDBlength()) *2;
+
+
+        cheapestBeam.setQuantity(beamQuantityNeeded);
+        cheapestSupport.setQuantity(carport.getSUPPORTPOST().getQuantity());
         cheapestRaft.setQuantity(raftQuantityNeeded);
         cheapestCrossSupport.setQuantity(crossSupportQuantityNeeded);
 

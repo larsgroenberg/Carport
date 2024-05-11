@@ -30,8 +30,8 @@ public class CarportPartMapper {
                     CarportPart.CarportPartType partType = null;
                     switch (type) {
                         case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
-                        case "spær" -> partType = CarportPart.CarportPartType.BEAM;
-                        case "brædder" -> partType = CarportPart.CarportPartType.RAFT;
+                        case "spær" -> partType = CarportPart.CarportPartType.RAFT;
+                        case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
                         case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
                     }
                     partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));

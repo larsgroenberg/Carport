@@ -36,17 +36,17 @@
         <table class="carporttable" >
             <tr style="border: none">
                 <td style="text-align: left; border: none;">Carport bredde:</td>
-                <td style="text-align: right;" th:text="${session.width}"></td>
+                <td style="text-align: right;" th:text="${session.newCarport.width}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport længde:</td>
-                <td style="text-align: right;" th:text="${session.length}"></td>
+                <td style="text-align: right;" th:text="${session.newCarport.length}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport højde:</td>
-                <td style="text-align: right;" th:text="${session.height}"></td>
+                <td style="text-align: right;" th:text="${session.newCarport.height}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
@@ -70,6 +70,7 @@
                         <th>Bredde</th>
                         <th>Antal</th>
                         <th>Unit</th>
+                        <th>Type</th>
                         <th>Beskrivelse</th>
                         <th>Enkel Pris</th>
                         <th>Samlede Pris</th>
@@ -83,6 +84,7 @@
                         <td th:text="${part.DBwidth}">Width</td>
                         <td th:text="${part.quantity}">Quantity</td>
                         <td th:text="${part.DBunit}">Unit</td>
+                        <td th:text="${part.type}">Unit</td>
                         <td th:text="${part.DBname}">Beskrivelse</td>
                         <td th:text="${part.DBprice}">Enkel Pris</td>
                         <td th:text="${part.DBtotalQuantityPrice}">Samlede Pris</td>

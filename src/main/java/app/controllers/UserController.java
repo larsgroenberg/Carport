@@ -28,7 +28,7 @@ public class UserController {
 
 
 
-
+//todo: programmet vil crashe såfremt der allerede findes en bruger med disse oplysninger
     private static void createUser(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
 
         // Hent form parametre

@@ -29,7 +29,7 @@ public class OrderController {
         app.post("/ordercarport", ctx -> {
             ctx.render("showOrder.html");
         });
-        app.post("/changeorder", ctx -> {
+        app.get("/changeorder", ctx -> {
             ctx.render("carportspecs.html");
         });
 
