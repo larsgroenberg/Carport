@@ -13,9 +13,9 @@ public class CarportSvg {
     private Context ctx;
     ConnectionPool connectionPool;
     String type;
-    private int length;
-    private int width;
-    private int height;
+    private double length;
+    private double width;
+    private double height;
     private Svg carportSvg;
     private Svg carportOuterSvg;
     private int x1 = 0;
@@ -55,14 +55,14 @@ public class CarportSvg {
        return quantityMap;
     }
    // Remme er placeret 35 nede og går på tværs og er lige så lange spm den indtastede længde
-   private int addBeams(int width, int length) {
+   public int addBeams(int width, int length) {
         carportSvg.addRectangle(0, 35, 4.5, width, "stroke-width:1px; stroke:#000000; fill: #ffffff");
         carportSvg.addRectangle(0, (length - 35), 4.5, width, "stroke-width:1px; stroke:#000000; fill: #ffffff");
         return 2;
    }
 
     // Spær er placeret for hver 55.174 cm og går lodret
-    private int addRafters(int width, int length) {
+    public int addRafters(int width, int length) {
        int raftCounter = 0;
         for (double i = 0; i < length; i += 55.714) {
             carportSvg.addRectangle(i, 0.0, width, 6.5, "stroke:#000000; fill: #ffffff");

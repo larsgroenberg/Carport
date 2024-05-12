@@ -1,5 +1,7 @@
 package app.persistence;
 
+import app.entities.Carport;
+import app.entities.CarportPart;
 import app.entities.Part;
 import app.exceptions.DatabaseException;
 import java.sql.Connection;
@@ -265,5 +267,96 @@ public class PartsMapper {
         }
     }
 
+    public static CarportPart getBeamDetails(int carportLength, ConnectionPool connectionPool) {
+        String sql = "SELECT price, length, height, width, description, material, unit, name FROM parts WHERE type = 'spær' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
 
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, carportLength);
+            ps.setInt(2, carportLength);
+            ps.setInt(3, carportLength);
+            ps.setInt(4, carportLength);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double price = rs.getDouble("price");
+                    int length = rs.getInt("length");
+                    int height = rs.getInt("height");
+                    int width = rs.getInt("width");
+                    String description = rs.getString("description");
+                    String material = rs.getString("material");
+                    String unit = rs.getString("unit");
+                    String name = rs.getString("name");
+                    return new CarportPart(CarportPart.CarportPartType.BEAM, 1, price, length, height, width, description, material, unit, name);
+                } else {
+                    System.out.println("No matching beam found for length " + carportLength);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public static CarportPart getSupportPostDetails(int carportHeight, ConnectionPool connectionPool) {
+        String sql = "SELECT price, length, height, width, description, material, unit, name FROM parts WHERE type = 'stolpe' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, carportHeight);
+            ps.setInt(2, carportHeight);
+            ps.setInt(3, carportHeight);
+            ps.setInt(4, carportHeight);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double price = rs.getDouble("price");
+                    int length = rs.getInt("length");
+                    int height = rs.getInt("height");
+                    int width = rs.getInt("width");
+                    String description = rs.getString("description");
+                    String material = rs.getString("material");
+                    String unit = rs.getString("unit");
+                    String name = rs.getString("name");
+                    return new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 1, price, length, height, width, description, material, unit, name);
+                } else {
+                    System.out.println("No matching support post found for length " + carportHeight);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public static CarportPart getRaftDetails(int carportWidth, ConnectionPool connectionPool) {
+        String sql = "SELECT price, length, height, width, description, material, unit, name FROM parts WHERE type = 'spær' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, carportWidth);
+            ps.setInt(2, carportWidth);
+            ps.setInt(3, carportWidth);
+            ps.setInt(4, carportWidth);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double price = rs.getDouble("price");
+                    int length = rs.getInt("length");
+                    int height = rs.getInt("height");
+                    int width = rs.getInt("width");
+                    String description = rs.getString("description");
+                    String material = rs.getString("material");
+                    String unit = rs.getString("unit");
+                    String name = rs.getString("name");
+                    return new CarportPart(CarportPart.CarportPartType.BEAM, 1, price, length, height, width, description, material, unit, name);
+                } else {
+                    System.out.println("No matching raft found for width " + carportWidth);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }
