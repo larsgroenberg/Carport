@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.controllers.CalculationController;
 import app.exceptions.DatabaseException;
 import app.persistence.CarportPartMapper;
 import app.persistence.ConnectionPool;
@@ -37,6 +38,8 @@ public class PartsCalculator {
         //simpleCompareLists();
         //MaterialCalculationOnlyMaxLength();
         MaterialCalculationPreciseMatch();
+        double lukasMetoden = CalculationController.calculateFullCarportPrice(_ctx,carport,_connectionPool);
+        _ctx.sessionAttribute("lukas",lukasMetoden);
     }
 
 
