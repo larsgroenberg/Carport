@@ -1,36 +1,53 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
 
-<title>Frontpage</title>
+<head>
+<title>Tegning</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="../public/css/showcarport.css" th:href="@{/css/showcarport.css}" rel="stylesheet"/>
+    <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
+    <link href="../public/css/newShowCarport.css" th:href="@{/css/newShowCarport.css}" rel="stylesheet"/>
+
 </head>
+
+<header>
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <form id="navigationForm" method="get">
+            <button type="submit" formaction="/" class="nav-btn">1. Carport Specs</button>
+            <button type="submit" formaction="/carport-drawing" class="nav-btn active">2. Carport Drawing</button>
+            <button type="submit" formaction="/user-details" class="nav-btn">3. User Details</button>
+            <button type="submit" formaction="/confirmation" class="nav-btn">4. Confirmation</button>
+        </form>
+    </div>
+</header>
+
 
 <body>
 <div class="page">
-    <form class="form-table" th:action="@{/ordercarport}" th:method="POST">
+    <form class="form-table"  th:method="get">
         <h1>Tegning af din carport</h1>
 
         <div class="carport-svg-topview">
-            <div class="carport-svg-topview" th:utext="${svg}"></div>
+            <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
+            <div class="carport-svg-topview" th:utext="${session.svgFromTop}"></div>
         </div>
 
         <table class="carporttable" >
             <tr style="border: none">
                 <td style="text-align: left; border: none;">Carport bredde:</td>
-                <td style="text-align: right;" th:text="${session.width}"></td>
+                <td style="text-align: right;" th:text="${session.newCarport.width}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport længde:</td>
-                <td style="text-align: right;" th:text="${session.length}"></td>
+                <td style="text-align: right;" th:text="${session.newCarport.length}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport højde:</td>
-                <td style="text-align: right;" th:text="${session.height}"></td>
+                <td style="text-align: right;" th:text="${session.newCarport.height}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
@@ -38,11 +55,17 @@
                 <td style="text-align: right;" th:text="${session.carportprice}"></td>
                 <td style="text-align: left;">kr.</td>
             </tr>
+            todo: fjern dette og indsæt shed details
+            <tr>
+                <td style="text-align: left; border: none;">Carport Lukas pris:</td>
+                <td style="text-align: right;" th:text="${session.lukas}"></td>
+                <td style="text-align: left;">kr.</td>
+            </tr>
         </table>
 
-
-        <div id="hiddenDiv" class="modal" th:if="${session.showpartslist}">
-            <span class="close" onclick="closeModal()">&times;</span>
+        <p>SKAL IKKE VÆRE HER, DETTE ER BLOT TIL TESTE FORMÅL<p>
+        <div th:if="${session.showpartslist}">
+            <!--span class="close" onclick="closeModal()">&times;</span-->
 
                 <h4>Stykliste til Carporten:</h4>
                 <table id="partsTable" class="table">
@@ -50,18 +73,28 @@
                     <tr>
                         <th>Materiale</th>
                         <th>Længde</th>
+                        <th>Højde</th>
+                        <th>Bredde</th>
                         <th>Antal</th>
-                        <th>Enhed</th>
+                        <th>Unit</th>
+                        <th>Type</th>
                         <th>Beskrivelse</th>
+                        <th>Enkel Pris</th>
+                        <th>Samlede Pris</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="part : ${session.partslist}">
-                        <td th:text="${part.description}">Name</td>
-                        <td th:text="${part.partLength}">Length</td>
+                        <td th:text="${part.DBdescription}">Name</td>
+                        <td th:text="${part.DBlength}">Length</td>
+                        <td th:text="${part.DBheight}">Height</td>
+                        <td th:text="${part.DBwidth}">Width</td>
                         <td th:text="${part.quantity}">Quantity</td>
-                        <td th:text="${part.unit}">Unit</td>
-                        <td th:text="${part.name}">Beskrivelse</td>
+                        <td th:text="${part.DBunit}">Unit</td>
+                        <td th:text="${part.type}">Unit</td>
+                        <td th:text="${part.DBname}">Beskrivelse</td>
+                        <td th:text="${part.DBprice}">Enkel Pris</td>
+                        <td th:text="${part.DBtotalQuantityPrice}">Samlede Pris</td>
                     </tr>
                     </tbody>
                 </table>
@@ -73,9 +106,7 @@
         <div class="button-container-checkout">
             <input class="shopping" style="margin-right: 20px;" type="submit" value="Ændre Bestilling"
                    formaction="/changeorder">
-            <button class="betal" type="submit" name="ordercarport" th:value="${length}" formaction="/ordercarport">
-                Bestil din Carport
-            </button>
+            <button class="betal" type="submit" name="ordercarport" th:value="${length}" formaction="/user-details">Videre</button>
         </div>
 
     </form>
@@ -83,7 +114,7 @@
 <script>
 
     // Funktion til at vise modalen
-
+/*
 
     document.addEventListener("DOMContentLoaded", function () {
         var showpartslist = [[${session.showpartslist}]];
@@ -100,7 +131,7 @@
     }
 
 
-
+*/
 
 
 </script>

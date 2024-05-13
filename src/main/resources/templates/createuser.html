@@ -1,49 +1,69 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
 
-<title>User Info</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="../public/css/login.css" th:href="@{/css/login.css}" rel="stylesheet"/>
+<head>
+    <title>User Info</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
+    <link href="../public/css/InputStyling.css" th:href="@{/css/InputStyling.css}" rel="stylesheet"/>
+</head>
+
+<header>
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <form id="navigationForm" method="get">
+            <button type="submit" formaction="/" class="nav-btn">1. Carport Specs</button>
+            <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Carport Drawing</button>
+            <button type="submit" formaction="/user-details" class="nav-btn active">3. User Details</button>
+            <button type="submit" formaction="/confirmation" class="nav-btn">4. Confirmation</button>
+        </form>
+    </div>
+
+</header>
 
 <body>
 <div class="login-page">
 
     <div class="page">
+        <h1>User Info</h1>
         <form class="generic-form" method="post">
-            <label>
-                <input type="text" name="email" placeholder="Enter your email"/>
-            </label>
+            <div class="form-group">
+                <input type="text" name="email" placeholder="Enter your email" th:value="${session.currentUser != null ? session.currentUser.email : ''}" />
+            </div>
 
-            <label>
-                <input type="text" name="name" placeholder="Enter your name"/>
-            </label>
+            <div class="form-group">
+                <input type="text" name="name" placeholder="Enter your name" th:value="${session.currentUser != null ? session.currentUser.name : ''}" />
+            </div>
 
-            <label>
-                <input type="text" name="mobile" placeholder="Enter your mobilenumber"/>
-            </label>
+            <div class="form-group">
+                <input type="text" name="mobile" placeholder="Enter your mobilenumber" th:value="${session.currentUser != null ? session.currentUser.mobile : ''}" />
+            </div>
 
-            <label>
-                <input type="text" name="address" placeholder="Enter your address"/>
-            </label>
+            <div class="form-group">
+                <input type="text" name="address" placeholder="Enter your address" th:value="${session.currentUser != null ? session.currentUser.address : ''}" />
+            </div>
 
-            <label>
-                <input type="text" name="zipcode" placeholder="Enter your zipcode"/>
-            </label>
+            <div class="form-group">
+                <input type="text" name="zipcode" placeholder="Enter your zipcode" th:value="${session.currentUser != null ? session.currentUser.zipcode : ''}" />
+            </div>
 
-            <label>
-                <input type="password" name="password1" placeholder="Enter your password"/>
-            </label>
+            <div class="form-group">
+                <input type="password" name="password1" placeholder="Enter your password" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
+            </div>
 
-            <label>
-                <input type="password" name="password2" placeholder="Enter your password again"/>
-            </label>
+            <div class="form-group">
+                <input type="password" name="password2" placeholder="Enter your password again" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
+            </div>
 
-            <button type="submit" formaction="/createuser">Create User</button>
+
+            <div class="button-container">
+                <button type="submit" formaction="/ToConfirmation" class="betal">Videre</button>
+            </div>
 
         </form>
 
-        <div id="hiddenDiv" class="modal" th:if="${error}" >
+        <div id="hiddenDiv" class="modal" th:if="${error}">
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
                 <p id="messageText" th:text="${message}"></p>
@@ -54,7 +74,7 @@
 </div>
 
 <script th:inline="javascript">
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         var login = [[${error}]];
         if (login) {
             // Hvis noget er created, vis det skjulte div-element
@@ -81,4 +101,5 @@
     }
 </script>
 </body>
+
 </html>

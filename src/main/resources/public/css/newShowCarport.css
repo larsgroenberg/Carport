@@ -1,0 +1,106 @@
+/* Reset default styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Page container styles */
+.page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form table styles */
+.form-table {
+    margin-bottom: 20px;
+}
+
+.form-table h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* Carport SVG styles */
+.carport-svg-topview {
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Table styles */
+.carporttable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.carporttable th,
+.carporttable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.carporttable th {
+    background-color: #f2f2f2;
+}
+
+/* Button container styles */
+.button-container-checkout {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.shopping,
+.betal {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.4s, transform 0.2s;
+}
+
+.shopping:hover,
+.betal:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.shopping {
+    margin-right: 20px;
+}
+
+/* Parts table styles */
+#partsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#partsTable th,
+#partsTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#partsTable th {
+    background-color: #f2f2f2;
+}
+

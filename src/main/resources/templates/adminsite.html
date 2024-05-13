@@ -17,19 +17,20 @@
 
     <h1>Carport Admin Panel</h1>
 
-    <form method="post">
+    <form class="form-table" method="post" >
         <div style="text-align: center">
-            <input type="text" name="username_input" placeholder="Enter username" class="enter-username">
+            <input type="text" name="username" placeholder="Enter username" class="enter-username">
         </div>
         <div class="form-choice">
             <input type="submit" formaction="/getAllParts" value="Show Material List"/>
             <input type="submit" formaction="/getOrderByName" value="Show Customer Orders"/>
             <input type="submit" formaction="/getAllOrders" value="Show All Customers Orders"/>
         </div>
-    </form>
 
-    <form class="form-table" th:action="@{/changePrice}" th:method="POST">
-    <div th:if="${partslist}">
+
+    <form class="form-table" th:if="${session.showallparts}" th:method="POST" method="post">
+
+    <div>
         <h2>PartsList:</h2>
         <table>
             <thead>
@@ -47,7 +48,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="part : ${partslist}">
+            <tr th:each="part : ${session.partslist}">
                 <td th:text="${part.partId}">PartId</td>
                 <td style="text-align: left;" th:text="${part.description}">Description</td>
                 <td th:text="${part.length}">Length</td>
@@ -56,19 +57,66 @@
                 <td th:text="${part.type}">Type</td>
                 <td th:text="${part.material}">Material</td>
                 <td th:text="${part.unit}">Unit</td>
-                <td th:text="${part.price}">Price</td>
+                <td th:text="${part.price}">Unit</td>
+
                 <td>
-                    <button type="submit" name="partId" th:value="${part.partId}" formaction="/changePart"
-                            class="produced-button">Edit
-                    </button>
+                    <button type="submit" name="partId" th:value="${part.partId}" formaction="/editPart" class="produced-button">Edit</button>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
+
+
+    </form>
+    <form th:method="POST">
+        <div id="hiddenformular" class="modal" th:if="${session.showpart}">
+            <div class="form-container">
+
+                <form class="generic-form" method="post">
+                    <table class="editpart">
+                        <tr>
+                            <td style="text-align: right;"><label>Description:</label></td>
+                            <td><input style="width: calc(100%);" type="text" id="description" name="description" th:value="${session.part.description}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><label>Length:</label></td>
+                            <td><input type="text" name="length" th:value="${session.part.length}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><label>Height:</label></td>
+                            <td><input type="text" name="height" th:value="${session.part.height}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><label>Width:</label></td>
+                            <td><input type="text" name="width" th:value="${session.part.width}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><label>Type:</label></td>
+                            <td><input type="text" name="type" th:value="${session.part.type}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><label>Material:</label></td>
+                            <td><input type="text" name="material" th:value="${session.part.material}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; width: 40px;"><label>Unit:</label></td>
+                            <td><input type="text" name="unit" th:value="${session.part.unit}"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; width: 40px;"><label>Price:</label></td>
+                            <td><input type="text" name="price" th:value="${session.part.price}"/></td>
+                        </tr>
+                    </table>
+                    <div style="text-align: center;" class="button-container-checkout"></br>
+                        <button class="betal" type="submit" name="partid" th:value="${session.part.partId}" formaction="/updatepart">Gem Ændringer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </form>
 
-    <form class="form-table" th:action="@{/addToBalance}" th:method="POST">
+    <form class="form-table" th:action="@{/addToBalance}" th:method="POST" method="post">
         <div th:if="${customer}">
             <h2>Customer Search:</h2>
             <table>
@@ -227,7 +275,70 @@
                 </tbody>
             </table>
         </div>
+        <div class="modal-med-fejlbesked" th:if="${modalmedbesked}" >
+            <div class="modal-fejl-content">
+                <p id="textMessage" th:text="${message}"></p>
+                <div style="text-align: center; background-color: #f9f9f9;">
+                    <button class="closemessage" type="submit" name="partid" th:value="${modalmedbesked}" formaction="/lukmodal">Close message</button>
+                </div>
+
+            </div>
+        </div>
+    </form>
     </form>
 </div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var showinputcredentials = [[${session.showinputcredentials}]];
+        if (showinputcredentials) {
+            var hiddenformular = document.getElementById("hiddenformular");
+            hiddenformular.style.display = "block";
+        }
+    });
+
+    function closeModal() {
+        var modal = document.getElementById("hiddenformular");
+        modal.style.display = "none"; // Skjul modalen
+
+    }
+
+
+
+    // Funktion for at vise meddelelsen
+    function showMessage(message) {
+        var modal = document.getElementById("hiddenMessage");
+        var messageText = document.getElementById("textMessage"); // Vælg det korrekte element
+        messageText.textContent = message; // Sæt meddelelsesindholdet
+        modal.style.display = "block"; // Vis modalen
+    }
+
+
+    // Funktion for at lukke modalen og indstille modalmedbesked til false
+    function closeMessage() {
+        var modal = document.getElementById("hiddenMessage");
+        modal.style.display = "none"; // Skjul modalen
+        // Indstil modalmedbesked til false
+        var modalmedbesked = false;
+    }
+
+    // Funktion til at opdatere sessionattributten
+    function updateSessionAttribute() {
+        // Hent værdien af sessionattributten fra Thymeleaf-variablen
+        var modalbesked = [[${modalmedbesked}]];
+
+        // Opdater værdien af sessionattributten
+        [[${modalmedbesked}]] = false; // eller din nye værdi
+
+        // Eventuel anden logik eller behandling her
+
+        // Vis den opdaterede værdi (valgfrit)
+        console.log("Sessionattribut opdateret til: " + [[${modalmedbesked}]]);
+    }
+
+
+
+</script>
 </body>
 </html>

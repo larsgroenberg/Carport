@@ -15,14 +15,20 @@ public class UserController {
         app.get("login", ctx -> {
             ctx.render("login.html");
         });
-        app.get("carportspecs.html", ctx -> {
-            ctx.render("carportspecs.html");
-        });
+
         app.get("logout", ctx -> logout(ctx, ConnectionPool.getInstance()));
-        app.post("createuser", ctx -> createUser(ctx, ConnectionPool.getInstance()));
+
+        app.post("/ToConfirmation", ctx -> {
+            createUser(ctx, ConnectionPool.getInstance());
+            ctx.render("checkoutpage.html");
+        });
+        app.post("/createuser", ctx -> createUser(ctx, ConnectionPool.getInstance()));
         app.get("createuser", ctx -> ctx.render("createuser.html"));
     }
 
+
+
+//todo: programmet vil crashe såfremt der allerede findes en bruger med disse oplysninger
     private static void createUser(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
 
         // Hent form parametre
@@ -38,26 +44,23 @@ public class UserController {
 
         if (!userexist) {
             if (password1.equals(password2)) {
-                try {
-                    UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
-                    ctx.attribute("message", "Du er hermed oprettet med brugernavn: " + email +
-                            ". Nu kan du logge på.");
-                    ctx.attribute("login", true);
-                    ctx.render("login.html");
-                } catch (DatabaseException e) {
-                    ctx.attribute("message", "Der skete en fejl, prøv igen");
-                    ctx.attribute("login", true);
-                    ctx.render("login.html");
-                }
+                User newUser = new User(0,email,password1,false,name,mobile,address,zipcode);
+                ctx.sessionAttribute("currentUser", newUser);
+
+                //UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
+                //ctx.attribute("message", "Du er hermed oprettet med brugernavn: " + email + ". Nu kan du logge på.");
+                //ctx.attribute("login", true);
+                //ctx.render("login.html");
+
             } else {
                 ctx.attribute("message", "Passwords matcher ikke! Prøv igen");
                 ctx.attribute("error", true);
-                ctx.render("createuser.html");
+                //ctx.render("createuser.html");
             }
         } else {
-            ctx.attribute("message", "En bruger med denne email findes allerede. Venligst Log ind");
-            ctx.attribute("login", true);
-            ctx.render("login.html");
+            ctx.attribute("message", "En bruger med denne email findes allerede. Venligst vælg en anden email");
+            //ctx.attribute("login", true);
+            //ctx.render("login.html");
         }
     }
 

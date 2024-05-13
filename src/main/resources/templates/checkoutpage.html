@@ -5,17 +5,30 @@
     <title>Checkout</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
     <link href="../public/css/bookiBois.css" th:href="@{/css/bookiBois.css}" rel="stylesheet"/>
+
 </head>
-<body>
+
 <header>
-    <h1>Checkout Page</h1>
+    <!-- Navigation bar -->
+    <div class="navbar" th:if="${session.confirmed == null}">
+        <form id="navigationForm" method="get">
+            <button type="submit" formaction="/" class="nav-btn">1. Carport Specs</button>
+            <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Carport Drawing</button>
+            <button type="submit" formaction="/user-details" class="nav-btn">3. User Details</button>
+            <button type="submit" formaction="/confirmation" class="nav-btn active">4. Confirmation</button>
+        </form>
+    </div>
 </header>
+<body>
+<h1>Checkout Page</h1>
 <!-- Carport length width with roof -->
 <h2>Carport Specifications</h2>
-<p>Width: <span th:text="${session.carport_width}">0</span> cm</p>
-<p>Length: <span th:text="${session.carport_length}">0</span> cm</p>
-<p>Roof Type: <span th:text="${session.carport_trapeztag}"></span></p>
+<p>Width: <span th:text="${session.newCarport.width}">0</span> cm</p>
+<p>Length: <span th:text="${session.newCarport.length}">0</span> cm</p>
+<p>Height: <span th:text="${session.newCarport.height}">0</span> cm</p>
+<p>Roof Type: <span th:if="${session.newCarport.withRoof}">Plastic Trapeztag</span></p>
 
 <!-- Show 2d drawing again? -->
 <div class="carport-svg-topview">
@@ -34,7 +47,11 @@
 
 
 
-
+<form method="post">
+<div class="button-container">
+    <button th:if="${session.confirmed == null}" type="submit" formaction="/finishOrder" class="betal">Bekræft</button>
+</div>
+</form>
 
 
 </body>

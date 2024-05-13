@@ -1,0 +1,56 @@
+/* First CSS file */
+/* Navigation bar styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 200px; /* Adjust as needed */
+    background-color: #333; /* Background color */
+    padding-top: 20px;
+}
+
+.navbar a {
+    display: block;
+    padding: 10px 16px;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #ddd; /* Highlight on hover */
+    color: black;
+}
+
+/* Highlight the current page */
+.navbar a.active {
+    background-color: #555; /* Darker background */
+}
+
+/* Button Styles */
+.navbar .nav-btn {
+    width: 100%;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 0; /* Adjust padding to center text vertically */
+    margin: 10px 0; /* Add margin to separate buttons */
+    cursor: pointer;
+    font-size: 14px; /* Adjust font size to make buttons smaller */
+    transition: background-color 0.3s;
+}
+
+.navbar .nav-btn:hover {
+    background-color: #2980b9;
+}
+
+.navbar .nav-btn.active {
+    background-color: #2ecc71;
+}
+
+/* Main content styles */
+.main-content {
+    margin-left: 200px; /* Adjust according to navbar width */
+    padding: 20px;
+}
