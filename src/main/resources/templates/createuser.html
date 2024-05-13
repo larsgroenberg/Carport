@@ -29,31 +29,31 @@
         <h1>User Info</h1>
         <form class="generic-form" method="post">
             <div class="form-group">
-                <input type="text" name="email" placeholder="Enter your email" th:value="${currentUser != null ? currentUser.email : ''}" />
+                <input type="text" name="email" placeholder="Enter your email" th:value="${session.currentUser != null ? session.currentUser.email : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="name" placeholder="Enter your name" th:value="${currentUser != null ? currentUser.name : ''}" />
+                <input type="text" name="name" placeholder="Enter your name" th:value="${session.currentUser != null ? session.currentUser.name : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="mobile" placeholder="Enter your mobilenumber" th:value="${currentUser != null ? currentUser.mobile : ''}" />
+                <input type="text" name="mobile" placeholder="Enter your mobilenumber" th:value="${session.currentUser != null ? session.currentUser.mobile : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="address" placeholder="Enter your address" th:value="${currentUser != null ? currentUser.address : ''}" />
+                <input type="text" name="address" placeholder="Enter your address" th:value="${session.currentUser != null ? session.currentUser.address : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="zipcode" placeholder="Enter your zipcode" th:value="${currentUser != null ? currentUser.zipcode : ''}" />
+                <input type="text" name="zipcode" placeholder="Enter your zipcode" th:value="${session.currentUser != null ? session.currentUser.zipcode : ''}" />
             </div>
 
             <div class="form-group">
-                <input type="password" name="password1" placeholder="Enter your password" />
+                <input type="password" name="password1" placeholder="Enter your password" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
             </div>
 
             <div class="form-group">
-                <input type="password" name="password2" placeholder="Enter your password again" />
+                <input type="password" name="password2" placeholder="Enter your password again" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
             </div>
 
 

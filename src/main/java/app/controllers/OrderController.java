@@ -94,7 +94,7 @@ public class OrderController {
 
         CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
 
-        ctx.attribute("svg", svg.toString());
+        ctx.sessionAttribute("svg", svg.toString());
 
         //todo: fiks således at shed ikke bliver tilføjet når flueben tjekkes på og af.
         Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed, 0);

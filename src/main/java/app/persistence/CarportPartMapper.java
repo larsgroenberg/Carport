@@ -33,6 +33,7 @@ public class CarportPartMapper {
                         case "spær" -> partType = CarportPart.CarportPartType.RAFT;
                         case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
                         case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
+                        default -> partType = CarportPart.CarportPartType.ROOFTILE;
                     }
                     partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
                 }
