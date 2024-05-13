@@ -26,7 +26,7 @@ public class OrderController {
 
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("adminSite.html");
+            ctx.render("index.html");
         });
         app.post("/createdrawing", ctx -> {
             showOrder(ctx);
@@ -37,13 +37,7 @@ public class OrderController {
             ctx.sessionAttribute("showinputcredentials", true);
             ctx.render("showOrder.html");
         });
-        app.post("/createuser", ctx -> {
-            createUser(ctx, ConnectionPool.getInstance());
-            createCarport(ctx, ConnectionPool.getInstance());
-            savePartsList(ctx, ConnectionPool.getInstance());
-            ctx.sessionAttribute("showinputcredentials", false);
-            ctx.render("showOrder.html");
-        });
+
         app.post("/ordercarport", ctx -> {
 
             createPartsList(ctx, ConnectionPool.getInstance());
@@ -53,6 +47,12 @@ public class OrderController {
         app.post("/changeorder", ctx -> {
             ctx.render("index.html");
         });
+        app.post("/closeinputmodal", ctx -> {
+            ctx.sessionAttribute("showinputcredentials", false);
+            ctx.render("showOrder.html");
+        });
+
+
     }
 
     private static void index(Context ctx) {
@@ -74,6 +74,9 @@ public class OrderController {
         String address = ctx.formParam("address");
         String mobile = ctx.formParam("mobile");
         String zip = ctx.formParam("zip");
+
+        boolean userexist = UserMapper.userexist(email, connectionPool);
+
         UserMapper.createuser(email, password1, name, mobile, address, zip, connectionPool);
         int userId = UserMapper.getUseridByEmail(email, connectionPool);
         order.setUserId(userId);
@@ -98,48 +101,35 @@ public class OrderController {
         double length_shed = Double.parseDouble(ctx.formParam("length_shed"));
         double width_shed = Double.parseDouble(ctx.formParam("width_shed"));
         String roof = ctx.formParam("roof");
-        boolean walls = Boolean.parseBoolean(ctx.formParam("walls"));
+        int walls = Integer.parseInt(ctx.formParam("walls"));
         int orderId = 0;
         double materialCost = 0;
         double salesPrice = 0;
         int userId = 0;
-        System.out.println(roof);
         String orderStatus = "modtaget";
         String email = "";
         String orderDate = "";
 
         order = new Order(orderId, materialCost, salesPrice, width,length,height,userId,orderStatus, width_shed, length_shed, email, orderDate, roof, walls);
         ctx.sessionAttribute("order", order);
-        //ctx.sessionAttribute("length", length);
-        //ctx.sessionAttribute("width", width);
-        //ctx.sessionAttribute("height", height);
-        //ctx.sessionAttribute("width_shed", length_shed);
-        //ctx.sessionAttribute("length_shed", width_shed);
-        //ctx.sessionAttribute("email", "oleolesen@gmail.com");
-        //ctx.sessionAttribute("roof", roof);
 
         Locale.setDefault(new Locale("US"));
-        CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
-        ctx.sessionAttribute("svg", svg.toString());
+        CarportSvg svgFromTop = new CarportSvg((int) width, (int) length, (int) height, (int)length_shed, (int)width_shed);
+        CarportSvg svgFromSide = new CarportSvg((int) width, (int)length, (int)height, (int)length_shed, (int)width_shed, roof);
+        ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
+        ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
     }
 
-    public static void createCarport(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+    public static void createCarport(int userId, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
 
-        //double carportWidth = ctx.sessionAttribute("length");
-        //double carportLength = ctx.sessionAttribute("width");
-        //double carportHeight = ctx.sessionAttribute("height");
-        //double shedWidth = ctx.sessionAttribute("width_shed");
-        //double shedLength = ctx.sessionAttribute("length_shed");
-        //String roof = ctx.sessionAttribute("roof");
-        //String email = ctx.sessionAttribute("email");
+        Order order = ctx.sessionAttribute("order");
+        User user = ctx.sessionAttribute("user");
         String orderDate = formattedDate;
-        boolean isWall = false;
-        ctx.sessionAttribute("showpartslist", true);
-
+        int sidesOfWalls = ctx.sessionAttribute("wall");
 
         try {
 
-            OrdersMapper.addOrder(order.getMaterialCost(), order.getSalesPrice(), order.getCarportWidth(), order.getCarportLength(), order.getCarportHeight(), order.getUserId(), order.getOrderStatus(), order.getShedWidth(), order.getShedLength(), order.getUserEmail(), orderDate, order.getRoof(), isWall, connectionPool);
+            OrdersMapper.addOrder(order.getMaterialCost(), order.getSalesPrice(), order.getCarportWidth(), order.getCarportLength(), order.getCarportHeight(), userId, order.getOrderStatus(), order.getShedWidth(), order.getShedLength(), user.getEmail(), orderDate, order.getRoof(), sidesOfWalls, connectionPool);
             Order updatedorder = OrdersMapper.getOrderByEmail(order.getUserEmail(), connectionPool);
             ctx.sessionAttribute("order", updatedorder);
 
@@ -153,7 +143,7 @@ public class OrderController {
         for(Partslistline p: partslist) {
             PartslistMapper.insertPartslistLine(p, connectionPool);
         }
-    }
+     }
 
 
     public static void createPartsList(Context ctx, ConnectionPool connectionPool) throws  DatabaseException {

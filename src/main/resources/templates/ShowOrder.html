@@ -10,100 +10,135 @@
 
 <body>
 <div class="page">
-    <form class="form-table" th:action="@{/ordercarport}" th:method="POST">
+    <form class="form-table" th:method="POST">
         <h1>Tegning af din carport</h1>
 
         <div class="carport-svg-topview">
-            <div class="carport-svg-topview" th:utext="${svg}"></div>
+            <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
+            <div class="carport-svg-topview" th:utext="${session.svgFromTop}"></div>
         </div>
 
-        <table class="carporttable" >
+        <table class="carporttable">
             <tr style="border: none">
                 <td style="text-align: left; border: none;">Carport bredde:</td>
-                <td style="text-align: right;" th:text="${session.width}"></td>
+                <td style="text-align: right;" th:text="${session.order.carportWidth}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport længde:</td>
-                <td style="text-align: right;" th:text="${session.length}"></td>
+                <td style="text-align: right;" th:text="${session.order.carportLength}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport højde:</td>
-                <td style="text-align: right;" th:text="${session.height}"></td>
+                <td style="text-align: right;" th:text="${session.order.carportHeight}"></td>
+                <td style="text-align: left;">cm</td>
+            </tr>
+            <tr th:if="${session.order.shedWidth != 0}">
+                <td style="text-align: left; border: none;">Skur bredde:</td>
+                <td style="text-align: right;" th:text="${session.order.shedWidth}"></td>
+                <td style="text-align: left;">cm</td>
+            </tr>
+            <tr th:if="${session.order.shedLength != 0}">
+                <td style="text-align: left; border: none;">Skur længde:</td>
+                <td style="text-align: right;" th:text="${session.order.shedLength}"></td>
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
                 <td style="text-align: left; border: none;">Carport pris:</td>
-                <td style="text-align: right;" th:text="${session.carportprice}"></td>
+                <td style="text-align: right;" th:text="${session.order.salesPrice}"></td>
                 <td style="text-align: left;">kr.</td>
             </tr>
         </table>
-
-
-        <div id="hiddenDiv" class="modal" th:if="${session.showpartslist}">
-            <span class="close" onclick="closeModal()">&times;</span>
-
-                <h4>Stykliste til Carporten:</h4>
-                <table id="partsTable" class="table">
-                    <thead>
-                    <tr>
-                        <th>Materiale</th>
-                        <th>Længde</th>
-                        <th>Antal</th>
-                        <th>Enhed</th>
-                        <th>Beskrivelse</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="part : ${session.partslist}">
-                        <td th:text="${part.description}">Name</td>
-                        <td th:text="${part.partLength}">Length</td>
-                        <td th:text="${part.quantity}">Quantity</td>
-                        <td th:text="${part.unit}">Unit</td>
-                        <td th:text="${part.name}">Beskrivelse</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-        </div>
-
-
-
         <div class="button-container-checkout">
             <input class="shopping" style="margin-right: 20px;" type="submit" value="Ændre Bestilling"
                    formaction="/changeorder">
-            <button class="betal" type="submit" name="ordercarport" th:value="${length}" formaction="/ordercarport">
+            <button class="bestil" type="submit" formaction="/askforcredentials">
                 Bestil din Carport
             </button>
+        </div>
+        <div id="hiddenformular" class="modal" th:if="${session.showinputcredentials}">
+                <div class="form-container">
+                    <form class="generic-form" method="post">
+                        <button class="close" type="submit" name="closeinputmodal" formaction="/closeinputmodal">x</button>
+                        <input type="text" name="name" placeholder="Enter your Name"/>
+                        <input type="text" name="email" placeholder="Enter your email"/>
+                        <div style="color: red;"  th:text="${session.message}" th:if="${session.emailexist}"></div>
+                        <input type="password" name="password1" placeholder="Enter your password"/>
+                        <input type="password" name="password2" placeholder="Enter your password again"/>
+                        <div style="color: red;"  th:text="${session.message}" th:if="${session.passworddonotmatch}"></div>
+                        <input type="text" name="address" placeholder="Enter your address"/>
+                        <input type="text" name="zipcode" placeholder="Enter your ZIP-code"/>
+                        <input type="text" name="mobile" placeholder="Enter your mobile"/>
+                        <div class="button-container-checkout">
+                        <button class="betal" type="submit" name="ordercarport" formaction="/createuser">
+                            Bestil din Carport
+                        </button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+
+        <div id="hiddenDiv" class="modal" th:if="${session.showpartslist}">
+            <span class="close" onclick="closePartsListModal()">&times;</span>
+            <h4>Stykliste til Carporten:</h4>
+            <table id="partsTable" class="table">
+                <thead>
+                <tr>
+                    <th>Materiale</th>
+                    <th>Længde</th>
+                    <th>Antal</th>
+                    <th>Enhed</th>
+                    <th>Beskrivelse</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="part : ${session.partslist}">
+                    <td th:text="${part.description}">Name</td>
+                    <td th:text="${part.partLength}">Length</td>
+                    <td th:text="${part.quantity}">Quantity</td>
+                    <td th:text="${part.unit}">Unit</td>
+                    <td th:text="${part.name}">Beskrivelse</td>
+                </tr>
+                </tbody>
+           </table>
         </div>
 
     </form>
 </div>
 <script>
 
-    // Funktion til at vise modalen
+     function openModal() {
+        // Viser brugerformular
+        document.getElementById('hiddenformular').style.display = 'block';
+    }
 
+    function closeModal() {
+        // Lukker modalen
+        document.getElementById('hiddenformular').style.display = 'none';
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
         var showpartslist = [[${session.showpartslist}]];
         if (showpartslist) {
-            var hiddenDiv = document.getElementById("hiddenDiv");
-            hiddenDiv.style.display = "block";
+            var hidden = document.getElementById("hiddenDiv");
+            hidden.style.display = "block";
         }
     });
 
-    // Funktion for at lukke modalen
-    function closeModal() {
-        var modal = document.getElementById("hiddenDiv");
-        modal.style.display = "none";
+     document.addEventListener("DOMContentLoaded", function () {
+         var showinputcredentials = [[${session.showinputcredentials}]];
+         if (showinputcredentials) {
+             var hiddenformular = document.getElementById("hiddenformular");
+             hiddenformular.style.display = "block";
+         }
+     });
+
+    function closePartsListModal() {
+        // Lukker modalen
+        document.getElementById('hiddenDiv').style.display = 'none';
     }
 
-
-
-
-
 </script>
-
 </body>
 </html>
