@@ -14,13 +14,12 @@ public class AdminController
     public static void addRoutes(Javalin app)
     {
         app.get("/adminSite", ctx -> index(ctx));
-        app.post("/getAllOrders", ctx -> getAllOrders(ctx, ConnectionPool.getInstance()));
         app.post("/getOrderByEmail", ctx -> getOrderByEmail(ctx, ConnectionPool.getInstance()));
         app.post("/getOrderByName", ctx -> getOrderByName(ctx, ConnectionPool.getInstance()));
         app.post("/getCustomerByName", ctx -> getCustomerByName(ctx, ConnectionPool.getInstance()));
         app.post("/getCustomerByEmail", ctx -> getCustomerByEmail(ctx, ConnectionPool.getInstance()));
         app.post("/getPartById", ctx -> getPartById(ctx, ConnectionPool.getInstance()));
-        app.post("/getAllParts", ctx -> showPartsList(ctx, ConnectionPool.getInstance()));
+
         app.post("/changeorderstatus", ctx -> {
             changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
             ctx.render("adminsite.html");
@@ -29,6 +28,74 @@ public class AdminController
             changeOrderStatusToPickedUp(ctx, ConnectionPool.getInstance());
             ctx.render("adminsite.html");
         });
+        app.post("/editPart", ctx -> {
+            edittask(ctx, ConnectionPool.getInstance());
+            ctx.render("adminSite.html");
+        });
+        app.post("/updatepart", ctx -> {
+            updatepart(ctx, ConnectionPool.getInstance());
+            getPartsList(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("showallparts", true);
+            ctx.render("adminSite.html");
+        });
+        app.post("/getAllParts", ctx -> {
+            getPartsList(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("showallparts", true);
+            ctx.render("adminSite.html");
+        });
+        app.post("/getAllOrders", ctx -> {
+            getAllOrders(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("showallparts", false);
+            ctx.render("adminSite.html");
+        });
+        app.post("/lukmodal", ctx -> {
+            ctx.sessionAttribute("modalmedbesked", false);
+            ctx.render("adminSite.html");
+        });
+
+
+    }
+
+    private static void updatepart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        String description = ctx.formParam("description");
+        int length = Integer.parseInt(ctx.formParam("length"));
+        int height = Integer.parseInt(ctx.formParam("height"));
+        int width = Integer.parseInt(ctx.formParam("width"));
+        String type = ctx.formParam("type");
+        String material = ctx.formParam("material");
+        String unit = ctx.formParam("unit");
+        int price = Integer.parseInt(ctx.formParam("price"));
+        Part part = ctx.sessionAttribute("part");
+        part.setDescription(description);
+        part.setLength(length);
+        part.setHeight(height);
+        part.setWidth(width);
+        part.setType(type);
+        part.setMaterial(material);
+        part.setUnit(unit);
+        part.setPrice(price);
+        ctx.sessionAttribute("part", part);
+
+        Part updatedPart = ctx.sessionAttribute("part");
+        PartsMapper.updatePart(updatedPart, connectionPool);
+
+        ctx.sessionAttribute("showallparts", true);
+        ctx.sessionAttribute("showpart", false);
+    }
+
+    private static void edittask(Context ctx, ConnectionPool connectionPool) {
+        try {
+            int partId = Integer.parseInt(ctx.formParam("partId"));
+            Part part = PartsMapper.getPartById(partId, connectionPool);
+            ctx.sessionAttribute("part", part);
+            ctx.sessionAttribute("showpart", true);
+            ctx.sessionAttribute("showallparts", true);
+            ctx.render("adminSite.html");
+
+        } catch (DatabaseException | NumberFormatException e) {
+            ctx.attribute("message", e.getMessage());
+            ctx.render("index.html");
+        }
     }
 
     private static void index(Context ctx)
@@ -65,9 +132,17 @@ public class AdminController
 
     private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
-        Order customerOrder = OrdersMapper.getOrderByName(userName, connectionPool);
-        ctx.attribute("customerOrders", customerOrder);
-        ctx.render("adminsite.html");
+        User user = UserMapper.getCustomerByName(userName, connectionPool);
+        if(user != null) {
+            Order customerOrder = OrdersMapper.getOrderByUserId(user.getUserId(), connectionPool);
+            ctx.attribute("customerOrders", customerOrder);
+            System.out.println("ingen kunde");
+        } else {
+            String message = "Der findes ingen kunder med det navn i vores Database";
+            ctx.attribute("message", message);
+            ctx.attribute("modalmedbesked", true);
+        }
+        ctx.render("adminSite.html");
     }
 
     private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
