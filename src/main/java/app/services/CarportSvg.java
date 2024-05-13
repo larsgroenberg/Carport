@@ -32,21 +32,19 @@ public class CarportSvg {
     int totalRafters;
     int totalCrossSupports;
 
-   public CarportSvg(int width, int length, int height, int shedLength, int shedWidth, String roof) {
+   public CarportSvg(int width, int length, int height, double shedLength, double shedWidth, String roof) {
        this.length = length;
        this.width = width;
        this.height = height;
        this.shedLength = shedLength;
        this.shedWidth = shedWidth;
        this.roof = roof;
-       carportSvg = new Svg(75, 75, "0 0 " + (length+180) + " " + (height+180), "100%");
-       carportOuterSvg = new Svg(0, 0, "0 0 " + (length+180) + " " + (height+180), "100%");
+       carportSvg = new Svg(75, 75, "0 0 " + (length + 180) + " " + (height + 180), "100%");
+       carportOuterSvg = new Svg(0, 0, "0 0 " + (length + 180) + " " + (height + 180), "100%");
        //carportSvg = new Svg(75, 75, "0 0 " + (length+160) + " " + (height+90), "100%");
        //carportOuterSvg = new Svg(0, 0, "0 0 " + (length+170) + " " + (height+200), "100%");
-       }
 
-   public CarportSvg(int width, int length, int height) {
-       if(!roof.equals("nej")) {
+       if(!roof.equals("Uden tagplader")) {
            addRoof(width, length);
        }
        addRaftersFromSide(width, length);
@@ -64,8 +62,9 @@ public class CarportSvg {
        double y2 = ((12.8*(length))/1000);
        addTextH(895, (height / 2) - 20+75, 0, "" + (height-((12.8*(length))/1000)));
    }
+
     // Nedenstående konstruktor bruger vi til at tegne Carporten set fra oven
-    public CarportSvg(int width, int length, int height, int shedLength, int shedWidth) {
+    public CarportSvg(int width, int length, int height, double shedLength, double shedWidth) {
         this.length = length;
         this.width = width;
         this.height = height;
@@ -77,10 +76,10 @@ public class CarportSvg {
         //carportOuterSvg = new Svg(75, 75, "0 0 " + (length+170) + " " + (width+200), "100%");
 
        carportSvg.addRectangle(0, 0, width, length, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-        totalPoles = addPoles(width, length, height);
+        totalPoles = addPoles(width, length, height,shedLength,shedWidth);
         totalBeams = addBeams(length, width);
         totalRafters = addRafters(width, length);
-        totalCrossSupports = addCrossSupport(width, length);
+        totalCrossSupports = addLineWithStroke(width, length);
         addLineWithStroke(width, length);
         addArrowsForTheTopPainting(width, length);
         addTextV((length / 2) + 30, width + 55, 0, "" + length + " cm");
@@ -89,10 +88,10 @@ public class CarportSvg {
    }
 
     //i så fald kunden har valgt at tilkøbe et skur tilføjer vi det her
-    private void addShed(int width, int length, int height, int shedWidth, int shedLength) {
+    private void addShed(int width, int length, int height, double shedWidth, double shedLength) {
 
         //Adding boards to the shed
-        int x = length - 30 - shedLength;
+        double x = length - 30 - shedLength;
         double y = ((12.8*x)/1000)+20;
         System.out.println("skurets bredde er "+shedLength);
         System.out.println("Skurets først brædt har koordinaterne "+x+","+y);
@@ -223,7 +222,7 @@ public class CarportSvg {
 
     //Stolperne er placeret for hver 310 cm og går 90 cm. ned i jorden
     //Nedenstående metode bruges til tegning af stolper i tegningen set fra oven
-    public int addPoles(int width, int length, int height, int shedLength, int shedWidth) {
+    public int addPoles(int width, int length, int height, double shedLength, double shedWidth) {
         int poleCounter = 0;
        double x = 0;
         double y = 0;
@@ -291,7 +290,7 @@ public class CarportSvg {
 
     //Stolperne er placeret for hver 310 cm og går 90 cm. ned i jorden
     // Nedenstående metode bruges til tegning af stolper i tegningen set fra siden
-    public void addPolesFromTheSide(int width, int length, int height, int shedLength, int shedWidth) {
+    public void addPolesFromTheSide(int width, int length, int height, double shedLength, double shedWidth) {
         double x = 0;
         double y = 0;
         //Først placerer vi de 4 yderstolper på carporten
@@ -373,7 +372,7 @@ public class CarportSvg {
         carportOuterSvg.addArrow(75, width + 30 + 75, length + 79, width + 30 + 75, "stroke:#000000; marker-end: url(#endArrow);");
     }
 
-    public void addArrowsForTheSidePainting(int width, int length, int height, int shedWidth, int shedLength) {
+    public void addArrowsForTheSidePainting(int width, int length, int height, double shedWidth, double shedLength) {
         carportOuterSvg.addArrow(20, height+30+75, 20, 75, "stroke:#000000; marker-end: url(#endArrow);");
         carportOuterSvg.addArrow(50, height+30+75, 50, 91, "stroke:#000000; marker-end: url(#endArrow);");
         carportOuterSvg.addArrow(880, height+26.5+75, 880, (75+((int)(12.8*(length))/1000)), "stroke:#000000; marker-end: url(#endArrow);");
@@ -387,16 +386,16 @@ public class CarportSvg {
         carportOuterSvg.addLine((length+75)-30, height+50+75-6, (length+75)-30,height+50+75+6, "stroke:#000000; fill: #ffffff");
         carportOuterSvg.addLine((length+75+6.5), height+50+75-6, (length+75+6.5),height+50+75+6, "stroke:#000000; fill: #ffffff");
         if(shedWidth > 0) {
-            int x1 = (length+75-30-shedLength);
-            int x2 = x1 + shedLength;
+            double x1 = (length+75-30-shedLength);
+            double x2 = x1 + shedLength;
             System.out.println("pilen som skal befinde sig under skuret har startkoordinatet "+(x1-75)+","+(height+50+75));
             carportOuterSvg.addArrow(x1, height+50+75, x2, height+50+75, "stroke:#000000; marker-end: url(#endArrow);");
             carportOuterSvg.addLine(x1, height+50+75-6, x1,height+50+75+6, "stroke:#000000; fill: #ffffff");
             addTextV((length+75-40-(shedLength/2)), height + 55+90, 0, "" + shedLength);
             if(((length-142)-shedLength) > 310) {
                 int x = 75+100+310;
-                int x3 = length+75-30-shedLength;
-                int x4 = ((x3-x)/2)+x;
+                double x3 = length+75-30-shedLength;
+                double x4 = ((x3-x)/2)+x;
                 //Pilen der går fra stolpen til start af skur
                 System.out.println("Pilen der går fra anden stolpe til starten af skuret har startpunkt "+x+","+(height+50+75)+" og et slutpunkt der hedder ");
                 carportOuterSvg.addArrow(x, height+50+75, x3, height+50+75, "stroke:#000000; marker-end: url(#endArrow);");

@@ -101,6 +101,42 @@ public class CarportPart {
         this.DBtotalQuantityPrice = DBtotalQuantityPrice;
     }
 
+    public void setType(CarportPartType type) {
+        this.type = type;
+    }
+
+    public void setDBprice(double DBprice) {
+        this.DBprice = DBprice;
+    }
+
+    public void setDBlength(int DBlength) {
+        this.DBlength = DBlength;
+    }
+
+    public void setDBheight(int DBheight) {
+        this.DBheight = DBheight;
+    }
+
+    public void setDBwidth(int DBwidth) {
+        this.DBwidth = DBwidth;
+    }
+
+    public void setDBdescription(String DBdescription) {
+        this.DBdescription = DBdescription;
+    }
+
+    public void setDBmaterial(String DBmaterial) {
+        this.DBmaterial = DBmaterial;
+    }
+
+    public void setDBunit(String DBunit) {
+        this.DBunit = DBunit;
+    }
+
+    public void setDBname(String DBname) {
+        this.DBname = DBname;
+    }
+
     @Override
     public String toString() {
         return "CarportPart{" +

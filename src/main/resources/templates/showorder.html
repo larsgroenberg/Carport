@@ -30,7 +30,8 @@
         <h1>Tegning af din carport</h1>
 
         <div class="carport-svg-topview">
-            <div class="carport-svg-topview" th:utext="${session.svg}"></div>
+            <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
+            <div class="carport-svg-topview" th:utext="${session.svgFromTop}"></div>
         </div>
 
         <table class="carporttable" >
@@ -54,6 +55,7 @@
                 <td style="text-align: right;" th:text="${session.carportprice}"></td>
                 <td style="text-align: left;">kr.</td>
             </tr>
+            todo: fjern dette og indsæt shed details
             <tr>
                 <td style="text-align: left; border: none;">Carport Lukas pris:</td>
                 <td style="text-align: right;" th:text="${session.lukas}"></td>

@@ -92,17 +92,19 @@ public class OrderController {
 
         Locale.setDefault(new Locale("da-DK"));
 
-        CarportSvg svg = new CarportSvg((int) width, (int) length, (int) height);
+        CarportSvg svgFromTop = new CarportSvg((int) width, (int) length, (int) height, length_shed, width_shed);
+        CarportSvg svgFromSide = new CarportSvg((int) width, (int) length, (int) height, length_shed, width_shed, roof);
 
-        ctx.sessionAttribute("svg", svg.toString());
+        ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
+        ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
 
         //todo: fiks således at shed ikke bliver tilføjet når flueben tjekkes på og af.
         Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed, 0);
 
-        newCarport.setBEAM(new CarportPart(CarportPart.CarportPartType.BEAM, svg.getMaterialQuantity().get("totalBeams")));
-        newCarport.setSUPPORTPOST(new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, svg.getMaterialQuantity().get("totalPoles")));
-        newCarport.setRAFT(new CarportPart(CarportPart.CarportPartType.RAFT, svg.getMaterialQuantity().get("totalRafters")));
-        newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svg.getMaterialQuantity().get("totalCrossSupports")));
+        newCarport.setBEAM(new CarportPart(CarportPart.CarportPartType.BEAM, svgFromTop.getMaterialQuantity().get("totalBeams")));
+        newCarport.setSUPPORTPOST(new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, svgFromTop.getMaterialQuantity().get("totalPoles")));
+        newCarport.setRAFT(new CarportPart(CarportPart.CarportPartType.RAFT, svgFromTop.getMaterialQuantity().get("totalRafters")));
+        newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svgFromTop.getMaterialQuantity().get("totalCrossSupports")));
 
         ctx.sessionAttribute("newCarport", newCarport);
         PartsCalculator partsCalculator = new PartsCalculator(ctx, ConnectionPool.getInstance());

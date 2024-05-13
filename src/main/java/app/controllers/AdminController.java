@@ -34,12 +34,12 @@ public class AdminController
         });
         app.post("/updatepart", ctx -> {
             updatepart(ctx, ConnectionPool.getInstance());
-            getPartsList(ctx, ConnectionPool.getInstance());
+            showPartsList(ctx, ConnectionPool.getInstance());
             ctx.sessionAttribute("showallparts", true);
             ctx.render("adminSite.html");
         });
         app.post("/getAllParts", ctx -> {
-            getPartsList(ctx, ConnectionPool.getInstance());
+            showPartsList(ctx, ConnectionPool.getInstance());
             ctx.sessionAttribute("showallparts", true);
             ctx.render("adminSite.html");
         });
@@ -65,19 +65,29 @@ public class AdminController
         String material = ctx.formParam("material");
         String unit = ctx.formParam("unit");
         int price = Integer.parseInt(ctx.formParam("price"));
-        Part part = ctx.sessionAttribute("part");
-        part.setDescription(description);
-        part.setLength(length);
-        part.setHeight(height);
-        part.setWidth(width);
-        part.setType(type);
-        part.setMaterial(material);
-        part.setUnit(unit);
-        part.setPrice(price);
+        CarportPart part = ctx.sessionAttribute("part");
+        part.setDBdescription(description);
+        part.setDBlength(length);
+        part.setDBheight(height);
+        part.setDBwidth(width);
+        CarportPart.CarportPartType partType;
+        switch (type) {
+            case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
+            case "spær" -> partType = CarportPart.CarportPartType.RAFT;
+            case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
+            case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
+            default -> partType = CarportPart.CarportPartType.ROOFTILE;
+        }
+
+        part.setType(partType);
+
+        part.setDBmaterial(material);
+        part.setDBunit(unit);
+        part.setDBprice(price);
         ctx.sessionAttribute("part", part);
 
-        Part updatedPart = ctx.sessionAttribute("part");
-        PartsMapper.updatePart(updatedPart, connectionPool);
+        CarportPart updatedPart = ctx.sessionAttribute("part");
+        CarportPartMapper.updatePart(updatedPart, connectionPool);
 
         ctx.sessionAttribute("showallparts", true);
         ctx.sessionAttribute("showpart", false);
@@ -86,7 +96,7 @@ public class AdminController
     private static void edittask(Context ctx, ConnectionPool connectionPool) {
         try {
             int partId = Integer.parseInt(ctx.formParam("partId"));
-            Part part = PartsMapper.getPartById(partId, connectionPool);
+            CarportPart part = CarportPartMapper.getPartById(partId, connectionPool);
             ctx.sessionAttribute("part", part);
             ctx.sessionAttribute("showpart", true);
             ctx.sessionAttribute("showallparts", true);
@@ -172,5 +182,6 @@ public class AdminController
         OrdersMapper.changeStatusOnOrder(orderStatus, orderId, connectionPool);
         getAllOrders(ctx, connectionPool);
     }
+
 
 }

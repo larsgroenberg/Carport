@@ -395,4 +395,30 @@ public class CarportPartMapper {
         return null;
     }
 
+    public static void updatePart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
+
+        String sql = "UPDATE parts SET price = ?, description = ?, length = ?, height = ?, width = ?, type = ?, material = ?, unit = ?, name = ? WHERE part_id = ?;";
+
+        try(Connection connection = connectionPool.getConnection()){
+            try(PreparedStatement ps = connection.prepareStatement(sql)){
+                ps.setDouble(1, part.getDBprice());
+                ps.setString(2, part.getDBdescription());
+                ps.setInt(3, part.getDBlength());
+                ps.setInt(4, part.getDBheight());
+                ps.setInt(5, part.getDBwidth());
+
+                //todo: skal fikses da denne funktion vil omdøbe ting i databasen.
+                ps.setString(6, part.getType().toString());
+
+                ps.setString(7, part.getDBmaterial());
+                ps.setString(8, part.getDBunit());
+                ps.setString(9, part.getDBname());
+                ps.setInt(10, part.getPartId());
+
+                ps.executeUpdate();
+            }
+        }catch (SQLException e){
+            throw new DatabaseException("We couldn't update the parts costprice", e.getMessage());
+        }
+    }
 }
