@@ -1,51 +1,61 @@
 package app.services;
 
-import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.*;
+import app.entities.User;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
+
+import java.io.IOException;
 
 /**
- * Klasse der bliver brugt til at sende emails, vha. SMTP (Simple Mail Transfer Protocol)
+ * Klasse der bliver brugt til at sende emails
  */
 public class EmailService {
-    private final String username = System.getenv("Email_Name");
-    private final String password = System.getenv("Email_Password");
 
-    private final Properties properties;
+    public static void sendEmail(User currentUser) throws IOException {
+        // Erstat xyx@gmail.com med din egen email, som er afsender
+        Email from = new Email("auto.mail.sender.service@gmail.com");
 
-    /**
-     * EmailService Constructor
-     * Laver en instants a constructor med SMTP konfiguration
-     */
-    public EmailService(){
-        properties = new Properties();
-        properties.put("mail.smtp.auth", "true"); //gør at authentication er nødvendigt før email kan sendes
-        properties.put("mail.smtp.starttls.enable", "true"); //STARTTLS opgraderer en usikker forbindelse til en sikker forbindelse
-        properties.put("mail.smtp.host", "smtp.gmail.com"); // Fortæller at vi skal bruge gmail
-        properties.put("mail.smtp.port", "587"); // 587 port bliver brugt for forbindelser der er sikret med STARTTLS
-    }
+        from.setName("Johannes Fog Byggemarked");
 
-    public void sendEmail(String toEmail, String subject, String body) {
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        });
+        Mail mail = new Mail();
+        mail.setFrom(from);
 
+        String API_KEY = System.getenv("SENDGRID_API_KEY");
+
+        Personalization personalization = new Personalization();
+
+        /* Erstat kunde@gmail.com, name, email og zip med egne værdier ****/
+        /* I test-fasen - brug din egen email, så du kan modtage beskeden */
+        personalization.addTo(new Email(currentUser.getEmail()));
+        personalization.addDynamicTemplateData("name", currentUser.getName());
+        personalization.addDynamicTemplateData("email", currentUser.getEmail());
+        personalization.addDynamicTemplateData("password", currentUser.getPassword());
+        personalization.addDynamicTemplateData("link", "https://localhost:7070/kundeSide");
+        mail.addPersonalization(personalization);
+
+        mail.addCategory("carportapp");
+
+        SendGrid sg = new SendGrid(API_KEY);
+        Request request = new Request();
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(subject);
-            message.setText(body);
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
 
-            Transport.send(message);
-
-            System.out.println("Email sent successfully.");
-
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            // indsæt dit skabelonid herunder
+            mail.templateId = "d-8202a2164f2a479aa9e6b2ad690bad4c";
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+        } catch (IOException ex) {
+            System.out.println("Error sending mail");
+            throw ex;
         }
     }
 }
