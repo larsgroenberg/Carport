@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class ConnectionPool {
     // TODO: Change default access credentials for MySql server as needed below:
     private static final String DEFAULT_USER = "postgres";
-    private static final String DEFAULT_PASSWORD = System.getenv("Default_Password");
+    private static final String DEFAULT_PASSWORD = "hsY67kdHtryg43X";
     private static final String DEFAULT_URL = "jdbc:postgresql://161.35.204.41:5432/%s?currentSchema=public";
     private static final String DEFAULT_DB = "carport";
 
@@ -64,7 +64,6 @@ public class ConnectionPool {
         }
         return instance;
     }
-
     /***
      * Getting a live connection from a Hikari Connection Pool
      * @return a database connection to be used in sql requests

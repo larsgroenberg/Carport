@@ -18,7 +18,7 @@ public class CarportPartMapper {
 
                 while (rs.next()){
                     int partId = rs.getInt("part_id");
-                    int price = rs.getInt("price");
+                    Double price = rs.getDouble("price");
                     String description = rs.getString("description");
                     int length = rs.getInt("length");
                     int height = rs.getInt("height");
@@ -225,7 +225,7 @@ public class CarportPartMapper {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int part_id = rs.getInt("part_id");
-                int price = rs.getInt("price");
+                double price = rs.getDouble("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
                 int height = rs.getInt("height");
@@ -234,7 +234,15 @@ public class CarportPartMapper {
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
                 String name = rs.getString("name");
-                part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
+                CarportPart.CarportPartType partType = null;
+                switch (type) {
+                    case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
+                    case "spær" -> partType = CarportPart.CarportPartType.RAFT;
+                    case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
+                    case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
+                    default -> partType = CarportPart.CarportPartType.ROOFTILE;
+                }
+                part = new CarportPart(partType, 0,part_id, price, length,height,width, description,material_name, unit, name);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
@@ -408,7 +416,7 @@ public class CarportPartMapper {
                 ps.setInt(5, part.getDBwidth());
 
                 //todo: skal fikses da denne funktion vil omdøbe ting i databasen.
-                ps.setString(6, part.getType().toString());
+                ps.setString(6, String.valueOf(part.getType()));
 
                 ps.setString(7, part.getDBmaterial());
                 ps.setString(8, part.getDBunit());
