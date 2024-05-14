@@ -1,12 +1,8 @@
 package app.services;
 
-//import app.controllers.QuantityOFEachMaterialController;
-import app.entities.Carport;
-import app.entities.CarportPart;
+
 import app.persistence.ConnectionPool;
 import io.javalin.http.Context;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CarportSvg {
@@ -41,8 +37,6 @@ public class CarportSvg {
        this.roof = roof;
        carportSvg = new Svg(75, 75, "0 0 " + (length + 180) + " " + (height + 180), "100%");
        carportOuterSvg = new Svg(0, 0, "0 0 " + (length + 180) + " " + (height + 180), "100%");
-       //carportSvg = new Svg(75, 75, "0 0 " + (length+160) + " " + (height+90), "100%");
-       //carportOuterSvg = new Svg(0, 0, "0 0 " + (length+170) + " " + (height+200), "100%");
 
        if(!roof.equals("Uden tagplader")) {
            addRoof(width, length);
@@ -72,10 +66,8 @@ public class CarportSvg {
         this.shedWidth = shedWidth;
         carportSvg = new Svg(75, 75, "0 0 " + (length+180) + " " + (width+180), "100%");
         carportOuterSvg = new Svg(0, 0, "0 0 " + (length+180) + " " + (width+180), "100%");
-        //carportSvg = new Svg(75, 75, "0 0 " + (length+160) + " " + (width+77), "100%");
-        //carportOuterSvg = new Svg(75, 75, "0 0 " + (length+170) + " " + (width+200), "100%");
 
-       carportSvg.addRectangle(0, 0, width, length, "stroke-width:1px; stroke:#000000; fill: #ffffff");
+        carportSvg.addRectangle(0, 0, width, length, "stroke-width:1px; stroke:#000000; fill: #ffffff");
         totalPoles = addPoles(width, length, height,shedLength,shedWidth);
         totalBeams = addBeams(length, width);
         totalRafters = addRafters(width, length);
@@ -98,7 +90,7 @@ public class CarportSvg {
 
         for(int k = 0; k < shedLength; k = k+10) {
             y = (12.8*(k+x))/1000;
-            carportSvg.addRectangle(k+x, y+26.5, height-y, 10, "stroke:#000000; fill: #ffffff");
+            carportSvg.addRectangle(k+x, y+16.5, height-y+10, 10, "stroke:#000000; fill: #ffffff");
         }
         //Adding poles
         if ((length - 142 - shedLength) > 310) {
@@ -110,12 +102,7 @@ public class CarportSvg {
             y = ((12.8*100)/1000);
             carportSvg.addRectangle(100, y+26.5, height-y, 12.0, "stroke-width:1px; stroke:#000000; fill: #ffffff");
         }
-        // De nedenstående to stolper skal kun med på tegningen set fra oven
-        //carportSvg.addRectangle((length-shedLength-30), 32.5, height+y3+6.5, 12.0, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-        //carportSvg.addRectangle(length-42, 34.5, height+y3+8.5, 12.0, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-
     }
-
 
    public HashMap<String, Integer> getMaterialQuantity(){
         HashMap<String, Integer> quantityMap = new HashMap<String, Integer>();
@@ -126,6 +113,7 @@ public class CarportSvg {
 
        return quantityMap;
     }
+
    // Remme er placeret 35 nede og går på tværs og er lige så lange spm den indtastede længde
    public int addBeams(int width, int length) {
         carportSvg.addRectangle(0, 35, 4.5, width, "stroke-width:1px; stroke:#000000; fill: #ffffff");
@@ -339,58 +327,47 @@ public class CarportSvg {
             }
         }
     }
-    /*
-    public void addPolesFromTheSide(int width, int length, int height) {
-       int x1 = length-(shedLength+30);
-       double y = ((12.8*100)/1000);
-       carportSvg.addRectangle(100, y+y3, height-y, 12.0, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-       y = ((12.8*(length-42))/1000);
-       carportSvg.addRectangle(length - 42, y+y3, height-y, 12.0, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-        if ((length - 142) < 620 && (length - 142) > 310) {
-            //x1 = (length - 142)/2;
-            x1 = 310;
-            y = ((12.8*(100+x1))/1000);
-            carportSvg.addRectangle(100+x1,y+y3, height-y, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-        } else if((length -142) > 620) {
-            double x2 = (length - 142)/3;
-            y = ((12.8*(100+x2))/1000);
-            carportSvg.addRectangle(100+x2, y+y3, height-y, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-            y = ((12.8*(100+(2*x2)))/1000);
-            carportSvg.addRectangle(100+(2*x2), y+y3, height-y, 12, "stroke-width:1px; stroke:#000000; fill: #ffffff");
-        }
-    }
-
-     */
-
 
     //  Pilene er placeret til venstre for y-aksen og neddenfor X-visen og er med til at vise bredde og højde på carporten.
     //  Den tredje pil viser bredden imellem de 20 remme
     public void addArrowsForTheTopPainting(int width, int length) {
         //Pilen som angiver bredden imellem
         carportOuterSvg.addArrow(20, width+75-30, 20, 107, "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addLine(10, width+75-30, 30,width+75-30, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine(10, 107, 30,107, "stroke:#000000; fill: #ffffff");
         carportOuterSvg.addArrow(50, width+75, 50, 75, "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addLine(40, width+75, 60,width+75, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine(40, 75, 60,75, "stroke:#000000; fill: #ffffff");
         carportOuterSvg.addArrow(75, width + 30 + 75, length + 79, width + 30 + 75, "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addLine(75, width + 30 + 65, 75,width + 30 + 85, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine((length + 79), width + 30 + 65, (length + 79),width + 30 + 85, "stroke:#000000; fill: #ffffff");
     }
 
     public void addArrowsForTheSidePainting(int width, int length, int height, double shedWidth, double shedLength) {
         carportOuterSvg.addArrow(20, height+30+75, 20, 75, "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addLine(10, height+30+75, 30,height+30+75, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine(10, 75, 30,75, "stroke:#000000; fill: #ffffff");
         carportOuterSvg.addArrow(50, height+30+75, 50, 91, "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addLine(40, height+30+75, 60,height+30+75, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine(40, 91, 60,91, "stroke:#000000; fill: #ffffff");
         carportOuterSvg.addArrow(880, height+26.5+75, 880, (75+((int)(12.8*(length))/1000)), "stroke:#000000; marker-end: url(#endArrow);");
+        carportOuterSvg.addLine(870, (75+((int)(12.8*(length))/1000)), 890,(75+((int)(12.8*(length))/1000)), "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine(870, height+26.5+75, 890,height+26.5+75, "stroke:#000000; fill: #ffffff");
         carportOuterSvg.addArrow(75, height+50+75, 175, height+50+75, "stroke:#000000; marker-end: url(#endArrow);");
-        carportOuterSvg.addLine(75, height+50+75-6, 75,height+50+75+6, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine(75, height+50+75-10, 75,height+50+75+10, "stroke:#000000; fill: #ffffff");
         addTextV((100 / 2) + 75-10, height + 55+90, 0, "100");
         System.out.println("pilen der går fra skurets ende til carportens ende har koordinaterne "+(length-30)+","+(height+50+75));
         // Her lægger vi 6.5 cm til da jeg har forlænget taget med 6.5 cm.
         carportOuterSvg.addArrow((length+75)-30, height+50+75, (int)(length+75+6.5), height+50+75, "stroke:#000000; marker-end: url(#endArrow);");
         addTextV((length+75-20), height + 55+90, 0, "30");
-        carportOuterSvg.addLine((length+75)-30, height+50+75-6, (length+75)-30,height+50+75+6, "stroke:#000000; fill: #ffffff");
-        carportOuterSvg.addLine((length+75+6.5), height+50+75-6, (length+75+6.5),height+50+75+6, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine((length+75)-30, height+50+75-10, (length+75)-30,height+50+75+10, "stroke:#000000; fill: #ffffff");
+        carportOuterSvg.addLine((length+75+6.5), height+50+75-10, (length+75+6.5),height+50+75+10, "stroke:#000000; fill: #ffffff");
         if(shedWidth > 0) {
             double x1 = (length+75-30-shedLength);
             double x2 = x1 + shedLength;
             System.out.println("pilen som skal befinde sig under skuret har startkoordinatet "+(x1-75)+","+(height+50+75));
             carportOuterSvg.addArrow(x1, height+50+75, x2, height+50+75, "stroke:#000000; marker-end: url(#endArrow);");
-            carportOuterSvg.addLine(x1, height+50+75-6, x1,height+50+75+6, "stroke:#000000; fill: #ffffff");
+            carportOuterSvg.addLine(x1, height+50+75-10, x1,height+50+75+10, "stroke:#000000; fill: #ffffff");
             addTextV((length+75-40-(shedLength/2)), height + 55+90, 0, "" + shedLength);
             if(((length-142)-shedLength) > 310) {
                 int x = 75+100+310;
@@ -399,14 +376,14 @@ public class CarportSvg {
                 //Pilen der går fra stolpen til start af skur
                 System.out.println("Pilen der går fra anden stolpe til starten af skuret har startpunkt "+x+","+(height+50+75)+" og et slutpunkt der hedder ");
                 carportOuterSvg.addArrow(x, height+50+75, x3, height+50+75, "stroke:#000000; marker-end: url(#endArrow);");
-                carportOuterSvg.addLine(x, height+50+75-6, x,height+50+75+6, "stroke:#000000; fill: #ffffff");
+                carportOuterSvg.addLine(x, height+50+75-10, x,height+50+75+10, "stroke:#000000; fill: #ffffff");
                 addTextV(x4-10, height + 55+90, 0, ""+((x3-x)));
                 // Pilen er går fra første stolpe til anden stolpe
-                 x2 = 75+100;
-                 x3 = x2+310;
+                x2 = 75+100;
+                x3 = x2+310;
                 System.out.println("Pilen der går fra første stolpe til anden stolpe har startpunkt "+x2+","+(height+50+75));
                 carportOuterSvg.addArrow(x2, height+50+75, x3, height+50+75, "stroke:#000000; marker-end: url(#endArrow);");
-                carportOuterSvg.addLine(x2, height+50+75-6, x2,height+50+75+6, "stroke:#000000; fill: #ffffff");
+                carportOuterSvg.addLine(x2, height+50+75-10, x2,height+50+75+10, "stroke:#000000; fill: #ffffff");
                 addTextV((310 / 2) + 175-20, height + 55+90, 0, "310");
             } else {
                 // Pilen er går fra første stolpe til start af skuret
