@@ -20,8 +20,7 @@ public class OrderController {
 
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("adminsite.html");
-            //ctx.render("carportspecs.html");
+            ctx.render("carportspecs.html");
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx);
