@@ -35,7 +35,7 @@ public class EmailService {
         personalization.addDynamicTemplateData("name", currentUser.getName());
         personalization.addDynamicTemplateData("email", currentUser.getEmail());
         personalization.addDynamicTemplateData("password", currentUser.getPassword());
-        personalization.addDynamicTemplateData("link", "https://localhost:7070/kundeSide");
+        personalization.addDynamicTemplateData("link", "https://localhost:7070/customersite");
         mail.addPersonalization(personalization);
 
         mail.addCategory("carportapp");
