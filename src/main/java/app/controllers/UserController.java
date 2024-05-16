@@ -33,18 +33,18 @@ public class UserController {
 
         // Hent form parametre
         String email = ctx.formParam("email");
-        String password1 = ctx.formParam("password1");
-        String password2 = ctx.formParam("password2");
+        //String password1 = ctx.formParam("password1");
+        //String password2 = ctx.formParam("password2");
         String name = ctx.formParam("name");
         String mobile = ctx.formParam("mobile");
         String address = ctx.formParam("address");
         String zipcode = ctx.formParam("zipcode");
 
-        boolean userexist = UserMapper.userexist(email, connectionPool);
+        //boolean userexist = UserMapper.userexist(email, connectionPool);
 
-        if (!userexist) {
-            if (password1.equals(password2)) {
-                User newUser = new User(0,email,password1,false,name,mobile,address,zipcode);
+        if (/*!userexist*/true) {
+            //if (password1.equals(password2)) {
+                User newUser = new User(0,email,null,false,name,mobile,address,zipcode);
                 ctx.sessionAttribute("currentUser", newUser);
 
                 //UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
@@ -52,11 +52,11 @@ public class UserController {
                 //ctx.attribute("login", true);
                 //ctx.render("login.html");
 
-            } else {
+            /*} else {
                 ctx.attribute("message", "Passwords matcher ikke! Prøv igen");
                 ctx.attribute("error", true);
                 //ctx.render("createuser.html");
-            }
+            }*/
         } else {
             ctx.attribute("message", "En bruger med denne email findes allerede. Venligst vælg en anden email");
             //ctx.attribute("login", true);

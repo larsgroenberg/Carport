@@ -1,54 +1,67 @@
-/* First CSS file */
 /* Navigation bar styles */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
-    width: 200px; /* Adjust as needed */
-    background-color: #333; /* Background color */
+    width: 400px; /* Adjust as needed */
+    background-color: #3a4d7f; /* Dark blue background color */
     padding-top: 20px;
 }
 
 .navbar a {
     display: block;
     padding: 10px 16px;
-    color: white;
+    color: white; /* White text color */
     text-decoration: none;
+    font-family: sans-serif; /* Use your custom font here */
+}
+
+.navbar h1 {
+    display: block;
+    padding: 10px 16px;
+    color: white; /* White text color */
+    text-decoration: none;
+    font-family: sans-serif; /* Use your custom font here */
+    font-size: 56px;
+    font-weight: bold;
+    text-align: center;
 }
 
 .navbar a:hover {
-    background-color: #ddd; /* Highlight on hover */
-    color: black;
+    background-color: #1a2e4c; /* Darker blue highlight on hover */
+    color: white; /* White text color on hover */
 }
 
 /* Highlight the current page */
 .navbar a.active {
-    background-color: #555; /* Darker background */
+    background-color: #1a2e4c; /* Darker blue background for active link */
+    color: white; /* White text color for active link */
 }
 
 /* Button Styles */
 .navbar .nav-btn {
-    width: 100%;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 12px 0; /* Adjust padding to center text vertically */
-    margin: 10px 0; /* Add margin to separate buttons */
+    width: 88%; /* Adjust width to content */
+    background-color: transparent; /* Transparent background */
+    color: white; /* White text color */
+    border: 1px solid white; /* White border */
+    border-radius: 25px; /* Rounded corners */
+    padding: 17px 25px; /* Adjust padding to center text vertically and provide horizontal spacing */
+    margin: 15px 15px; /* Add margin to separate buttons and align with other elements */
     cursor: pointer;
-    font-size: 14px; /* Adjust font size to make buttons smaller */
-    transition: background-color 0.3s;
+    font-size: 20px; /* Adjust font size to make buttons smaller */
+    transition: background-color 0.3s, color 0.3s; /* Transition for background color and text color */
 }
 
 .navbar .nav-btn:hover {
-    background-color: #2980b9;
+    background-color: white; /* White background on hover */
+    color: #3a4d7f; /* Dark blue text color on hover */
 }
 
 .navbar .nav-btn.active {
-    background-color: #2ecc71;
+    background-color: #1a2e4c; /* Darker blue background for active button */
+    color: white; /* White text color for active button */
 }
-
 /* Main content styles */
 .main-content {
     margin-left: 200px; /* Adjust according to navbar width */
