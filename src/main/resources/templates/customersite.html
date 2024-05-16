@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <h1>Detaljer på din ordre</h1>
+    <h2>Carport Specifikationer</h2>
+    <p>Width: <span th:text="${session.carportInfo.carportWidth}">0</span> cm</p>
+    <p>Length: <span th:text="${session.carportInfo.carportLength}">0</span> cm</p>
+    <p>Height: <span th:text="${session.carportInfo.carportHeight}">0</span> cm</p>
+    <p>Roof Type: <span th:if="${session.carportInfo.roof}">Plastic Trapeztag</span></p>
+
+    <h2>Dine personlige oplysninger</h2>
+    <form th:action="@{/updateName}" method="post">
+        <label for="mobile">Name:</label>
+        <input type="text" id="name" name="name" th:value="${session.currentUser.name}" required />
+        <input type="hidden" name="user_id" th:value="${session.currentUser.userId}" />
+        <button type="submit">Update Name</button>
+    </form>
+    <p>Email: <span th:text="${session.currentUser.email}">Email not found</span></p>
+    <form th:action="@{/updateMobile}" method="post">
+        <label for="mobile">Mobile Number:</label>
+        <input type="text" id="mobile" name="mobile" th:value="${session.currentUser.mobile}" required />
+        <input type="hidden" name="user_id" th:value="${session.currentUser.userId}" />
+        <button type="submit">Update Mobile</button>
+    </form>
+    <p>Address: <span th:text="${session.currentUser.address}">Address not found</span></p>
+    <p>Zipcode: <span th:text="${session.currentUser.zipcode}">Zipcode not found</span></p>
+
+    <h2>Stykliste</h2>
+
+    <h2>Pris på din carport</h2>
+    <p><span th:text="${session.carportInfo.salesPrice}">0</span> DKK</p>
+
+
+
+
+</body>
+</html>
