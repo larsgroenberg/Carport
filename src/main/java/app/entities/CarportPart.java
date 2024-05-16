@@ -6,7 +6,10 @@ public class CarportPart {
         RAFT,
         BEAM,
         CROSSSUPPORT,
-        ROOFTILE
+        ROOFTILE,
+        STERN,
+        SHEDWOOD,
+        NONE
     }
 
     private CarportPartType type;

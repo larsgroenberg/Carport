@@ -128,16 +128,26 @@ public class PartsCalculator {
         double supportPostLength = (90 + carport.getHeight()); // * carport.getSUPPORTPOST().getQuantity()
         double beamLength = carport.getLength();// * carport.getBEAM().getQuantity()
         double raftLength = carport.getWidth();// * carport.getRAFT().getQuantity()
+        double roofTile = carport.getLength();
+
+        double frontShedWood = carport.getShedWidth();
+        double sideShedWood = carport.getShedLength();
 
         CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.BEAM, 0,0, 10000, 0,0,0,"","","","");
         CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0,0, 10000, 0,0,0,"","","","");
         CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.RAFT, 0,0, 10000, 0,0,0,"","","","");
         CarportPart cheapestCrossSupport = new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestRooftile = new CarportPart(CarportPart.CarportPartType.ROOFTILE, 0,0, 10000, 0,0,0,"","","","");
+
+        CarportPart cheapestFrontShedWood = new CarportPart(CarportPart.CarportPartType.SHEDWOOD, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestSideShedWood = new CarportPart(CarportPart.CarportPartType.SHEDWOOD, 0,0, 10000, 0,0,0,"","","","");
+
         cheapestPartList = new ArrayList<>();
 
         double distance = 0;
         double bestFit = 10000;
         double bestFitSupportPost = 10000;
+        double bestFitRoofTile = 10000;
 
         for (CarportPart part : dbPartsList){
             if(part.getType() == cheapestBeam.getType()){
@@ -152,7 +162,6 @@ public class PartsCalculator {
                     cheapestBeam = part;
                     bestFit = distance;
                 }
-
             }
 
             if(part.getType() == cheapestSupport.getType()){
@@ -182,10 +191,52 @@ public class PartsCalculator {
                     cheapestCrossSupport = part;
                 }
             }
+
+            if(part.getType() == cheapestRooftile.getType() && carport.isWithRoof()){
+                distance = roofTile - part.getDBlength();
+
+                if (distance <= 0) {
+                    if(cheapestRooftile.getDBwidth() == 0){
+                    // If the part exactly fits and it's cheaper, update cheapestBeam
+                    cheapestRooftile = part;
+                    bestFitRoofTile = distance;
+                    } else if (part.getDBprice() < cheapestRooftile.getDBprice() || part.getDBlength() > cheapestRooftile.getDBlength()) {
+                        cheapestRooftile = part;
+                        bestFitRoofTile = distance;
+                    }
+                } else if (distance > 0 && distance < bestFitRoofTile) {
+                    // If the part is longer but closer to the target length, update cheapestBeam
+                    cheapestRooftile = part;
+                    bestFitRoofTile = distance;
+                }
+            }
+
+
+            if(part.getType() == cheapestFrontShedWood.getType() && carport.isWithShed()){
+                distance = frontShedWood - part.getDBlength();
+
+                if (distance <= 0) {
+                    if(cheapestFrontShedWood.getDBwidth() == 0){
+                        // If the part exactly fits and it's cheaper, update cheapestBeam
+                        cheapestFrontShedWood = part;
+                        bestFitRoofTile = distance;
+                    } else if (part.getDBprice() < cheapestFrontShedWood.getDBprice() || part.getDBlength() > cheapestFrontShedWood.getDBlength()) {
+                        cheapestFrontShedWood = part;
+                        bestFitRoofTile = distance;
+                    }
+                } else if (distance > 0 && distance < bestFitRoofTile) {
+                    // If the part is longer but closer to the target length, update cheapestBeam
+                    cheapestFrontShedWood = part;
+                    bestFitRoofTile = distance;
+                }
+            }
+
+
         }
         int beamQuantityNeeded = (int) Math.ceil(beamLength * carport.getBEAM().getQuantity() / cheapestBeam.getDBlength());
-        int supportPostQuantityNeeded = (int) Math.ceil(supportPostLength * carport.getSUPPORTPOST().getQuantity() / cheapestSupport.getDBlength());
+        //int supportPostQuantityNeeded = (int) Math.ceil(supportPostLength * carport.getSUPPORTPOST().getQuantity() / cheapestSupport.getDBlength());
         int raftQuantityNeeded = (int) Math.ceil(raftLength * carport.getRAFT().getQuantity() / cheapestRaft.getDBlength());
+        int roofTileQuantityNeeded = (int) Math.ceil(carport.getWidth() / cheapestRooftile.getDBwidth());
 
         int crossSupportQuantityNeeded = (int) Math.ceil((Math.sqrt(carport.getWidth()*carport.getWidth() + carport.getLength()- carport.getShedLength()* carport.getLength()- carport.getShedLength())/cheapestCrossSupport.getDBlength())*2);
 
@@ -194,14 +245,28 @@ public class PartsCalculator {
         cheapestSupport.setQuantity(carport.getSUPPORTPOST().getQuantity());
         cheapestRaft.setQuantity(raftQuantityNeeded);
         cheapestCrossSupport.setQuantity(crossSupportQuantityNeeded);
-
+        cheapestRooftile.setQuantity(roofTileQuantityNeeded);
 
         cheapestPartList.add(cheapestBeam);
         cheapestPartList.add(cheapestSupport);
         cheapestPartList.add(cheapestRaft);
         cheapestPartList.add(cheapestCrossSupport);
 
-        totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity()) + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity()) + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity()) + (cheapestCrossSupport.getDBprice() * cheapestCrossSupport.getQuantity());
+        if(carport.isWithRoof()){
+
+        cheapestPartList.add(cheapestRooftile);
+
+        totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity())
+                + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity())
+                + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity())
+                + (cheapestCrossSupport.getDBprice() * cheapestCrossSupport.getQuantity())
+                + (cheapestRooftile.getDBprice() * cheapestRooftile.getQuantity());
+        } else {
+            totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity())
+                    + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity())
+                    + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity())
+                    + (cheapestCrossSupport.getDBprice() * cheapestCrossSupport.getQuantity());
+        }
     }
 
     public double getTotalPrice() {
