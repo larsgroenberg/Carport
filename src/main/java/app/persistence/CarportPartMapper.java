@@ -447,6 +447,9 @@ public class CarportPartMapper {
             case "hulbånd":  // Adding a case for 'hulbånd'
                 types.add(CarportPart.CarportPartType.CROSSSUPPORT);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
                 break;
+            case "remme":  // Adding a case for 'hulbånd'
+                types.add(CarportPart.CarportPartType.BEAM);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
+                break;
             default:
                 throw new IllegalArgumentException("Unexpected type: " + dbType);
         }
