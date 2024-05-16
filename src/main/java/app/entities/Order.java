@@ -30,7 +30,7 @@ public class Order {
         this.userEmail = userEmail;
         this.orderDate = orderDate;
         this.roof = roof;
-        this. wall = wall;
+        this.wall = wall;
     }
 
     public int getOrderId() {

@@ -117,7 +117,7 @@ h1 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 button.produced-button {
@@ -155,16 +155,16 @@ input[type="submit"]:hover {
 }
 input[type="text"].enter-amount, input[type="text"].enter-username {
     padding: 12px 20px;
-    border: 2px solid #4CAF50; /* Green border */
+    border: 2px solid #4CAF50;
     border-radius: 25px;
     margin: 10px;
     font-size: 16px;
     transition: border-color 0.3s;
-
 }
+
 input[type="text"].enter-amount:focus, input[type="text"].enter-username:focus {
-    border-color: #45a049; /* Green on focus */
-    outline: none; /* Remove outline */
+    border-color: #45a049;
+    outline: none;
 }
 
 table {
@@ -228,29 +228,117 @@ button.produced-button:hover {
     transform: scale(1.05);
 }
 
+.form-container {
+    /*display: inline-flex;*/
+    flex-direction: row;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+}
+
+
+.betal {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 25px 8px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 22px;
+    transition: background-color 0.4s, transform 0.2s;
+}
+
+.betal:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+
+.closemessage {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 25px 8px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.4s, transform 0.2s;
+}
+
+.closemessage:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+
+
+.modal-med-fejlbesked {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    top: 44%;
+    left: 50%;
+    width: 250px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.modal-fejl-content {
+    background-color: #f9f9f9;
+    margin: 16% auto;
+    padding: 20px;
+    box-shadow: 5px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.5);
+    border-radius: 8px;
+}
+
+#textMessage {
+    color: black;
+    font-size: 20px;
+    width: 100%;
+    margin: 15% auto;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+
+
+
 /* Style for the modal */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    top: 40%;
+    display: block;
+    position: fixed; /* Positioner modalen fast på skærmen */
+    z-index: 0; /* Sørg for, at modalen er foran alt andet indhold */
+    top: 44%;
     left: 50%;
+    width: 650px;
     transform: translate(-50%, -50%);
-    width: 1400px;
-    background-color: rgba(0,0,0,0);
+    background-color: #f9f9f9;
+    padding: 35px 35px 30px 35px;
+    box-shadow: 5px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.5);
+    border-radius: 10px;
 }
 
 /* Style for modal content */
 .modal-content {
     position: relative;
-    z-index: 1;
+    z-index: 100;
     background-color: #f9f9f9;
     margin: 15% auto;
     padding: 35px 35px 30px 35px;
     box-shadow: 5px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.5);
     border-radius: 10px;
-    width: 35%;
-    height: 18%;
+    text-align: center;
+}
+
+.modal div {
+    background-color: #f9f9f9;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+}
+
+.inline-label-input {
+    text-align: left;
+    margin-right: 10px; /* Juster margen efter behov */
+    background-color: #f9f9f9;
 }
 
 #messageText {
@@ -259,6 +347,44 @@ button.produced-button:hover {
     background-color: #f9f9f9;
     text-align: left;
 }
+
+.editpart {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #f9f9f9;
+    font-size: 16px;
+}
+
+.editpart td {
+    padding: 3px;
+    border: none;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.editpart td:first-child {
+    text-align: right;
+}
+
+.editpart label {
+    width: 30px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.editpart input[type="text"] {
+    width: calc(100% - 140px);
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.editpart input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px #007bff;
+}
+
 
 .close {
     color: #aaa;
