@@ -137,8 +137,9 @@ public class PartsCalculator {
 
         double distance = 0;
         double bestFit = 10000;
+        double bestFitSupportPost = 10000;
         for (CarportPart part : dbPartsList){
-            if(part.getType() == cheapestBeam.getType() && part.getDBlength() >= cheapestBeam.getDBlength()){
+            if(part.getType() == cheapestBeam.getType()){
                 distance = beamLength - part.getDBlength();
 
                 if (distance <= 0 && cheapestBeam.getDBprice() > part.getDBprice()) {
@@ -152,13 +153,18 @@ public class PartsCalculator {
                 }
 
             }
-            if(part.getType() == cheapestSupport.getType() && part.getDBlength() >= cheapestSupport.getDBlength()){
-                distance = supportPostLength - part.getDBlength();
-                if(distance <= 0 && cheapestSupport.getDBprice() > part.getDBprice()){
-                    cheapestSupport = part;
-                }
+            if(part.getType() == cheapestSupport.getType()){
+                    distance = part.getDBlength() - supportPostLength;
 
-                //cheapestSupport = part;
+                    if (distance <= 0 && cheapestSupport.getDBprice() > part.getDBprice()) {
+                        // If the part exactly fits and it's cheaper, update cheapestBeam
+                        cheapestSupport = part;
+                        bestFitSupportPost = distance;
+                    } else if (distance > 0 && distance < bestFitSupportPost) {
+                        // If the part is longer but closer to the target length, update cheapestBeam
+                            cheapestSupport = part;
+                            bestFitSupportPost = distance;
+                    }
             }
             if(part.getType() == cheapestRaft.getType() && part.getDBlength() >= cheapestRaft.getDBlength()){
                 distance = raftLength - part.getDBlength();
