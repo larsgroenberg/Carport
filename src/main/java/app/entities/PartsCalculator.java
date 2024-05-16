@@ -138,6 +138,7 @@ public class PartsCalculator {
         double distance = 0;
         double bestFit = 10000;
         double bestFitSupportPost = 10000;
+
         for (CarportPart part : dbPartsList){
             if(part.getType() == cheapestBeam.getType()){
                 distance = beamLength - part.getDBlength();
@@ -153,6 +154,7 @@ public class PartsCalculator {
                 }
 
             }
+
             if(part.getType() == cheapestSupport.getType()){
                     distance = part.getDBlength() - supportPostLength;
 
@@ -166,27 +168,26 @@ public class PartsCalculator {
                             bestFitSupportPost = distance;
                     }
             }
+
             if(part.getType() == cheapestRaft.getType() && part.getDBlength() >= cheapestRaft.getDBlength()){
                 distance = raftLength - part.getDBlength();
                 if(distance <= 0 && cheapestRaft.getDBprice() > part.getDBprice()){
                     cheapestRaft = part;
                 }
-
-                //cheapestRaft = part;
             }
+
             if(part.getType() == cheapestCrossSupport.getType() && part.getDBlength() >= cheapestCrossSupport.getDBlength()){
-                distance = beamLength - part.getDBlength();
+                distance = carport.getLength()- carport.getShedLength() - part.getDBlength();
                 if(distance <= 0 && cheapestCrossSupport.getDBprice() > part.getDBprice()){
                     cheapestCrossSupport = part;
                 }
-                //cheapestCrossSupport = part;
             }
         }
         int beamQuantityNeeded = (int) Math.ceil(beamLength * carport.getBEAM().getQuantity() / cheapestBeam.getDBlength());
         int supportPostQuantityNeeded = (int) Math.ceil(supportPostLength * carport.getSUPPORTPOST().getQuantity() / cheapestSupport.getDBlength());
         int raftQuantityNeeded = (int) Math.ceil(raftLength * carport.getRAFT().getQuantity() / cheapestRaft.getDBlength());
 
-        int crossSupportQuantityNeeded = (int) Math.ceil(Math.sqrt(carport.getWidth()*carport.getWidth() + carport.getLength()* carport.getLength())/cheapestCrossSupport.getDBlength()) *2;
+        int crossSupportQuantityNeeded = (int) Math.ceil((Math.sqrt(carport.getWidth()*carport.getWidth() + carport.getLength()- carport.getShedLength()* carport.getLength()- carport.getShedLength())/cheapestCrossSupport.getDBlength())*2);
 
 
         cheapestBeam.setQuantity(beamQuantityNeeded);
