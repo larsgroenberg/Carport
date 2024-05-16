@@ -4,6 +4,7 @@ import app.entities.CarportPart;
 import app.exceptions.DatabaseException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarportPartMapper {
 
@@ -393,6 +394,63 @@ public class CarportPartMapper {
             throw new RuntimeException(e);
         }
         return null;
+    }
+    public static List<CarportPart> getCompletePartsListByOrderId(int orderId, ConnectionPool pool) throws DatabaseException {
+        List<CarportPart> partsList = new ArrayList<>();
+        String sql = "SELECT p.part_id, p.type, pl.quantity, p.price as DBprice, p.length as DBlength, p.height as DBheight, p.width as DBwidth, " +
+                "p.description as DBdescription, p.material as DBmaterial, p.unit as DBunit, p.name as DBname " +
+                "FROM parts p JOIN partslist pl ON p.part_id = pl.part_id WHERE pl.order_id = ?";
+        try (Connection conn = pool.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                List<CarportPart.CarportPartType> types = mapToCarportPartType(rs.getString("type")); // This now returns a list of types
+                for (CarportPart.CarportPartType type : types) {
+                    partsList.add(new CarportPart(
+                            rs.getInt("part_id"),
+                            type,
+                            rs.getInt("quantity"),
+                            rs.getDouble("DBprice"),
+                            rs.getInt("DBlength"),
+                            rs.getInt("DBheight"),
+                            rs.getInt("DBwidth"),
+                            rs.getString("DBdescription"),
+                            rs.getString("DBmaterial"),
+                            rs.getString("DBunit"),
+                            rs.getString("DBname")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to fetch parts list: " + e.getMessage());
+        }
+        return partsList;
+    }
+
+    private static List<CarportPart.CarportPartType> mapToCarportPartType(String dbType) {
+        List<CarportPart.CarportPartType> types = new ArrayList<>();
+        switch (dbType.toLowerCase()) {
+            case "stolpe":
+                types.add(CarportPart.CarportPartType.SUPPORTPOST);
+                break;
+            case "spær":
+                types.add(CarportPart.CarportPartType.RAFT);
+                types.add(CarportPart.CarportPartType.BEAM);
+                break;
+            case "reglar":
+                types.add(CarportPart.CarportPartType.BEAM);
+                break;
+            case "lægte":
+            case "brædder":
+                types.add(CarportPart.CarportPartType.ROOFTILE);
+                break;
+            case "hulbånd":  // Adding a case for 'hulbånd'
+                types.add(CarportPart.CarportPartType.CROSSSUPPORT);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected type: " + dbType);
+        }
+        return types;
     }
 
 }

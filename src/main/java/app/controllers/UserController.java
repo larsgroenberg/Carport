@@ -1,13 +1,16 @@
 package app.controllers;
 
+import app.entities.CarportPart;
 import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
+import app.persistence.CarportPartMapper;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.util.List;
 import java.util.Map;
 
 import static app.persistence.OrdersMapper.getOrderByEmail;
@@ -171,11 +174,11 @@ public class UserController {
         try {
             int userid = user.getUserId();
             Order customerOrder = getOrderByUserId(userid, ConnectionPool.getInstance());
-            if (customerOrder != null) {
-                ctx.sessionAttribute("carportInfo", customerOrder);
-            } else {
-                throw new DatabaseException("No order found for this user");
-            }
+            int orderId = customerOrder.getOrderId();
+            List<CarportPart> customerPartsList = CarportPartMapper.getCompletePartsListByOrderId(orderId, ConnectionPool.getInstance());
+            ctx.sessionAttribute("carportInfo", customerOrder);
+            ctx.sessionAttribute("customerPartsList", customerPartsList);
+            System.out.println(customerPartsList);
         } catch (DatabaseException e) {
             ctx.status(500).result("Failed to retrieve order: " + e.getMessage());
         }
