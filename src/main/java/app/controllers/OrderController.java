@@ -11,6 +11,7 @@ import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.OrdersMapper;
 import app.persistence.UserMapper;
+import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import app.services.CarportSvg;
@@ -41,6 +42,8 @@ public class OrderController {
 
             ctx.sessionAttribute("confirmed", true);
 
+            EmailService.sendEmail(user);
+
             ctx.render("checkoutpage.html");
             //todo: skal nok lige kigges igennem og laves check for diverse ting og sager.
         });
@@ -65,6 +68,7 @@ public class OrderController {
             } else ctx.render("carportspecs.html");
         });
     }
+
 
     private static void index(Context ctx) {
         ctx.render("adminsite.html");

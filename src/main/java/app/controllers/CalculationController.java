@@ -7,22 +7,38 @@ import app.persistence.ConnectionPool;
 import io.javalin.http.Context;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CalculationController {
 
+
+
    public static double calculateFullCarportPrice(Context ctx, Carport carport, ConnectionPool connectionPool){
       double fullCarportPrice = 0;
+      ArrayList<CarportPart> partsList = new ArrayList<>();
 
-      double beamsPrice = calculateBeamsPrice(ctx,carport,connectionPool);
-      double raftersPrice = calculateRaftPrice(ctx,carport,connectionPool);
-      double supportPostsPrice = calculateSupportPostPrice(ctx,carport,connectionPool);
+      double beamsPrice = calculateBeamsPrice(ctx,carport,connectionPool,partsList);
+      double raftersPrice = calculateRaftPrice(ctx,carport,connectionPool,partsList);
+      double supportPostsPrice = calculateSupportPostPrice(ctx,carport,connectionPool,partsList);
 
       fullCarportPrice = beamsPrice + raftersPrice + supportPostsPrice; //+ rafters + other prices
+
+      ctx.sessionAttribute("partslistLukas", partsList);
 
       System.out.println("Full price for the carport: " + fullCarportPrice);
       return fullCarportPrice;
    }
-private static double calculateBeamsPrice(Context ctx, Carport carport, ConnectionPool connectionPool){
+
+   public void handlePartsRequest(Context ctx, Carport carport, ConnectionPool connectionPool) {
+      List<CarportPart> partsList = new ArrayList<>();
+
+      partsList.add(CarportPartMapper.getBeamDetails((int)carport.getLength(), connectionPool));
+      partsList.add(CarportPartMapper.getRaftDetails((int)carport.getWidth(), connectionPool));
+      partsList.add(CarportPartMapper.getSupportPostDetails((int)carport.getHeight(), connectionPool));
+
+      ctx.sessionAttribute("partslist", partsList);
+   }
+private static double calculateBeamsPrice(Context ctx, Carport carport, ConnectionPool connectionPool,ArrayList<CarportPart> partsList){
    double totalBeamsPrice = 0.0;
    int carportLength = (int) carport.getLength();
 
@@ -38,8 +54,8 @@ private static double calculateBeamsPrice(Context ctx, Carport carport, Connecti
       beamQuantity++;
    }
 
-   //double oneBeamPrice = PartsMapper.getBeamsPrice(carportLength, connectionPool);
    CarportPart beam = CarportPartMapper.getBeamDetails(carportLength,connectionPool);
+
    ctx.sessionAttribute("beam",beam);
 
       System.out.println("material name: " + beam.getDBname());
@@ -48,12 +64,13 @@ private static double calculateBeamsPrice(Context ctx, Carport carport, Connecti
       System.out.println("Price per Beam: " + beam.getDBprice());
 
       totalBeamsPrice = beam.getDBprice() * beamQuantity;
-      beam.setQuantity(beamQuantity);
+   beam.setQuantity(beamQuantity);
+   partsList.add(beam);
 
    return totalBeamsPrice;
 }
 
-   private static double calculateSupportPostPrice(Context ctx, Carport carport, ConnectionPool connectionPool){
+   private static double calculateSupportPostPrice(Context ctx, Carport carport, ConnectionPool connectionPool,ArrayList<CarportPart> partsList){
       double totalSupportPostPrice = 0.0;
       int carportHeight = (int) carport.getHeight() + 90; //+ 90, fordi at stolpen skal være 90cm nede i jorden
 
@@ -74,10 +91,11 @@ private static double calculateBeamsPrice(Context ctx, Carport carport, Connecti
 
       totalSupportPostPrice = supportpost.getDBprice() * supportPostQuantity;
       supportpost.setQuantity(supportPostQuantity);
+      partsList.add(supportpost);
       return totalSupportPostPrice;
    }
 
-   private static double calculateRaftPrice(Context ctx, Carport carport, ConnectionPool connectionPool){
+   private static double calculateRaftPrice(Context ctx, Carport carport, ConnectionPool connectionPool,ArrayList<CarportPart> partsList){
       double totalSupportPostPrice = 0.0;
       int carportWidth = (int) carport.getWidth();
 
@@ -98,7 +116,7 @@ private static double calculateBeamsPrice(Context ctx, Carport carport, Connecti
 
       totalSupportPostPrice = raft.getDBprice() * raftQuantity;
       raft.setQuantity(raftQuantity);
-
+      partsList.add(raft);
       return totalSupportPostPrice;
    }
 
