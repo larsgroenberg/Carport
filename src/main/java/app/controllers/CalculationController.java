@@ -35,8 +35,6 @@ public class CalculationController {
       partsList.add(CarportPartMapper.getBeamDetails((int)carport.getLength(), connectionPool));
       partsList.add(CarportPartMapper.getRaftDetails((int)carport.getWidth(), connectionPool));
       partsList.add(CarportPartMapper.getSupportPostDetails((int)carport.getHeight(), connectionPool));
-
-      ctx.sessionAttribute("partslist", partsList);
    }
 private static double calculateBeamsPrice(Context ctx, Carport carport, ConnectionPool connectionPool,ArrayList<CarportPart> partsList){
    double totalBeamsPrice = 0.0;

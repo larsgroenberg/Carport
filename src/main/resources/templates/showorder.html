@@ -79,7 +79,7 @@
         <div th:if="${session.showpartslist}">
             <!--span class="close" onclick="closeModal()">&times;</span-->
 
-            <h4>Stykliste til Carporten:</h4>
+            <h4>Patrick's Stykliste til Carporten:</h4>
             <table id="partsTable" class="table">
                 <thead>
                 <tr>
@@ -113,6 +113,43 @@
 
         </div>
 
+
+        <div th:if="${session.showpartslist}">
+            <!--span class="close" onclick="closeModal()">&times;</span-->
+
+            <h4>Lukas' Stykliste til Carporten:</h4>
+            <table id="partsTable2" class="table2">
+                <thead>
+                <tr>
+                    <th>Materiale</th>
+                    <th>Længde</th>
+                    <th>Højde</th>
+                    <th>Bredde</th>
+                    <th>Antal</th>
+                    <th>Unit</th>
+                    <th>Type</th>
+                    <th>Beskrivelse</th>
+                    <th>Enkel Pris</th>
+                    <th>Samlede Pris</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="part : ${session.partslistLukas}">
+                    <td th:text="${part.DBdescription}">Name</td>
+                    <td th:text="${part.DBlength}">Length</td>
+                    <td th:text="${part.DBheight}">Height</td>
+                    <td th:text="${part.DBwidth}">Width</td>
+                    <td th:text="${part.quantity}">Quantity</td>
+                    <td th:text="${part.DBunit}">Unit</td>
+                    <td th:text="${part.type}">Unit</td>
+                    <td th:text="${part.DBname}">Beskrivelse</td>
+                    <td th:text="${part.DBprice}">Enkel Pris</td>
+                    <td th:text="${part.DBtotalQuantityPrice}">Samlede Pris</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
 
         <div class="button-container-checkout">
             <input class="shopping" style="margin-right: 20px;" type="submit" value="Ændre Bestilling"
