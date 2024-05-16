@@ -144,5 +144,25 @@ public class Order {
     public void setWall(boolean wall) {
         this.wall = wall;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", materialCost=" + materialCost +
+                ", salesPrice=" + salesPrice +
+                ", carportWidth=" + carportWidth +
+                ", carportLength=" + carportLength +
+                ", carportHeight=" + carportHeight +
+                ", userId=" + userId +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", shedWidth=" + shedWidth +
+                ", shedLength=" + shedLength +
+                ", userEmail='" + userEmail + '\'' +
+                ", orderDate='" + orderDate + '\'' +
+                ", roof='" + roof + '\'' +
+                ", wall=" + wall +
+                '}';
+    }
 }
 
