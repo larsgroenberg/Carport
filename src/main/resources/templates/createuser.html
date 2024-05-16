@@ -12,6 +12,7 @@
 <header>
     <!-- Navigation bar -->
     <div class="navbar">
+        <h1>Fog</h1>
         <form id="navigationForm" method="get">
             <button type="submit" formaction="/" class="nav-btn">1. Carport Specs</button>
             <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Carport Drawing</button>
@@ -48,13 +49,13 @@
                 <input type="text" name="zipcode" placeholder="Enter your zipcode" th:value="${session.currentUser != null ? session.currentUser.zipcode : ''}" />
             </div>
 
-            <div class="form-group">
+            <!--div class="form-group">
                 <input type="password" name="password1" placeholder="Enter your password" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
             </div>
 
             <div class="form-group">
                 <input type="password" name="password2" placeholder="Enter your password again" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
-            </div>
+            </div-->
 
 
             <div class="button-container">

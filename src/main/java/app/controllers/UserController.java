@@ -10,11 +10,15 @@ import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+
+import java.security.SecureRandom;
+
 import java.util.List;
 import java.util.Map;
 
 import static app.persistence.OrdersMapper.getOrderByEmail;
 import static app.persistence.OrdersMapper.getOrderByUserId;
+
 
 public class UserController {
     public static void addRoutes(Javalin app) {
@@ -87,18 +91,19 @@ public class UserController {
 
         // Hent form parametre
         String email = ctx.formParam("email");
-        String password1 = ctx.formParam("password1");
-        String password2 = ctx.formParam("password2");
+        //String password1 = ctx.formParam("password1");
+        //String password2 = ctx.formParam("password2");
         String name = ctx.formParam("name");
         String mobile = ctx.formParam("mobile");
         String address = ctx.formParam("address");
         String zipcode = ctx.formParam("zipcode");
 
-        boolean userexist = UserMapper.userexist(email, connectionPool);
+        String password = generatePassword(20);
+        //boolean userexist = UserMapper.userexist(email, connectionPool);
 
-        if (!userexist) {
-            if (password1.equals(password2)) {
-                User newUser = new User(0,email,password1,false,name,mobile,address,zipcode);
+        if (/*!userexist*/true) {
+            //if (password1.equals(password2)) {
+                User newUser = new User(0,email,password,false,name,mobile,address,zipcode);
                 ctx.sessionAttribute("currentUser", newUser);
 
                 //UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
@@ -106,16 +111,32 @@ public class UserController {
                 //ctx.attribute("login", true);
                 //ctx.render("login.html");
 
-            } else {
+            /*} else {
                 ctx.attribute("message", "Passwords matcher ikke! Prøv igen");
                 ctx.attribute("error", true);
                 //ctx.render("createuser.html");
-            }
+            }*/
         } else {
             ctx.attribute("message", "En bruger med denne email findes allerede. Venligst vælg en anden email");
             //ctx.attribute("login", true);
             //ctx.render("login.html");
         }
+    }
+    public static String generatePassword(int length) {
+        String upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String specialChars = "!@#$%^&*()-_=+{}[];:'\",<.>/?\\|`~";
+
+        String combinedChars = upperLetters + lowerLetters + numbers + specialChars;
+        SecureRandom random = new SecureRandom();
+        char[] password = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+
+        return new String(password);
     }
 
     private static void logout(Context ctx, ConnectionPool connectionPool) throws DatabaseException {

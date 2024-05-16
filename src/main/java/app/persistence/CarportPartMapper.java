@@ -32,7 +32,7 @@ public class CarportPartMapper {
                     switch (type) {
                         case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
                         case "spær" -> partType = CarportPart.CarportPartType.RAFT;
-                        case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
+                        case "remme" -> partType = CarportPart.CarportPartType.BEAM;
                         case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
                         default -> partType = CarportPart.CarportPartType.ROOFTILE;
                     }
@@ -301,7 +301,7 @@ public class CarportPartMapper {
     }
 
     public static CarportPart getBeamDetails(int carportLength, ConnectionPool connectionPool) {
-        String sql = "SELECT * FROM parts WHERE type = 'spær' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
+        String sql = "SELECT * FROM parts WHERE type = 'remme' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -384,7 +384,7 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.BEAM, 0,partID, price, length, height, width, description, material, unit, name);
+                    return new CarportPart(CarportPart.CarportPartType.RAFT, 0,partID, price, length, height, width, description, material, unit, name);
                 } else {
                     System.out.println("No matching raft found for width " + carportWidth);
                 }
