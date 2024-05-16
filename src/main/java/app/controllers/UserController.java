@@ -7,6 +7,8 @@ import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.security.SecureRandom;
+
 public class UserController {
     public static void addRoutes(Javalin app) {
         app.post("login", ctx -> {
@@ -40,11 +42,12 @@ public class UserController {
         String address = ctx.formParam("address");
         String zipcode = ctx.formParam("zipcode");
 
+        String password = generatePassword(20);
         //boolean userexist = UserMapper.userexist(email, connectionPool);
 
         if (/*!userexist*/true) {
             //if (password1.equals(password2)) {
-                User newUser = new User(0,email,null,false,name,mobile,address,zipcode);
+                User newUser = new User(0,email,password,false,name,mobile,address,zipcode);
                 ctx.sessionAttribute("currentUser", newUser);
 
                 //UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
@@ -62,6 +65,22 @@ public class UserController {
             //ctx.attribute("login", true);
             //ctx.render("login.html");
         }
+    }
+    public static String generatePassword(int length) {
+        String upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String specialChars = "!@#$%^&*()-_=+{}[];:'\",<.>/?\\|`~";
+
+        String combinedChars = upperLetters + lowerLetters + numbers + specialChars;
+        SecureRandom random = new SecureRandom();
+        char[] password = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+
+        return new String(password);
     }
 
     private static void logout(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
