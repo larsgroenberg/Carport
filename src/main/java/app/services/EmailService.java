@@ -28,14 +28,15 @@ public class EmailService {
         String API_KEY = System.getenv("SENDGRID_API_KEY");
 
         Personalization personalization = new Personalization();
+        String name = currentUser.getName();
+        String email = currentUser.getEmail();
+        String password = currentUser.getPassword();
 
-        /* Erstat kunde@gmail.com, name, email og zip med egne værdier ****/
-        /* I test-fasen - brug din egen email, så du kan modtage beskeden */
         personalization.addTo(new Email(currentUser.getEmail()));
-        personalization.addDynamicTemplateData("name", currentUser.getName());
-        personalization.addDynamicTemplateData("email", currentUser.getEmail());
-        personalization.addDynamicTemplateData("password", currentUser.getPassword());
-        personalization.addDynamicTemplateData("link", "https://localhost:7070/customersite");
+        personalization.addDynamicTemplateData("name", name);
+        personalization.addDynamicTemplateData("email", email);
+        personalization.addDynamicTemplateData("password", password);
+        personalization.addDynamicTemplateData("link", "http://localhost:7070/customersitelogin");
         mail.addPersonalization(personalization);
 
         mail.addCategory("carportapp");
@@ -46,7 +47,6 @@ public class EmailService {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
 
-            // indsæt dit skabelonid herunder
             mail.templateId = "d-8202a2164f2a479aa9e6b2ad690bad4c";
             request.setBody(mail.build());
             Response response = sg.api(request);
