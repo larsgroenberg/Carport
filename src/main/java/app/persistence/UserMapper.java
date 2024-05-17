@@ -81,7 +81,7 @@ public class UserMapper
             String msg = "Der er sket en fejl. Prøv igen";
             if (e.getMessage().startsWith("ERROR: duplicate key value "))
             {
-                
+
                 msg = "Din e-email findes allerede. Vælg en andet";
 
 
@@ -112,9 +112,8 @@ public class UserMapper
 
     }
 
-
     public static User getCustomerByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
-
+        User user = null;
         String sql = "select * from public.users where name=?";
 
         try (
@@ -133,12 +132,11 @@ public class UserMapper
                 String address = rs.getString("address");
                 String zipcode = rs.getString("zipcode");
                 return new User(user_ID, email, password, is_admin, userName, userMobile, address, zipcode);
-            } else {
-                throw new DatabaseException("Fejl i hentning af kundeinfo!");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("DB fejl", e.getMessage());
+            throw new DatabaseException("Kunden med navnet "+userName+" findes ikke i Databasen!");
         }
+        return user;
     }
 
     public static User getCustomerByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
@@ -189,6 +187,37 @@ public class UserMapper
             return id;
         } catch (SQLException e) {
             throw new DatabaseException("DB fejl", e.getMessage());
+        }
+    }
+
+
+    public static void updateUserMobile(int userId, String mobile, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE public.\"users\" SET mobile = ? WHERE user_id = ?;";
+
+        sqlUpdate(userId, mobile, connectionPool, sql);
+    }
+
+    public static void updateUserName(int userId, String name, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE public.\"users\" SET name = ? WHERE user_id = ?;";
+
+        sqlUpdate(userId, name, connectionPool, sql);
+    }
+
+    private static void sqlUpdate(int userId, String informationToUpdate, ConnectionPool connectionPool, String sql) throws DatabaseException {
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, informationToUpdate);
+            ps.setInt(2, userId);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DatabaseException("Ingen ændringer blev foretaget. Kontroller bruger-id'et.");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("DB fejl under opdatering af brugeroplysninger", e.getMessage());
         }
     }
 

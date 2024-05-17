@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
 
 <head>
@@ -12,6 +13,7 @@
 <header>
     <!-- Navigation bar -->
     <div class="navbar">
+        <h1>Fog</h1>
         <form id="navigationForm" method="get">
             <button type="submit" formaction="/" class="nav-btn active">1. Carport Specs</button>
             <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Carport Drawing</button>
@@ -25,25 +27,11 @@
 <div class="page">
     <form class="form-table" id="myForm" action="" method="post">
         <h1>Carport Detajler</h1>
-
         <div class="form-group">
             <h2>Carport bredde:</h2>
             <div class="select-wrapper">
                 <select name="carport_width" id="carport_width" required>
                     <option selected disabled>Vælg bredde på carport</option>
-                    <option value="240" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 240.0}">240 cm</option>
-                    <option value="270" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 270.0}">270 cm</option>
-                    <option value="300" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 300.0}">300 cm</option>
-                    <option value="330" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 330.0}">330 cm</option>
-                    <option value="360" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 360.0}">360 cm</option>
-                    <option value="390" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 390.0}">390 cm</option>
-                    <option value="420" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 420.0}">420 cm</option>
-                    <option value="450" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 450.0}">450 cm</option>
-                    <option value="480" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 480.0}">480 cm</option>
-                    <option value="510" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 510.0}">510 cm</option>
-                    <option value="540" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 540.0}">540 cm</option>
-                    <option value="570" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 570.0}">570 cm</option>
-                    <option value="600" th:selected="${session.newCarport != null && session.newCarport.getWidth() == 600.0}">600 cm</option>
                 </select>
             </div>
         </div>
@@ -53,25 +41,6 @@
             <div class="select-wrapper">
                 <select name="carport_length" id="carport_length" required>
                     <option selected disabled>Vælg længde på carport</option>
-                    <option value="240" th:selected="${session.newCarport != null && session.newCarport.getLength() == 240.0}">240 cm</option>
-                    <option value="270" th:selected="${session.newCarport != null && session.newCarport.getLength() == 270.0}">270 cm</option>
-                    <option value="300" th:selected="${session.newCarport != null && session.newCarport.getLength() == 300.0}">300 cm</option>
-                    <option value="330" th:selected="${session.newCarport != null && session.newCarport.getLength() == 330.0}">330 cm</option>
-                    <option value="360" th:selected="${session.newCarport != null && session.newCarport.getLength() == 360.0}">360 cm</option>
-                    <option value="390" th:selected="${session.newCarport != null && session.newCarport.getLength() == 390.0}">390 cm</option>
-                    <option value="420" th:selected="${session.newCarport != null && session.newCarport.getLength() == 420.0}">420 cm</option>
-                    <option value="450" th:selected="${session.newCarport != null && session.newCarport.getLength() == 450.0}">450 cm</option>
-                    <option value="480" th:selected="${session.newCarport != null && session.newCarport.getLength() == 480.0}">480 cm</option>
-                    <option value="510" th:selected="${session.newCarport != null && session.newCarport.getLength() == 510.0}">510 cm</option>
-                    <option value="540" th:selected="${session.newCarport != null && session.newCarport.getLength() == 540.0}">540 cm</option>
-                    <option value="570" th:selected="${session.newCarport != null && session.newCarport.getLength() == 570.0}">570 cm</option>
-                    <option value="600" th:selected="${session.newCarport != null && session.newCarport.getLength() == 600.0}">600 cm</option>
-                    <option value="630" th:selected="${session.newCarport != null && session.newCarport.getLength() == 630.0}">630 cm</option>
-                    <option value="660" th:selected="${session.newCarport != null && session.newCarport.getLength() == 660.0}">660 cm</option>
-                    <option value="690" th:selected="${session.newCarport != null && session.newCarport.getLength() == 690.0}">690 cm</option>
-                    <option value="720" th:selected="${session.newCarport != null && session.newCarport.getLength() == 720.0}">720 cm</option>
-                    <option value="750" th:selected="${session.newCarport != null && session.newCarport.getLength() == 750.0}">750 cm</option>
-                    <option value="780" th:selected="${session.newCarport != null && session.newCarport.getLength() == 780.0}">780 cm</option>
                 </select>
             </div>
         </div>
@@ -81,11 +50,6 @@
             <div class="select-wrapper">
                 <select name="carport_height" id="carport_height" required>
                     <option selected disabled>Vælg højde på carport</option>
-                    <option value="210" th:selected="${session.newCarport != null && session.newCarport.getHeight() == 210.0}">210 cm</option>
-                    <option value="225" th:selected="${session.newCarport != null && session.newCarport.getHeight() == 225.0}">225 cm</option>
-                    <option value="240" th:selected="${session.newCarport != null && session.newCarport.getHeight() == 240.0}">240 cm</option>
-                    <option value="270" th:selected="${session.newCarport != null && session.newCarport.getHeight() == 270.0}">270 cm</option>
-                    <option value="290" th:selected="${session.newCarport != null && session.newCarport.getHeight() == 290.0}">290 cm</option>
                 </select>
             </div>
         </div>
@@ -95,8 +59,14 @@
             <div class="select-wrapper">
                 <select name="carport_trapeztag" id="carport_trapeztag" required>
                     <option selected disabled>Vælg tagtype på carport</option>
-                    <option value="Uden tagplader" th:selected="${session.newCarport != null && !session.newCarport.withRoof}">Uden tagplader</option>
-                    <option value="Med Plasttrapezplader" th:selected="${session.newCarport != null && session.newCarport.withRoof}">Med Plasttrapezplader</option>
+                    <option value="Uden tagplader"
+                            th:selected="${session.newCarport != null && !session.newCarport.withRoof}">Uden
+                        tagplader
+                    </option>
+                    <option value="Med Plasttrapezplader"
+                            th:selected="${session.newCarport != null && session.newCarport.withRoof}">Med
+                        Plasttrapezplader
+                    </option>
                 </select>
             </div>
         </div>
@@ -104,49 +74,61 @@
         <div class="form-group">
             <h2>Carport skur:</h2>
             <div class="with-shed">
-                <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike" th:checked="${session.newCarport != null && session.newCarport.withShed}">
+                <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike"
+                       th:checked="${session.newCarport != null && session.newCarport.withShed}">
                 <label for="with-shed"> Skur?</label>
             </div>
             <div class="dropdown-container-shed-wrapper">
                 <div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
                     <div class="flex-container-shed-div">
-                        <select name="length_shed" id="length-shed" required>
-                            <option value="0" selected>Vælg længden på skuret</option>
-                            <option value="180" th:selected="${session.newCarport != null && session.newCarport.shedLength == 180.0}">180 cm</option>
-                            <option value="210" th:selected="${session.newCarport != null && session.newCarport.shedLength == 210.0}">210 cm</option>
-                            <option value="240" th:selected="${session.newCarport != null && session.newCarport.shedLength == 240.0}">240 cm</option>
-                            <option value="270" th:selected="${session.newCarport != null && session.newCarport.shedLength == 270.0}">270 cm</option>
-                            <option value="300" th:selected="${session.newCarport != null && session.newCarport.shedLength == 300.0}">300 cm</option>
+                        <h2>Skur bredde:</h2>
+                        <select name="width_shed" id="width-shed" required>
+                            <option value="0" disabled selected>Vælg bredden på skuret</option>
+                            <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
                         </select>
                     </div>
-
                     <div class="flex-container-shed-div">
-                        <select name="width_shed" id="width-shed" required>
-                            <option value="0" selected>Vælg bredden på skuret</option>
-                            <option value="300" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 300.0}">300 cm</option>
-                            <option value="330" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 330.0}">330 cm</option>
-                            <option value="360" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 360.0}">360 cm</option>
-                            <option value="390" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 390.0}">390 cm</option>
-                            <option value="420" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 420.0}">420 cm</option>
-                            <option value="450" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 450.0}">450 cm</option>
-                            <option value="480" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 480.0}">480 cm</option>
-                            <option value="510" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 510.0}">510 cm</option>
-                            <option value="540" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 540.0}">540 cm</option>
-                            <option value="570" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 570.0}">570 cm</option>
-                            <option value="600" th:selected="${session.newCarport != null && session.newCarport.shedWidth == 600.0}">600 cm</option>
+                        <h2>Skur længde:</h2>
+                        <select name="length_shed" id="length-shed" required>
+                            <option value="0" disabled selected>Vælg længden på skuret</option>
+                            <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
                         </select>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="button-container">
             <input class="betal" type="submit" value="Se Tegning" formaction="/createcarport">
         </div>
     </form>
 </div>
 
-<script>
+<script th:inline="javascript">
+    var myThymeleafVariable = /*[[${newCarport}]]*/ '';
+
+
+
+    const shedLengthSelect = document.getElementById('length-shed');
+    const shedWidthSelect = document.getElementById('width-shed');
+
+    const carportHeightElement = document.getElementById('carport_height');
+    const carportLengthElement = document.getElementById('carport_length');
+    const carportWidthElement = document.getElementById('carport_width');
+
+    const carportHeights = [210, 220, 230, 240, 250, 260, 270, 280, 290];
+
+    const carportLengths = [240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450,
+        460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600,
+        610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750,
+        760, 770, 780];
+
+    const shedLengths = [180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300];
+
+    const shedWidths = [
+        240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450,
+        460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600
+    ];
+
     function toggleShedDropdown() {
         var shedCheckbox = document.getElementById("with-shed");
         var shedDropdown = document.getElementById("dropdown-container-shed");
@@ -156,9 +138,73 @@
         } else {
             shedDropdown.style.display = "none";
         }
+        updateShedOptions();
+    }
+    //console.log(myThymeleafVariable);
+function addCarportOptions(){
+    carportHeightElement.innerHTML = '<option value="0" disabled selected>Vælg højde på carporten</option>';
+    carportHeights.forEach(height => {
+        // Check if the current width matches the value stored in the session
+        let selected = (myThymeleafVariable != null && myThymeleafVariable.height === height) ? 'selected' : '';
+        // Append the option with the selected attribute if necessary
+        carportHeightElement.innerHTML += `<option value="${height}" ${selected}>${height} cm</option>`;
+
+    });
+
+    carportLengthElement.innerHTML = '<option value="0" disabled selected>Vælg længde på carporten</option>';
+    carportLengths.forEach(length => {
+        // Check if the current width matches the value stored in the session
+        let selected = (myThymeleafVariable != null && myThymeleafVariable.length === length) ? 'selected' : '';
+        // Append the option with the selected attribute if necessary
+        carportLengthElement.innerHTML += `<option value="${length}" ${selected}>${length} cm</option>`;
+
+    });
+
+    carportWidthElement.innerHTML = '<option value="0" disabled selected>Vælg bredde på carporten</option>';
+    shedWidths.forEach(width => {
+        // Check if the current width matches the value stored in the session
+        let selected = (myThymeleafVariable != null && myThymeleafVariable.width === width) ? 'selected' : '';
+        // Append the option with the selected attribute if necessary
+        carportWidthElement.innerHTML += `<option value="${width}" ${selected}>${width} cm</option>`;
+
+    });
+}
+
+
+    function updateShedOptions() {
+        const carportLength = parseInt(document.getElementById('carport_length').value);
+        const carportWidth = parseInt(document.getElementById('carport_width').value);
+        // Filter shed lengths based on carport length
+        shedLengthSelect.innerHTML = '<option value="0" disabled selected>Vælg længde på skuret</option>';
+        shedLengths.forEach(length => {
+            if (length <= carportLength) {
+                // Check if the current width matches the value stored in the session
+                let selected = (myThymeleafVariable != null && myThymeleafVariable.shedLength === length) ? 'selected' : '';
+                // Append the option with the selected attribute if necessary
+                shedLengthSelect.innerHTML += `<option value="${length}" ${selected}>${length} cm</option>`;
+            }
+        });
+
+        // Filter shed widths based on carport width
+        shedWidthSelect.innerHTML = '<option value="0" disabled selected>Vælg bredde på skuret</option>';
+        shedWidths.forEach(width => {
+            if (width <= carportWidth) {
+                // Check if the current width matches the value stored in the session
+                let selected = (myThymeleafVariable != null && myThymeleafVariable.shedWidth === width) ? 'selected' : '';
+                // Append the option with the selected attribute if necessary
+                shedWidthSelect.innerHTML += `<option value="${width}" ${selected}>${width} cm</option>`;
+            }
+        });
     }
 
-    toggleShedDropdown()
+        document.getElementById('carport_length').addEventListener('change', updateShedOptions);
+        document.getElementById('carport_width').addEventListener('change', updateShedOptions);
+        document.getElementById('with-shed').addEventListener('change', toggleShedDropdown);
+
+addCarportOptions();
+    toggleShedDropdown();
+    updateShedOptions();
+
 </script>
 
 </body>

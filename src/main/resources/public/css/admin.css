@@ -16,7 +16,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 1900px;
+    max-width: 2100px;
     min-height: 400px;
     margin: 40px 10px 10px 10px;
     padding: 20px;
@@ -136,6 +136,22 @@ button.produced-button:hover {
     transform: scale(1.05);
 }
 
+button.edit-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s, transform 0.2s;
+}
+
+button.edit-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
 input[type="text"], input[type="submit"] {
     padding: 12px 20px;
     border: none;
@@ -172,13 +188,14 @@ table {
     max-width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .table-container {
     padding: 5px;
 }
 th, td {
-    padding: 15px;
+    padding: 5px;
     text-align: center;
     border-bottom: 1px solid #ddd;
 }
@@ -235,6 +252,13 @@ button.produced-button:hover {
     background-color: #f9f9f9;
 }
 
+.button-container-checkout {
+    padding-right: 7px;
+    text-align: right;
+    margin-top: 20px;
+    font-family: inherit;
+    background-color: #f9f9f9;
+}
 
 .betal {
     background-color: #28a745;
@@ -256,6 +280,7 @@ button.produced-button:hover {
 .closemessage {
     background-color: #007bff;
     color: white;
+    top-margin: 30px;
     padding: 8px 25px 8px 25px;
     border: none;
     border-radius: 8px;
@@ -268,15 +293,49 @@ button.produced-button:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
+.modal-med-salg {
+    display: block;
+    position: fixed;
+    z-index: 100;
+    top: 44%;
+    left: 35%;
+    width: 600px;
+    height: 450px;
+    background-color: rgba(0, 0, 0, 0);
+}
 
+.modal-med-salg-content {
+    background-color: #f9f9f9;
+    margin: 16% auto;
+    padding: 20px;
+    box-shadow: 5px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.5);
+    border-radius: 8px;
+}
 
+.sales-table {
+    width: 85%;
+    border-collapse: collapse;
+    margin: 20px;
+}
+
+.sales-table td {
+    padding: 8px;
+    padding-left: 30px;
+    padding-right: 30px;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}
+
+.sales-table tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
 
 .modal-med-fejlbesked {
     display: block;
     position: fixed;
-    z-index: 1;
+    z-index: 100;
     top: 44%;
-    left: 50%;
+    left: 45%;
     width: 250px;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -298,8 +357,77 @@ button.produced-button:hover {
     text-align: center;
 }
 
+.order-modal {
+    display: block;
+    position: fixed; /* Positioner modalen fast på skærmen */
+    z-index: 0; /* Sørg for, at modalen er foran alt andet indhold */
+    top: 44%;
+    left: 50%;
+    width: 650px;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    padding: 35px 35px 30px 35px;
+    box-shadow: 5px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.5);
+    border-radius: 10px;
+}
 
+/* Style for modal content */
+.modal-content {
+    position: relative;
+    z-index: 100;
+    background-color: #f9f9f9;
+    margin: 15% auto;
+    padding: 35px 35px 30px 35px;
+    box-shadow: 5px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.5);
+    border-radius: 10px;
+    text-align: center;
+}
 
+.modal div {
+    background-color: #f9f9f9;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+}
+
+.editorder {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #f9f9f9;
+    font-size: 16px;
+}
+
+.editorder td {
+    padding: 3px;
+    border: none;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.editorder td:first-child {
+    text-align: right;
+}
+
+.editorder label {
+    width: 30px;
+    font-weight: bold;
+    text-align: right;
+    background-color: #f9f9f9;
+}
+
+.editorder input[type="text"] {
+    width: calc(100% - 140px);
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+
+}
+
+.editorder input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px #007bff;
+}
 
 /* Style for the modal */
 .modal {
@@ -370,6 +498,7 @@ button.produced-button:hover {
     width: 30px;
     font-weight: bold;
     text-align: right;
+    background-color: #f9f9f9;
 }
 
 .editpart input[type="text"] {

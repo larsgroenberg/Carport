@@ -4,6 +4,7 @@ import app.entities.CarportPart;
 import app.exceptions.DatabaseException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarportPartMapper {
 
@@ -18,7 +19,7 @@ public class CarportPartMapper {
 
                 while (rs.next()){
                     int partId = rs.getInt("part_id");
-                    int price = rs.getInt("price");
+                    Double price = rs.getDouble("price");
                     String description = rs.getString("description");
                     int length = rs.getInt("length");
                     int height = rs.getInt("height");
@@ -31,9 +32,12 @@ public class CarportPartMapper {
                     switch (type) {
                         case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
                         case "spær" -> partType = CarportPart.CarportPartType.RAFT;
-                        case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
+                        case "remme" -> partType = CarportPart.CarportPartType.BEAM;
                         case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
-                        default -> partType = CarportPart.CarportPartType.ROOFTILE;
+                        case "tagplader" -> partType = CarportPart.CarportPartType.ROOFTILE;
+                        case "brædder" -> partType = CarportPart.CarportPartType.STERN;
+                        case "reglar" -> partType = CarportPart.CarportPartType.SHEDWOOD;
+                        default -> partType = CarportPart.CarportPartType.NONE;
                     }
                     partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
                 }
@@ -225,7 +229,7 @@ public class CarportPartMapper {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int part_id = rs.getInt("part_id");
-                int price = rs.getInt("price");
+                double price = rs.getDouble("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
                 int height = rs.getInt("height");
@@ -234,7 +238,15 @@ public class CarportPartMapper {
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
                 String name = rs.getString("name");
-                part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
+                CarportPart.CarportPartType partType = null;
+                switch (type) {
+                    case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
+                    case "spær" -> partType = CarportPart.CarportPartType.RAFT;
+                    case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
+                    case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
+                    default -> partType = CarportPart.CarportPartType.ROOFTILE;
+                }
+                part = new CarportPart(partType, 0,part_id, price, length,height,width, description,material_name, unit, name);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
@@ -300,7 +312,7 @@ public class CarportPartMapper {
     }
 
     public static CarportPart getBeamDetails(int carportLength, ConnectionPool connectionPool) {
-        String sql = "SELECT * FROM parts WHERE type = 'spær' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
+        String sql = "SELECT * FROM parts WHERE type = 'remme' AND (length >= ? OR length < ?) ORDER BY length >= ? DESC, ABS(? - length) LIMIT 1";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -383,7 +395,7 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.BEAM, 0,partID, price, length, height, width, description, material, unit, name);
+                    return new CarportPart(CarportPart.CarportPartType.RAFT, 0,partID, price, length, height, width, description, material, unit, name);
                 } else {
                     System.out.println("No matching raft found for width " + carportWidth);
                 }
@@ -393,6 +405,66 @@ public class CarportPartMapper {
             throw new RuntimeException(e);
         }
         return null;
+    }
+    public static List<CarportPart> getCompletePartsListByOrderId(int orderId, ConnectionPool pool) throws DatabaseException {
+        List<CarportPart> partsList = new ArrayList<>();
+        String sql = "SELECT p.part_id, p.type, pl.quantity, p.price as DBprice, p.length as DBlength, p.height as DBheight, p.width as DBwidth, " +
+                "p.description as DBdescription, p.material as DBmaterial, p.unit as DBunit, p.name as DBname " +
+                "FROM parts p JOIN partslist pl ON p.part_id = pl.part_id WHERE pl.order_id = ?";
+        try (Connection conn = pool.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                List<CarportPart.CarportPartType> types = mapToCarportPartType(rs.getString("type")); // This now returns a list of types
+                for (CarportPart.CarportPartType type : types) {
+                    partsList.add(new CarportPart(
+                            rs.getInt("part_id"),
+                            type,
+                            rs.getInt("quantity"),
+                            rs.getDouble("DBprice"),
+                            rs.getInt("DBlength"),
+                            rs.getInt("DBheight"),
+                            rs.getInt("DBwidth"),
+                            rs.getString("DBdescription"),
+                            rs.getString("DBmaterial"),
+                            rs.getString("DBunit"),
+                            rs.getString("DBname")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to fetch parts list: " + e.getMessage());
+        }
+        return partsList;
+    }
+
+    private static List<CarportPart.CarportPartType> mapToCarportPartType(String dbType) {
+        List<CarportPart.CarportPartType> types = new ArrayList<>();
+        switch (dbType.toLowerCase()) {
+            case "stolpe":
+                types.add(CarportPart.CarportPartType.SUPPORTPOST);
+                break;
+            case "spær":
+                types.add(CarportPart.CarportPartType.RAFT);
+                types.add(CarportPart.CarportPartType.BEAM);
+                break;
+            case "reglar":
+                types.add(CarportPart.CarportPartType.BEAM);
+                break;
+            case "lægte":
+            case "brædder":
+                types.add(CarportPart.CarportPartType.ROOFTILE);
+                break;
+            case "hulbånd":  // Adding a case for 'hulbånd'
+                types.add(CarportPart.CarportPartType.CROSSSUPPORT);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
+                break;
+            case "remme":  // Adding a case for 'hulbånd'
+                types.add(CarportPart.CarportPartType.BEAM);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected type: " + dbType);
+        }
+        return types;
     }
 
     public static void updatePart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
@@ -408,7 +480,7 @@ public class CarportPartMapper {
                 ps.setInt(5, part.getDBwidth());
 
                 //todo: skal fikses da denne funktion vil omdøbe ting i databasen.
-                ps.setString(6, part.getType().toString());
+                ps.setString(6, String.valueOf(part.getType()));
 
                 ps.setString(7, part.getDBmaterial());
                 ps.setString(8, part.getDBunit());
