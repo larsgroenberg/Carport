@@ -32,14 +32,16 @@ public class CarportPart {
     private String DBmaterial;
     private String DBunit;
     private String DBname;
+    private String DBtype;
     private double DBtotalQuantityPrice;
+
 
     public CarportPart(CarportPartType type, int quantity) {
         this.type = type;
         this.quantity = quantity;
     }
 
-    public CarportPart(CarportPartType type, int quantity,int partId,double DBprice, int DBlength, int DBheight, int DBwidth, String DBdescription, String DBmaterial, String DBunit, String DBname) {
+    public CarportPart(CarportPartType type, int quantity,int partId,double DBprice, int DBlength, int DBheight, int DBwidth, String DBdescription, String DBmaterial, String DBunit, String DBname, String DBtype) {
         this.type = type;
         this.quantity = quantity;
         this.partId = partId;
@@ -51,6 +53,7 @@ public class CarportPart {
         this.DBmaterial = DBmaterial;
         this.DBunit = DBunit;
         this.DBname = DBname;
+        this.DBtype = DBtype;
     }
     public CarportPart(int partId, CarportPartType type, int quantity, double DBprice, int DBlength, int DBheight, int DBwidth,
                        String DBdescription, String DBmaterial, String DBunit, String DBname) {

@@ -46,7 +46,7 @@ public class CarportPartMapper {
                         case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSLER;
                         default -> partType = CarportPart.CarportPartType.NONE;
                     }
-                    partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
+                    partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name, type));
                 }
             }
         }catch (SQLException e){
@@ -54,7 +54,7 @@ public class CarportPartMapper {
         }
         return partList;
     }
-
+/*
     public static ArrayList<CarportPart> getPartsList(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<CarportPart> partslistLines = new ArrayList<>();
 
@@ -74,8 +74,8 @@ public class CarportPartMapper {
                 String unit = rs.getString("unit");
                 int partLength = rs.getInt("part_length");
                 String name = rs.getString("name");
-
-                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name);
+                String type = rs.getString("type");
+                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name,type);
                 partslistLines.add(partslistLine);
             }
 
@@ -104,9 +104,8 @@ public class CarportPartMapper {
                 String unit = rs.getString("unit");
                 int partLength = rs.getInt("part_length");
                 String name = rs.getString("name");
-
-                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name);
-                partslistLines.add(partslistLine);
+                String type = rs.getString("type");
+                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name,type);partslistLines.add(partslistLine);
             }
 
         } catch (SQLException e) {
@@ -131,7 +130,7 @@ public class CarportPartMapper {
         }
     }
 
-    public static CarportPart getPartByType(String type, ConnectionPool connectionPool) throws DatabaseException {
+    public static CarportPart getPartByType(String inputType, ConnectionPool connectionPool) throws DatabaseException {
 
         CarportPart part = null;
 
@@ -139,7 +138,7 @@ public class CarportPartMapper {
 
         try(Connection connection = connectionPool.getConnection()){
             try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,type);
+                ps.setString(1,inputType);
                 ResultSet rs = ps.executeQuery();
 
                 if (rs.next()){
@@ -152,8 +151,8 @@ public class CarportPartMapper {
                     String material_name = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
-                }
+                    String type = rs.getString("type");
+                    CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name,type);}
 
             }
         }catch (SQLException e){
@@ -221,7 +220,7 @@ public class CarportPartMapper {
         }
         return partList;
     }
-
+*/
 
     public static CarportPart getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
 
@@ -253,14 +252,14 @@ public class CarportPartMapper {
                     case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
                     default -> partType = CarportPart.CarportPartType.TAGPLADER;
                 }
-                part = new CarportPart(partType, 0,part_id, price, length,height,width, description,material_name, unit, name);
+                part = new CarportPart(partType, 0,part_id, price, length,height,width, description,material_name, unit, name,type);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
         }
         return part;
     }
-
+/*
     public static CarportPart getPartByName(String name, ConnectionPool connectionPool) throws DatabaseException {
 
         CarportPart part = null;
@@ -289,7 +288,7 @@ public class CarportPartMapper {
         }
         return part;
     }
-
+*/
 
     public static void addPart(int price, String description, int length, int height, int width, String type, String material, String unit, String name, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit, name) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -338,7 +337,8 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.REM, 0,partID, price, length, height, width, description, material, unit, name);
+                    String type = rs.getString("type");
+                    return new CarportPart(CarportPart.CarportPartType.REM, 0,partID, price, length, height, width, description, material, unit, name, type);
                 } else {
                     System.out.println("No matching beam found for length " + carportLength);
                 }
@@ -370,8 +370,9 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.STOLPE, 0,partID, price, length, height, width, description, material, unit, name);
-                } else {
+                    String type = rs.getString("type");
+                    return new CarportPart(CarportPart.CarportPartType.STOLPE, 0,partID, price, length,height,width, description,name, unit, name,type);}
+                else {
                     System.out.println("No matching support post found for length " + carportHeight);
                 }
             }
@@ -402,7 +403,8 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.SPÆR, 0,partID, price, length, height, width, description, material, unit, name);
+                    String type = rs.getString("type");
+                    return new CarportPart(CarportPart.CarportPartType.SPÆR, 0,partID, price, length, height, width, description, material, unit, name, type);
                 } else {
                     System.out.println("No matching raft found for width " + carportWidth);
                 }
@@ -425,8 +427,8 @@ public class CarportPartMapper {
                 List<CarportPart.CarportPartType> types = mapToCarportPartType(rs.getString("type")); // This now returns a list of types
                 for (CarportPart.CarportPartType type : types) {
                     partsList.add(new CarportPart(
-                            rs.getInt("part_id"),
                             type,
+                            rs.getInt("part_id"),
                             rs.getInt("quantity"),
                             rs.getDouble("DBprice"),
                             rs.getInt("DBlength"),
@@ -435,7 +437,8 @@ public class CarportPartMapper {
                             rs.getString("DBdescription"),
                             rs.getString("DBmaterial"),
                             rs.getString("DBunit"),
-                            rs.getString("DBname")
+                            rs.getString("DBname"),
+                            rs.getString("type")
                     ));
                 }
             }

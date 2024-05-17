@@ -37,7 +37,7 @@ public class PartsCalculator {
     }
 
 
-
+/*
     public void simpleCompareLists(){
         CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.REM, 0,0, 10000, 0,0,0,"","","","");
         CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.STOLPE, 0,0, 10000, 0,0,0,"","","","");
@@ -67,11 +67,11 @@ public class PartsCalculator {
         cheapestPartList.add(cheapestRaft);
 
         totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity()) + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity()) + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity());
-    }
+    }*/
 
 
     // Denne metode tager udregner den samlede længde på de forskellige sorter og derefter finder det længdste stykke træ og dividere dem for at få et antal som er større for at garentere at der er nok træ.
-    public void MaterialCalculationOnlyMaxLength(){
+    /*public void MaterialCalculationOnlyMaxLength(){
         double supportPostLength = (90 + carport.getHeight()) * carport.getSUPPORTPOST().getQuantity();
         double beamLength = carport.getLength() * carport.getBEAM().getQuantity();
         double raftLength = carport.getWidth() * carport.getRAFT().getQuantity();
@@ -115,7 +115,7 @@ public class PartsCalculator {
         cheapestPartList.add(cheapestCrossSupport);
 
         totalPrice = (cheapestBeam.getDBprice() * cheapestBeam.getQuantity()) + (cheapestRaft.getDBprice() * cheapestRaft.getQuantity()) + (cheapestSupport.getDBprice() * cheapestSupport.getQuantity()) + (cheapestCrossSupport.getDBprice() * cheapestCrossSupport.getQuantity());
-    }
+    }*/
 
     // Denne metode tager udregner den samlede længde på de forskellige sorter og derefter finder det længdste stykke træ og dividere dem for at få et antal som er større for at garentere at der er nok træ.
     public void MaterialCalculationPreciseMatch(){
@@ -127,14 +127,14 @@ public class PartsCalculator {
         double frontShedWood = carport.getShedWidth();
         double sideShedWood = carport.getShedLength();
 
-        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.REM, 0,0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.STOLPE, 0,0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.SPÆR, 0,0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestCrossSupport = new CarportPart(CarportPart.CarportPartType.HULBÅND, 0,0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestRooftile = new CarportPart(CarportPart.CarportPartType.TAGPLADER, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestBeam = new CarportPart(CarportPart.CarportPartType.REM, 0,0, 10000, 0,0,0,"","","","","");
+        CarportPart cheapestSupport = new CarportPart(CarportPart.CarportPartType.STOLPE, 0,0, 10000, 0,0,0,"","","","","");
+        CarportPart cheapestRaft = new CarportPart(CarportPart.CarportPartType.SPÆR, 0,0, 10000, 0,0,0,"","","","","");
+        CarportPart cheapestCrossSupport = new CarportPart(CarportPart.CarportPartType.HULBÅND, 0,0, 10000, 0,0,0,"","","","","");
+        CarportPart cheapestRooftile = new CarportPart(CarportPart.CarportPartType.TAGPLADER, 0,0, 10000, 0,0,0,"","","","","");
 
-        CarportPart cheapestFrontShedWood = new CarportPart(CarportPart.CarportPartType.BRÆDDER, 0,0, 10000, 0,0,0,"","","","");
-        CarportPart cheapestSideShedWood = new CarportPart(CarportPart.CarportPartType.BRÆDDER, 0,0, 10000, 0,0,0,"","","","");
+        CarportPart cheapestFrontShedWood = new CarportPart(CarportPart.CarportPartType.BRÆDDER, 0,0, 10000, 0,0,0,"","","","","");
+        CarportPart cheapestSideShedWood = new CarportPart(CarportPart.CarportPartType.BRÆDDER, 0,0, 10000, 0,0,0,"","","","","");
 
         cheapestPartList = new ArrayList<>();
 
