@@ -292,6 +292,54 @@ public class OrdersMapper {
         return order;
     }
 
+    public static void deleteOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException, SQLException {
+
+
+        String sql = "DELETE FROM ordrene WHERE order_id = ?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setInt(1, orderId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Ordren kunne ikke findes i databasen");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl: " + e.getMessage());
+        }
+    }
+
+    public static void updateOrder(Order order, ConnectionPool connectionPool) throws DatabaseException{
+
+        String sql = "UPDATE ordrene SET material_cost = ?, sales_price = ?, carport_width = ?, carport_length = ?, carport_height = ?, user_id = ?, order_status = ?, shed_width = ?, shed_length = ?, email = ?, orderdate = ?, roof = ?, wall = ? WHERE order_id = ?;";
+
+        try(Connection connection = connectionPool.getConnection()){
+            try(PreparedStatement ps = connection.prepareStatement(sql)){
+                ps.setDouble(1, order.getMaterialCost());
+                ps.setDouble(2, order.getSalesPrice());
+                ps.setDouble(3, order.getCarportWidth());
+                ps.setDouble(4, order.getCarportLength());
+                ps.setDouble(5, order.getCarportHeight());
+                ps.setInt(6, order.getUserId());
+                ps.setString(7, order.getOrderStatus());
+                ps.setDouble(8, order.getShedWidth());
+                ps.setDouble(9, order.getShedLength());
+                ps.setString(10, order.getUserEmail());
+                ps.setString(11, order.getOrderDate());
+                ps.setString(12, order.getRoof());
+                ps.setBoolean(13, order.isWall());
+                ps.setInt(14, order.getOrderId());
+
+                ps.executeUpdate();
+            }
+        } catch (SQLException e){
+            throw new DatabaseException("Det lykkedes ikke at opdatere ordren", e.getMessage());
+        }
+    }
+
     public static void adjustSalesPrice(int orderId, double newSalesPrice, ConnectionPool connectionPool) throws DatabaseException{
 
         String sql = "UPDATE ordrene SET sales_price = ? WHERE order_id = ?";

@@ -112,9 +112,8 @@ public class UserMapper
 
     }
 
-
     public static User getCustomerByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
-
+        User user = null;
         String sql = "select * from public.users where name=?";
 
         try (
@@ -133,12 +132,11 @@ public class UserMapper
                 String address = rs.getString("address");
                 String zipcode = rs.getString("zipcode");
                 return new User(user_ID, email, password, is_admin, userName, userMobile, address, zipcode);
-            } else {
-                throw new DatabaseException("Fejl i hentning af kundeinfo!");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("DB fejl", e.getMessage());
+            throw new DatabaseException("Kunden med navnet "+userName+" findes ikke i Databasen!");
         }
+        return user;
     }
 
     public static User getCustomerByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
