@@ -44,6 +44,9 @@ public class CarportPartMapper {
                         case "vinkelbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
                         case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
                         case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSLER;
+                        case "vandbrædder" -> partType = CarportPart.CarportPartType.VANDBRÆDDER;
+                        case "overstern" -> partType = CarportPart.CarportPartType.OVERSTERN;
+                        case "understern" -> partType = CarportPart.CarportPartType.UNDERSTERN;
                         default -> partType = CarportPart.CarportPartType.NONE;
                     }
                     partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name, type));
