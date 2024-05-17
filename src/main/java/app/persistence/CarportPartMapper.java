@@ -490,7 +490,7 @@ public class CarportPartMapper {
                 ps.setInt(5, part.getDBwidth());
 
                 //todo: skal fikses da denne funktion vil omdøbe ting i databasen.
-                ps.setString(6, String.valueOf(part.getType()));
+                ps.setString(6, part.getDBtype());
 
                 ps.setString(7, part.getDBmaterial());
                 ps.setString(8, part.getDBunit());

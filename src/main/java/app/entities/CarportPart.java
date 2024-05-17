@@ -71,6 +71,14 @@ public class CarportPart {
         this.DBtotalQuantityPrice = quantity * DBprice;  // Calculate total price
     }
 
+    public String getDBtype() {
+        return DBtype;
+    }
+
+    public void setDBtype(String DBtype) {
+        this.DBtype = DBtype;
+    }
+
     public int getPartId() {
         return partId;
     }
