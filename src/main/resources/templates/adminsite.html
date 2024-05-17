@@ -25,12 +25,38 @@
             <input type="submit" formaction="/getAllParts" value="Show Parts List"/>
             <input type="submit" formaction="/getOrderByName" value="Show Customer Orders"/>
             <input type="submit" formaction="/getAllOrders" value="Show All Customers Orders"/>
+            <input type="submit" formaction="/seeAllSale" value="See Current Sale"/>
         </div>
         <div id="vismodalmedbesked" class="modal-med-fejlbesked" th:if="${session.modalmedbesked}" >
             <div class="modal-fejl-content">
                 <p id="textMessage" th:text="${session.message}"></p>
                 <div style="text-align: center; background-color: #f9f9f9;">
                     <button class="closemessage" type="submit" name="partid" th:value="${modalmedbesked}" formaction="/lukmodal">Close message</button>
+                </div>
+            </div>
+        </div>
+        <div id="showsaleandcost" class="modal-med-salg" th:if="${session.showallsale}" >
+            <div class="modal-med-salg-content">
+                <table class="sales-table">
+                        <tr>
+                            <td style="background-color: #f0f0f0;">Samlet omsætning i kr. : </td>
+                            <td th:text="${session.totalSale}"></td>
+                        </tr>
+                        <tr>
+                            <td>Samlede omkostninger i kr. : </td>
+                            <td th:text="${session.totalCost}"></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f0f0f0;">Samlet fortjeneste i kr. : </td>
+                            <td th:text="${session.totalRevenue}"></td>
+                        </tr>
+                        <tr>
+                            <td>Antal solgte carporte: </td>
+                            <td th:text="${session.carportSold}"></td>
+                        </tr>
+                </table>
+                <div style="text-align: center; background-color: #f9f9f9;">
+                    <button class="closemessage" type="submit" name="partid" th:value="${modalmedbesked}" formaction="/luksalg">Close</button>
                 </div>
             </div>
         </div>
@@ -81,7 +107,6 @@
     <form th:method="POST" method="post">
         <div id="hiddenformular" class="modal" th:if="${session.showpart}">
             <div class="form-container">
-
                 <form class="generic-form" method="post">
                     <table class="editpart">
                         <tr>
@@ -360,6 +385,14 @@
 </div>
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalmedbesked = [[${session.showsaleandcost}]];
+        if (modalmedbesked) {
+            var vismodalmedbesked = document.getElementById("showsaleandcost");
+            vismodalmedbesked.style.display = "block";
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         var modalmedbesked = [[${session.modalmedbesked}]];

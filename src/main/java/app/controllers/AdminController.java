@@ -9,6 +9,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class AdminController
@@ -85,10 +86,50 @@ public class AdminController
             ctx.sessionAttribute("showallorders", true);
             ctx.render("adminsite.html");
         });
+        app.post("/seeAllSale", ctx -> {
+            seeAllSale(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("showallsale", true);
+            ctx.sessionAttribute("showallorders", false);
+            ctx.render("adminsite.html");
+        });
         app.post("/lukmodal", ctx -> {
             ctx.sessionAttribute("modalmedbesked", false);
             ctx.render("adminsite.html");
         });
+        app.post("/luksalg", ctx -> {
+            ctx.sessionAttribute("showallsale", false);
+            ctx.render("adminsite.html");
+        });
+    }
+    private static void seeAllSale(Context ctx, ConnectionPool connectionPool) throws DatabaseException
+    {
+        ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
+        ctx.sessionAttribute("customerorders", customerOrders);
+        double totalSale = 0, totalCost = 0, totalRevenue = 0;
+        int carportSold = 0;
+        for(Order order: customerOrders) {
+            if(order.getOrderStatus().equalsIgnoreCase("leveret")) {
+                totalSale += order.getSalesPrice();
+                totalCost += order.getMaterialCost();
+                carportSold++;
+            }
+            totalRevenue = totalSale-totalCost;
+        }
+        // Her afrunder vi til nærmeste hele 10 øre
+        totalSale = Math.round(totalSale * 10) / 10.0;
+        totalCost = Math.round(totalCost * 10) / 10.0;
+        totalRevenue = Math.round(totalRevenue * 10) / 10.0;
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+
+        // Her konverterer vi variablerne til strenge så vi får dem med 2 decimaler
+        String formattedTotalSale = decimalFormat.format(totalSale);
+        String formattedTotalCost = decimalFormat.format(totalCost);
+        String formattedTotalRevenue = decimalFormat.format(totalRevenue);
+
+        ctx.sessionAttribute("totalSale", formattedTotalSale);
+        ctx.sessionAttribute("totalCost", formattedTotalCost);
+        ctx.sessionAttribute("totalRevenue", formattedTotalRevenue);
+        ctx.sessionAttribute("carportSold", carportSold);
     }
 
     private static void editOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException
