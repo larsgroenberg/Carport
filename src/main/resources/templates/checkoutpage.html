@@ -6,13 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
-    <link href="../public/css/bookiBois.css" th:href="@{/css/bookiBois.css}" rel="stylesheet"/>
+    <link href="../public/css/InputStyling.css" th:href="@{/css/InputStyling.css}" rel="stylesheet"/>
 
 </head>
 
 <header>
     <!-- Navigation bar -->
     <div class="navbar" th:if="${session.confirmed == null}">
+        <h1>Fog</h1>
         <form id="navigationForm" method="get">
             <button type="submit" formaction="/" class="nav-btn">1. Carport Specs</button>
             <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Carport Drawing</button>
@@ -22,6 +23,7 @@
     </div>
 </header>
 <body>
+<div class="page">
 <h1>Checkout Page</h1>
 <!-- Carport length width with roof -->
 <h2>Carport Specifications</h2>
@@ -53,7 +55,7 @@
 </div>
 </form>
 
-
+    </div>
 </body>
 
 <!--

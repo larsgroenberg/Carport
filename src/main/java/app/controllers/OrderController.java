@@ -2,15 +2,15 @@ package app.controllers;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.Locale;
 
 import app.entities.*;
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.OrdersMapper;
 import app.persistence.UserMapper;
+import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import app.services.CarportSvg;
@@ -18,10 +18,10 @@ import app.services.CarportSvg;
 public class OrderController {
     static Carport carport;
 
+
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("adminsite.html");
-            //ctx.render("carportspecs.html");
+            ctx.render("carportspecs.html", prepareModel(ctx));
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx);
@@ -31,7 +31,7 @@ public class OrderController {
             ctx.render("showOrder.html");
         });
         app.get("/changeorder", ctx -> {
-            ctx.render("carportspecs.html");
+            ctx.render("carportspecs.html", prepareModel(ctx));
         });
 
         app.post("/finishOrder", ctx -> {
@@ -41,6 +41,8 @@ public class OrderController {
             OrdersMapper.insertPartsNeededForOrder(orderID, ctx, ConnectionPool.getInstance());
 
             ctx.sessionAttribute("confirmed", true);
+
+            EmailService.sendEmail(user);
 
             ctx.render("checkoutpage.html");
             //todo: skal nok lige kigges igennem og laves check for diverse ting og sager.
@@ -67,6 +69,13 @@ public class OrderController {
         });
     }
 
+    // Prepare model method to add session attributes to the model
+    private static Map<String, Object> prepareModel(Context ctx) {
+        Map<String, Object> model = new HashMap<>();
+        // Add session attributes to the model
+        model.put("newCarport", ctx.sessionAttribute("newCarport"));
+        return model;
+    }
     private static void index(Context ctx) {
         ctx.render("adminsite.html");
     }
@@ -83,8 +92,14 @@ public class OrderController {
         double length = Double.parseDouble(ctx.formParam("carport_length"));
         double width = Double.parseDouble(ctx.formParam("carport_width"));
         double height = Double.parseDouble(ctx.formParam("carport_height"));
-        double length_shed = Double.parseDouble(ctx.formParam("length_shed"));
-        double width_shed = Double.parseDouble(ctx.formParam("width_shed"));
+        double length_shed = 0;
+        double width_shed = 0;
+        try{
+            length_shed = Double.parseDouble(ctx.formParam("length_shed"));
+            width_shed = Double.parseDouble(ctx.formParam("width_shed"));
+        } catch (NullPointerException e) {
+            //"Ingen skur mål angivet"
+        }
         String roof = (ctx.formParam("carport_trapeztag"));
 
         // TODO: gør dette pænere

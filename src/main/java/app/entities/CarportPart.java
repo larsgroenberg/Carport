@@ -6,7 +6,10 @@ public class CarportPart {
         RAFT,
         BEAM,
         CROSSSUPPORT,
-        ROOFTILE
+        ROOFTILE,
+        STERN,
+        SHEDWOOD,
+        NONE
     }
 
     private CarportPartType type;
@@ -39,6 +42,21 @@ public class CarportPart {
         this.DBmaterial = DBmaterial;
         this.DBunit = DBunit;
         this.DBname = DBname;
+    }
+    public CarportPart(int partId, CarportPartType type, int quantity, double DBprice, int DBlength, int DBheight, int DBwidth,
+                       String DBdescription, String DBmaterial, String DBunit, String DBname) {
+        this.partId = partId;
+        this.type = type;
+        this.quantity = quantity;
+        this.DBprice = DBprice;
+        this.DBlength = DBlength;
+        this.DBheight = DBheight;
+        this.DBwidth = DBwidth;
+        this.DBdescription = DBdescription;
+        this.DBmaterial = DBmaterial;
+        this.DBunit = DBunit;
+        this.DBname = DBname;
+        this.DBtotalQuantityPrice = quantity * DBprice;  // Calculate total price
     }
 
     public int getPartId() {
@@ -138,6 +156,7 @@ public class CarportPart {
     }
 
     @Override
+
     public String toString() {
         return "CarportPart{" +
                 "type=" + type +
@@ -148,4 +167,6 @@ public class CarportPart {
                 ", DBwidth=" + DBwidth +
                 '}';
     }
+
+
 }
