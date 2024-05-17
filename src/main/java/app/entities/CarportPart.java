@@ -2,13 +2,22 @@ package app.entities;
 
 public class CarportPart {
     public enum CarportPartType {
-        SUPPORTPOST,
-        RAFT,
-        BEAM,
-        CROSSSUPPORT,
-        ROOFTILE,
-        STERN,
-        SHEDWOOD,
+        STOLPE,
+        SPÆR,
+        REM,
+        HULBÅND,
+        TAGPLADER,
+        OVERSTERN,
+        UNDERSTERN,
+        BRÆDDER,
+        VANDBRÆDDER,
+        REGLAR,
+        LÆGTE,
+        SKRUER,
+        UNIVERSALBESLAG,
+        BOLTE,
+        FIRKANTSKIVER,
+        HÆNGSLER,
         NONE
     }
 

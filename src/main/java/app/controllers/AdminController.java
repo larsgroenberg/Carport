@@ -180,11 +180,11 @@ public class AdminController
         String type = ctx.formParam("type");
         CarportPart.CarportPartType partType;
         switch (type) {
-            case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
-            case "spær" -> partType = CarportPart.CarportPartType.RAFT;
-            case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
-            case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
-            default -> partType = CarportPart.CarportPartType.ROOFTILE;
+            case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
+            case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
+            case "brædder" -> partType = CarportPart.CarportPartType.REM;
+            case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
+            default -> partType = CarportPart.CarportPartType.TAGPLADER;
         }
 
         part.setType(partType);

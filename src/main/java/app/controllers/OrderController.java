@@ -1,9 +1,6 @@
 package app.controllers;
 
-import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
 
 import app.entities.*;
 import app.exceptions.DatabaseException;
@@ -117,10 +114,10 @@ public class OrderController {
         //todo: fiks således at shed ikke bliver tilføjet når flueben tjekkes på og af.
         Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed, 0);
 
-        newCarport.setBEAM(new CarportPart(CarportPart.CarportPartType.BEAM, svgFromTop.getMaterialQuantity().get("totalBeams")));
-        newCarport.setSUPPORTPOST(new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, svgFromTop.getMaterialQuantity().get("totalPoles")));
-        newCarport.setRAFT(new CarportPart(CarportPart.CarportPartType.RAFT, svgFromTop.getMaterialQuantity().get("totalRafters")));
-        newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.CROSSSUPPORT, svgFromTop.getMaterialQuantity().get("totalCrossSupports")));
+        newCarport.setBEAM(new CarportPart(CarportPart.CarportPartType.REM, svgFromTop.getMaterialQuantity().get("totalBeams")));
+        newCarport.setSUPPORTPOST(new CarportPart(CarportPart.CarportPartType.STOLPE, svgFromTop.getMaterialQuantity().get("totalPoles")));
+        newCarport.setRAFT(new CarportPart(CarportPart.CarportPartType.SPÆR, svgFromTop.getMaterialQuantity().get("totalRafters")));
+        newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.HULBÅND, svgFromTop.getMaterialQuantity().get("totalCrossSupports")));
 
         ctx.sessionAttribute("newCarport", newCarport);
         PartsCalculator partsCalculator = new PartsCalculator(ctx, ConnectionPool.getInstance());

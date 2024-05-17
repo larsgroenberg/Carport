@@ -30,13 +30,20 @@ public class CarportPartMapper {
                     String name = rs.getString("name");
                     CarportPart.CarportPartType partType = null;
                     switch (type) {
-                        case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
-                        case "spær" -> partType = CarportPart.CarportPartType.RAFT;
-                        case "remme" -> partType = CarportPart.CarportPartType.BEAM;
-                        case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
-                        case "tagplader" -> partType = CarportPart.CarportPartType.ROOFTILE;
-                        case "brædder" -> partType = CarportPart.CarportPartType.STERN;
-                        case "reglar" -> partType = CarportPart.CarportPartType.SHEDWOOD;
+                        case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
+                        case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
+                        case "remme" -> partType = CarportPart.CarportPartType.REM;
+                        case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
+                        case "tagplader" -> partType = CarportPart.CarportPartType.TAGPLADER;
+                        case "brædder" -> partType = CarportPart.CarportPartType.BRÆDDER;
+                        case "reglar" -> partType = CarportPart.CarportPartType.REGLAR;
+                        case "lægte" -> partType = CarportPart.CarportPartType.LÆGTE;
+                        case "universalbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+                        case "skruer" -> partType = CarportPart.CarportPartType.SKRUER;
+                        case "bræddebolt" -> partType = CarportPart.CarportPartType.BOLTE;
+                        case "vinkelbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+                        case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
+                        case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSLER;
                         default -> partType = CarportPart.CarportPartType.NONE;
                     }
                     partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
@@ -240,11 +247,11 @@ public class CarportPartMapper {
                 String name = rs.getString("name");
                 CarportPart.CarportPartType partType = null;
                 switch (type) {
-                    case "stolpe" -> partType = CarportPart.CarportPartType.SUPPORTPOST;
-                    case "spær" -> partType = CarportPart.CarportPartType.RAFT;
-                    case "brædder" -> partType = CarportPart.CarportPartType.BEAM;
-                    case "hulbånd" -> partType = CarportPart.CarportPartType.CROSSSUPPORT;
-                    default -> partType = CarportPart.CarportPartType.ROOFTILE;
+                    case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
+                    case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
+                    case "brædder" -> partType = CarportPart.CarportPartType.REM;
+                    case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
+                    default -> partType = CarportPart.CarportPartType.TAGPLADER;
                 }
                 part = new CarportPart(partType, 0,part_id, price, length,height,width, description,material_name, unit, name);
             }
@@ -331,7 +338,7 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.BEAM, 0,partID, price, length, height, width, description, material, unit, name);
+                    return new CarportPart(CarportPart.CarportPartType.REM, 0,partID, price, length, height, width, description, material, unit, name);
                 } else {
                     System.out.println("No matching beam found for length " + carportLength);
                 }
@@ -363,7 +370,7 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.SUPPORTPOST, 0,partID, price, length, height, width, description, material, unit, name);
+                    return new CarportPart(CarportPart.CarportPartType.STOLPE, 0,partID, price, length, height, width, description, material, unit, name);
                 } else {
                     System.out.println("No matching support post found for length " + carportHeight);
                 }
@@ -395,7 +402,7 @@ public class CarportPartMapper {
                     String material = rs.getString("material");
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
-                    return new CarportPart(CarportPart.CarportPartType.RAFT, 0,partID, price, length, height, width, description, material, unit, name);
+                    return new CarportPart(CarportPart.CarportPartType.SPÆR, 0,partID, price, length, height, width, description, material, unit, name);
                 } else {
                     System.out.println("No matching raft found for width " + carportWidth);
                 }
@@ -442,24 +449,24 @@ public class CarportPartMapper {
         List<CarportPart.CarportPartType> types = new ArrayList<>();
         switch (dbType.toLowerCase()) {
             case "stolpe":
-                types.add(CarportPart.CarportPartType.SUPPORTPOST);
+                types.add(CarportPart.CarportPartType.STOLPE);
                 break;
             case "spær":
-                types.add(CarportPart.CarportPartType.RAFT);
-                types.add(CarportPart.CarportPartType.BEAM);
+                types.add(CarportPart.CarportPartType.SPÆR);
+                types.add(CarportPart.CarportPartType.REM);
                 break;
             case "reglar":
-                types.add(CarportPart.CarportPartType.BEAM);
+                types.add(CarportPart.CarportPartType.REM);
                 break;
             case "lægte":
             case "brædder":
-                types.add(CarportPart.CarportPartType.ROOFTILE);
+                types.add(CarportPart.CarportPartType.TAGPLADER);
                 break;
             case "hulbånd":  // Adding a case for 'hulbånd'
-                types.add(CarportPart.CarportPartType.CROSSSUPPORT);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
+                types.add(CarportPart.CarportPartType.HULBÅND);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
                 break;
             case "remme":  // Adding a case for 'hulbånd'
-                types.add(CarportPart.CarportPartType.BEAM);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
+                types.add(CarportPart.CarportPartType.REM);  // Assume 'CROSSSUPPORT' or create a new enum type if needed
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected type: " + dbType);
