@@ -54,10 +54,10 @@ public class PartsCalculator {
         calculateBracketsAndBolts("firkantskiver",  ctx.sessionAttribute("polesWithRemConnection"), 50, "40x40x11 mm firkantskiver, varmeforzinket, 50 styks", "til montering af rem på stolper");
         calculateBracketsAndBolts("universalbeslag", ctx.sessionAttribute("totalRafters"), 1, "190 mm universalbeslag, venstre, varmeforzinket", "til montering af spær på rem");
         calculateBracketsAndBolts("universalbeslag", ctx.sessionAttribute("totalRafters"), 1, "190 mm universalbeslag, højre, varmeforzinket", "til montering af spær på rem");
-        calculateBracketsAndBolts("vinkelbeslag", 2*((int)(ctx.sessionAttribute("quantityOfWidthShedPoles"))+(int)(ctx.sessionAttribute("quantityOfLengthShedPoles"))),1, "35x35 mm vinkelbeslag med rib, varmeforzinket", "til montering af løsholter i skur");
-        calculateScrews("skruer", 200,200, "","til montering af stern & vandbrædt" );
-        calculateScrews("skruer", 800,200, "4,5x50 mm beslagskruer, 200 styks.","til montering af universalbeslag + hulbånd");
+        calculateScrews("skruer", 200,200, "4,5x60 mm universalskruer, 200 styks","til montering af stern & vandbrædt" );
+        calculateScrews("skruer", 800,200, "4,5x50 mm beslagskruer, 200 styks.","til montering af universalbeslag og hulbånd");
         if(carport.isWithShed()) {
+            calculateBracketsAndBolts("vinkelbeslag", 2*((int)(ctx.sessionAttribute("quantityOfWidthShedPoles"))+(int)(ctx.sessionAttribute("quantityOfLengthShedPoles"))),1, "35x35 mm vinkelbeslag med rib, varmeforzinket", "til montering af løsholter i skur");
             calculateScrews("skruer", 800, 200, "", "til montering af den yderste beklædning");
             calculateScrews("skruer", 600, 200, "4,5x50 mm universalskruer, 200 styks", "til montering af den inderste beklædning");
             calculateBracketsAndBolts("hængsel", 1, 1, "50x75 mm stalddørsgreb til hængelås, galvaniseret.","til lås på dør i skur");
@@ -83,8 +83,11 @@ public class PartsCalculator {
     private void calculateScrews(String type, int quantity, int quantityPerPacket, String descriptionText, String nameText) {
         int quantityOfPackets = (int) Math.ceil((double) quantity/quantityPerPacket);
         createDBLists(type);
+        System.out.println("Type : "+type+", quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+", descriptionText : "+descriptionText);
         for (CarportPart part : partsListOfRequiredType) {
+            System.out.println("Type : "+type+" og DBtype : "+part.getType()+" quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+" og DBname : "+part.getDBname()+", descriptionText : "+descriptionText);
             if (String.valueOf(part.getType()).equalsIgnoreCase(type) && part.getDBname().equalsIgnoreCase(nameText)) {
+                System.out.println("Type : "+type+" og DBtype : "+part.getType()+" quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+" og DBname : "+part.getDBname()+", descriptionText : "+descriptionText);
                 if (descriptionText.length() > 2) {
                     part.setDBdescription(descriptionText);
                     part.setDBname(nameText);
