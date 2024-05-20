@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    width: 400px; /* Adjust as needed */
+    width: 500px; /* Adjust as needed */
     background-color: #3a4d7f; /* Dark blue background color */
     padding-top: 20px;
 }
@@ -19,7 +19,7 @@
 
 .navbar h1 {
     display: block;
-    padding: 10px 16px;
+    /*padding: 10px 16px; */
     color: white; /* White text color */
     text-decoration: none;
     font-family: sans-serif; /* Use your custom font here */

@@ -64,7 +64,7 @@ public class OrdersMapper {
 
     public static void insertPartsNeededForOrder(int orderID, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
 
-        ArrayList<CarportPart> carportPartList = ctx.sessionAttribute("partslist");
+        ArrayList<CarportPart> carportPartList = ctx.sessionAttribute("partsList");
 
         for (CarportPart part : carportPartList) {
 

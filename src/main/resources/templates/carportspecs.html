@@ -6,8 +6,10 @@
     <title>BookingBois</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../public/css/InputStyling.css" th:href="@{/css/InputStyling.css}" rel="stylesheet"/>
     <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
+
+    <link href="../public/css/newShowCarport.css" th:href="@{/css/newShowCarport.css}" rel="stylesheet"/>
+
 </head>
 
 <header>
@@ -72,8 +74,7 @@
         </div>
 
         <div class="form-group">
-            <h2>Carport skur:</h2>
-            <div class="with-shed">
+             <div class="with-shed" style="margin-bottom: 15px;">
                 <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike"
                        th:checked="${session.newCarport != null && session.newCarport.withShed}">
                 <label for="with-shed"> Skur?</label>
@@ -82,9 +83,9 @@
                 <div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
                     <div class="flex-container-shed-div">
                         <h2>Skur bredde:</h2>
-                        <select name="width_shed" id="width-shed" required>
-                            <option value="0" disabled selected>Vælg bredden på skuret</option>
-                            <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
+                         <select name="width_shed" id="width-shed" required>
+                             <option value="0" disabled selected>Vælg bredden på skuret</option>
+                             <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
                         </select>
                     </div>
                     <div class="flex-container-shed-div">
@@ -188,7 +189,7 @@ function addCarportOptions(){
         // Filter shed widths based on carport width
         shedWidthSelect.innerHTML = '<option value="0" disabled selected>Vælg bredde på skuret</option>';
         shedWidths.forEach(width => {
-            if (width <= carportWidth) {
+            if (width <= (carportWidth-60)) {
                 // Check if the current width matches the value stored in the session
                 let selected = (myThymeleafVariable != null && myThymeleafVariable.shedWidth === width) ? 'selected' : '';
                 // Append the option with the selected attribute if necessary
