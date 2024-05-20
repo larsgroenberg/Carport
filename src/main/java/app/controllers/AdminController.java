@@ -5,6 +5,7 @@ import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.*;
+import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -40,7 +41,9 @@ public class AdminController
             ctx.render("adminsite.html");
         });
         app.post("/changeorderstatus", ctx -> {
-            changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
+            int orderId = changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
+            Order order = OrdersMapper.getOrderByOrderId(orderId,ConnectionPool.getInstance());
+            EmailService.sendCarportReadyEmail(order);
             ctx.render("adminsite.html");
         });
         app.post("/orderpickedup", ctx -> {
@@ -269,11 +272,12 @@ public class AdminController
         ctx.sessionAttribute("currentuser", currentUser);
     }
 
-    private static void changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException
+    private static int changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException
     {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
         OrdersMapper.changeStatusOnOrder("produceret", orderId, connectionPool);
         getAllOrders(ctx, connectionPool);
+        return orderId;
     }
 
     private static void changeOrderStatusToPickedUp(Context ctx, ConnectionPool connectionPool) throws DatabaseException
