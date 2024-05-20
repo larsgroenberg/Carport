@@ -195,31 +195,40 @@ public class OrdersMapper {
     public static ArrayList<Order> getAllOrders(ConnectionPool connectionPool) throws DatabaseException {
 
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT * FROM public.ordrene";
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()){
-                    int orderId = rs.getInt("order_id");
-                    double materialCost = rs.getDouble("material_cost");
-                    double salesPrice = rs.getDouble("sales_price");
-                    double carportWidth = rs.getDouble("carport_width");
-                    double carportLength = rs.getDouble("carport_length");
-                    double carportHeight = rs.getDouble("carport_height");
-                    int userId = rs.getInt("user_id");
-                    String orderStatus = rs.getString("order_status");
-                    double shedWidth = rs.getDouble("shed_width");
-                    double shedLength = rs.getDouble("shed_length");
-                    String email = rs.getString("email");
-                    String orderDate = rs.getString("orderdate");
-                    String roof = rs.getString("roof");
-                    boolean wall = rs.getBoolean("wall");
-                    orderList.add(new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall));
-                }
+        String sql = "SELECT o.order_id, o.material_cost, o.sales_price, o.carport_width, o.carport_length, o.carport_height, " +
+                "o.user_id, o.order_status, o.shed_width, o.shed_length, o.email, o.orderdate, o.roof, o.wall, " +
+                "u.mobile " +
+                "FROM public.ordrene o " +
+                "JOIN public.users u ON o.user_id = u.user_id";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                double materialCost = rs.getDouble("material_cost");
+                double salesPrice = rs.getDouble("sales_price");
+                double carportWidth = rs.getDouble("carport_width");
+                double carportLength = rs.getDouble("carport_length");
+                double carportHeight = rs.getDouble("carport_height");
+                int userId = rs.getInt("user_id");
+                String orderStatus = rs.getString("order_status");
+                double shedWidth = rs.getDouble("shed_width");
+                double shedLength = rs.getDouble("shed_length");
+                String email = rs.getString("email");
+                String orderDate = rs.getString("orderdate");
+                String roof = rs.getString("roof");
+                boolean wall = rs.getBoolean("wall");
+                String mobile = rs.getString("mobile");
+
+                Order order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall, mobile);
+                orderList.add(order);
             }
-        }catch (SQLException e){
-            throw new DatabaseException("Vi kunne ikke hente ordrelisten fra Databasen!", e.getMessage());
+        } catch (SQLException e) {
+            throw new DatabaseException("Vi kunne ikke hente ordrelisten fra databasen!", e.getMessage());
         }
+
         return orderList;
     }
 

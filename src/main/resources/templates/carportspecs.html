@@ -83,20 +83,21 @@
                 <div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
                     <div class="flex-container-shed-div">
                         <h2>Skur bredde:</h2>
-                         <select name="width_shed" id="width-shed" required>
-                             <option value="0" disabled selected>Vælg bredden på skuret</option>
-                             <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
+                        <select name="width_shed" id="width-shed" required>
+                            <option value="0" selected>Vælg bredden på skuret</option>
+                            <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
                         </select>
                     </div>
                     <div class="flex-container-shed-div">
                         <h2>Skur længde:</h2>
                         <select name="length_shed" id="length-shed" required>
-                            <option value="0" disabled selected>Vælg længden på skuret</option>
+                            <option value="0" selected>Vælg længden på skuret</option>
                             <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
                         </select>
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="button-container">
             <input class="betal" type="submit" value="Se Tegning" formaction="/createcarport">

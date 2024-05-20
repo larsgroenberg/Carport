@@ -20,7 +20,9 @@ public class OrderController {
     private static ArrayList<CarportPart> dbPartsList;
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("carportspecs.html", prepareModel(ctx));
+            ctx.render("index.html");
+            //ctx.render("carportspecs.html", prepareModel(ctx));
+            //ctx.render("adminsite.html");
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx, ConnectionPool.getInstance());
@@ -93,8 +95,20 @@ public class OrderController {
         double length = Double.parseDouble(ctx.formParam("carport_length"));
         double width = Double.parseDouble(ctx.formParam("carport_width"));
         double height = Double.parseDouble(ctx.formParam("carport_height"));
-        double length_shed = Double.parseDouble(ctx.formParam("length_shed"));
-        double width_shed = Double.parseDouble(ctx.formParam("width_shed"));
+        String lengthShedString = ctx.formParam("length_shed");
+        String widthShedString = ctx.formParam("width_shed");
+        double length_shed = 0.0;
+        double width_shed = 0.0;
+
+        if (lengthShedString != null && !lengthShedString.isEmpty()) {
+            length_shed = Double.parseDouble(lengthShedString.trim());
+        }
+        if (widthShedString != null && !widthShedString.isEmpty()) {
+            width_shed = Double.parseDouble(widthShedString.trim());
+        }
+
+        //length_shed = Double.parseDouble(ctx.formParam("length_shed"));
+        //width_shed = Double.parseDouble(ctx.formParam("width_shed"));
         String roof = (ctx.formParam("carport_trapeztag"));
         double postLength = height + 90;
 
@@ -139,7 +153,7 @@ public class OrderController {
 
         ArrayList<CarportPart> partsList = ctx.sessionAttribute("partsList");
         for(CarportPart part: partsList) {
-            System.out.println("Parttype : "+part.getType()+" Beskrivelse : "+part.getDBname()+" Længde : "+part.getDBlength()+", antal : "+part.getQuantity()+" pris i alt : "+part.getDBtotalQuantityPrice());
+            //System.out.println("Parttype : "+part.getType()+" Beskrivelse : "+part.getDBname()+" Længde : "+part.getDBlength()+", antal : "+part.getQuantity()+" pris i alt : "+part.getDBtotalQuantityPrice());
             totalPrice += (part.getQuantity()*part.getDBprice());
         }
         System.out.println("Samlet pris for carporten : "+totalPrice);

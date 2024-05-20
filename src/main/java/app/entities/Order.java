@@ -15,6 +15,7 @@ public class Order {
     private String orderDate;
     private String roof;
     private boolean wall;
+    private String mobile;
 
     public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String userEmail, String orderDate, String roof, boolean wall) {
         this.orderId = orderId;
@@ -31,6 +32,32 @@ public class Order {
         this.orderDate = orderDate;
         this.roof = roof;
         this.wall = wall;
+    }
+
+    public Order(int orderId, double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String userEmail, String orderDate, String roof, boolean wall, String mobile) {
+        this.orderId = orderId;
+        this.materialCost = materialCost;
+        this.salesPrice = salesPrice;
+        this.carportWidth = carportWidth;
+        this.carportLength = carportLength;
+        this.carportHeight = carportHeight;
+        this.userId = userId;
+        this.orderStatus = orderStatus;
+        this.shedWidth = shedWidth;
+        this.shedLength = shedLength;
+        this.userEmail = userEmail;
+        this.orderDate = orderDate;
+        this.roof = roof;
+        this.wall = wall;
+        this.mobile = mobile;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public int getOrderId() {
