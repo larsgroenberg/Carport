@@ -45,8 +45,8 @@ public class PartsCalculator {
         }
         calculateCombinationOfBoards("reglar", ctx.sessionAttribute("quantityOfWidthShedPoles"), (int)(ctx.sessionAttribute("widthShedPole")), "løsholter til skur sider");
         if(carport.isWithRoof()) {
-           calculateCombinationOfBoards("tagplader", (int)(Math.ceil(carport.getWidth()/109)), (int)(carport.getLength()+30), descriptionText);
-           calculateScrews("bundskruer", 600, 50, "", "skruer til tagplader");
+            calculateCombinationOfBoards("tagplader", (int)(Math.ceil(carport.getWidth()/109)), (int)(carport.getLength()+30), descriptionText);
+            calculateScrews("bundskruer", 600, 50, "", "skruer til tagplader");
         }
         calculateScrews("hulbånd", ctx.sessionAttribute("crossSupportLength"), 1000, "1x20 mm hulbånd HB 20-1", "til vindkryds på spær");
         calculateCombinationOfBoards("vandbrædder", 2, (int)((carport.getWidth()+10)+(carport.getLength()+10)), descriptionText);
@@ -64,7 +64,6 @@ public class PartsCalculator {
             calculateBracketsAndBolts("hængsel", 2, 1,"390 mm t-hængsel til stalddør, varmeforzinket", "til skurdør");
             calculateBracketsAndBolts("lægte", 1, 1, "38x73mm lægte trykimprægneret,70% PEFC", "til z på bagside af dør");
         }
-
         ctx.sessionAttribute("partsList", partsList);
     }
 
@@ -83,11 +82,9 @@ public class PartsCalculator {
     private void calculateScrews(String type, int quantity, int quantityPerPacket, String descriptionText, String nameText) {
         int quantityOfPackets = (int) Math.ceil((double) quantity/quantityPerPacket);
         createDBLists(type);
-        System.out.println("Type : "+type+", quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+", descriptionText : "+descriptionText);
         for (CarportPart part : partsListOfRequiredType) {
-            System.out.println("Type : "+type+" og DBtype : "+part.getType()+" quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+" og DBname : "+part.getDBname()+", descriptionText : "+descriptionText);
             if (String.valueOf(part.getType()).equalsIgnoreCase(type) && part.getDBname().equalsIgnoreCase(nameText)) {
-                System.out.println("Type : "+type+" og DBtype : "+part.getType()+" quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+" og DBname : "+part.getDBname()+", descriptionText : "+descriptionText);
+                //System.out.println("Type : "+type+" og DBtype : "+part.getType()+" quantity : "+quantity+", quantityOfPackets : "+quantityOfPackets+", nameText : "+nameText+" og DBname : "+part.getDBname()+", descriptionText : "+descriptionText);
                 if (descriptionText.length() > 2) {
                     part.setDBdescription(descriptionText);
                     part.setDBname(nameText);

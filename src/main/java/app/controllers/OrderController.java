@@ -136,7 +136,6 @@ public class OrderController {
 
         ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
         ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
-        System.out.println("with roof :"+withRoof);
         carport = new Carport(length, width, height, withRoof, withShed, length_shed, width_shed, 0);
     }
 
