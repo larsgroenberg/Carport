@@ -36,14 +36,19 @@ public class CarportPartMapper {
                         case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
                         case "tagplader" -> partType = CarportPart.CarportPartType.TAGPLADER;
                         case "brædder" -> partType = CarportPart.CarportPartType.BRÆDDER;
+                        case "skurbrædt" -> partType = CarportPart.CarportPartType.SKURBRÆDT;
+                        case "understern" -> partType = CarportPart.CarportPartType.UNDERSTERN;
+                        case "overstern" -> partType = CarportPart.CarportPartType.OVERSTERN;
+                        case "vandbrædder" -> partType = CarportPart.CarportPartType.VANDBRÆDDER;
                         case "reglar" -> partType = CarportPart.CarportPartType.REGLAR;
                         case "lægte" -> partType = CarportPart.CarportPartType.LÆGTE;
                         case "universalbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
                         case "skruer" -> partType = CarportPart.CarportPartType.SKRUER;
-                        case "bræddebolt" -> partType = CarportPart.CarportPartType.BOLTE;
-                        case "vinkelbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+                        case "bundskruer" -> partType = CarportPart.CarportPartType.BUNDSKRUER;
+                        case "bolte" -> partType = CarportPart.CarportPartType.BOLTE;
+                        case "vinkelbeslag" -> partType = CarportPart.CarportPartType.VINKELBESLAG;
                         case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
-                        case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSLER;
+                        case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSEL;
                         default -> partType = CarportPart.CarportPartType.NONE;
                     }
                     partList.add(new CarportPart(partType,0,partId, price, length, height, width, description, material_name, unit, name));
@@ -54,174 +59,6 @@ public class CarportPartMapper {
         }
         return partList;
     }
-
-    public static ArrayList<CarportPart> getPartsList(int orderId, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<CarportPart> partslistLines = new ArrayList<>();
-
-        String sql = "SELECT * FROM partslist WHERE order_id = ?";
-
-        try (
-                Connection connection = connectionPool.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)
-        ) {
-            ps.setInt(1, orderId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int partId = rs.getInt("part_id");
-                int quantity = rs.getInt("quantity");
-                int partslistlineprice = rs.getInt("partslistprice");
-                String description = rs.getString("description");
-                String unit = rs.getString("unit");
-                int partLength = rs.getInt("part_length");
-                String name = rs.getString("name");
-
-                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name);
-                partslistLines.add(partslistLine);
-            }
-
-        } catch (SQLException e) {
-            throw new DatabaseException("Error retrieving topping with id = " + e.getMessage());
-        }
-        return partslistLines;
-    }
-
-    public static ArrayList<CarportPart> getPartsListByOrderid(int orderId, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<CarportPart> partslistLines = new ArrayList<>();
-
-        String sql = "SELECT * FROM partslist WHERE order_id = ?";
-
-        try (
-                Connection connection = connectionPool.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)
-        ) {
-            ps.setInt(1, orderId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int partId = rs.getInt("part_id");
-                int quantity = rs.getInt("quantity");
-                int partslistlineprice = rs.getInt("partslistprice");
-                String description = rs.getString("description");
-                String unit = rs.getString("unit");
-                int partLength = rs.getInt("part_length");
-                String name = rs.getString("name");
-
-                CarportPart partslistLine = new CarportPart(null, quantity,partId, partslistlineprice, partLength,0,0, description,name, unit, name);
-                partslistLines.add(partslistLine);
-            }
-
-        } catch (SQLException e) {
-            throw new DatabaseException("Error retrieving topping with id = " + e.getMessage());
-        }
-        return partslistLines;
-    }
-
-
-    public static void adjustPartsCostPrice(int partId, double newCostPrice, ConnectionPool connectionPool) throws DatabaseException {
-
-        String sql = "UPDATE parts SET price = (?) WHERE part_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setDouble(1,newCostPrice);
-                ps.setInt(2, partId);
-                ps.executeUpdate();
-            }
-        }catch (SQLException e){
-            throw new DatabaseException("We couldn't update the meterial costprice", e.getMessage());
-        }
-    }
-
-    public static CarportPart getPartByType(String type, ConnectionPool connectionPool) throws DatabaseException {
-
-        CarportPart part = null;
-
-        String sql = "SELECT * FROM parts WHERE type = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,type);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()){
-                    int part_id = rs.getInt("part_id");
-                    int price = rs.getInt("price");
-                    String description = rs.getString("description");
-                    int length = rs.getInt("length");
-                    int height = rs.getInt("height");
-                    int width = rs.getInt("width");
-                    String material_name = rs.getString("material");
-                    String unit = rs.getString("unit");
-                    String name = rs.getString("name");
-                    part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
-                }
-
-            }
-        }catch (SQLException e){
-            throw new DatabaseException( "We couldnt get the material", e.getMessage());
-        }
-        return part;
-    }
-
-    public static CarportPart getPartByTypeAndLength(String type, double carportWidth, ConnectionPool connectionPool) throws DatabaseException {
-
-        CarportPart part = null;
-
-        String sql = "SELECT * FROM parts WHERE type = ? AND length = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,type);
-                ps.setDouble(2, carportWidth);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()){
-                    int part_id = rs.getInt("part_id");
-                    int price = rs.getInt("price");
-                    String description = rs.getString("description");
-                    int length = rs.getInt("length");
-                    int height = rs.getInt("height");
-                    int width = rs.getInt("width");
-                    String material_name = rs.getString("material");
-                    String unit = rs.getString("unit");
-                    String name = rs.getString("name");
-                    part = new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name);
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException( "We couldnt get the material with that length", e.getMessage());
-        }
-        return part;
-    }
-
-    public static ArrayList<CarportPart> gePartsByDescription(String description, ConnectionPool connectionPool) throws DatabaseException {
-
-        ArrayList<CarportPart> partList = new ArrayList<>();
-        String sql = "SELECT * FROM parts WHERE description = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setString(1,description);
-                ResultSet rs = ps.executeQuery();
-
-                while (rs.next()){
-                    int part_id = rs.getInt("part_id");
-                    int price = rs.getInt("price");
-                    int length = rs.getInt("length");
-                    int height = rs.getInt("height");
-                    int width = rs.getInt("width");
-                    String type = rs.getString("type");
-                    String material_name = rs.getString("material");
-                    String unit = rs.getString("unit");
-                    String name = rs.getString("name");
-                    partList.add(new CarportPart(null, 0,part_id, price, length,height,width, description,material_name, unit, name));
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException("We couldnt get the material", e.getMessage());
-        }
-        return partList;
-    }
-
 
     public static CarportPart getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
 
@@ -249,9 +86,24 @@ public class CarportPartMapper {
                 switch (type) {
                     case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
                     case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
-                    case "brædder" -> partType = CarportPart.CarportPartType.REM;
+                    case "remme" -> partType = CarportPart.CarportPartType.REM;
                     case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
-                    default -> partType = CarportPart.CarportPartType.TAGPLADER;
+                    case "tagplader" -> partType = CarportPart.CarportPartType.TAGPLADER;
+                    case "brædder" -> partType = CarportPart.CarportPartType.BRÆDDER;
+                    case "skurbrædt" -> partType = CarportPart.CarportPartType.SKURBRÆDT;
+                    case "understern" -> partType = CarportPart.CarportPartType.UNDERSTERN;
+                    case "overstern" -> partType = CarportPart.CarportPartType.OVERSTERN;
+                    case "vandbrædder" -> partType = CarportPart.CarportPartType.VANDBRÆDDER;
+                    case "reglar" -> partType = CarportPart.CarportPartType.REGLAR;
+                    case "lægte" -> partType = CarportPart.CarportPartType.LÆGTE;
+                    case "universalbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+                    case "skruer" -> partType = CarportPart.CarportPartType.SKRUER;
+                    case "bundskruer" -> partType = CarportPart.CarportPartType.BUNDSKRUER;
+                    case "bolte" -> partType = CarportPart.CarportPartType.BOLTE;
+                    case "vinkelbeslag" -> partType = CarportPart.CarportPartType.VINKELBESLAG;
+                    case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
+                    case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSEL;
+                    default -> partType = CarportPart.CarportPartType.NONE;
                 }
                 part = new CarportPart(partType, 0,part_id, price, length,height,width, description,material_name, unit, name);
             }
@@ -260,7 +112,7 @@ public class CarportPartMapper {
         }
         return part;
     }
-
+    /*
     public static CarportPart getPartByName(String name, ConnectionPool connectionPool) throws DatabaseException {
 
         CarportPart part = null;
@@ -289,6 +141,8 @@ public class CarportPartMapper {
         }
         return part;
     }
+
+     */
 
 
     public static void addPart(int price, String description, int length, int height, int width, String type, String material, String unit, String name, ConnectionPool connectionPool) throws DatabaseException {
