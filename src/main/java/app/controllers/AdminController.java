@@ -39,11 +39,11 @@ public class AdminController
             getPartById(ctx, ConnectionPool.getInstance());
             ctx.render("adminsite.html");
         });
-        app.post("/changeorderstatus", ctx -> {
+        app.post("/changeOrderStatus", ctx -> {
             changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
             ctx.render("adminsite.html");
         });
-        app.post("/orderpickedup", ctx -> {
+        app.post("/orderPickedUp", ctx -> {
             changeOrderStatusToPickedUp(ctx, ConnectionPool.getInstance());
             ctx.render("adminsite.html");
         });
@@ -74,7 +74,7 @@ public class AdminController
             ctx.sessionAttribute("showallorders", true);
             ctx.render("adminsite.html");
         });
-        app.post("/admindeleteorder", ctx -> {
+        app.post("/adminDeleteOrder", ctx -> {
             deleteOrder(ctx, ConnectionPool.getInstance());
             getAllOrders(ctx, ConnectionPool.getInstance());
             ctx.sessionAttribute("showallorders", true);
@@ -272,7 +272,7 @@ public class AdminController
     private static void changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException
     {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        OrdersMapper.changeStatusOnOrder("produceret", orderId, connectionPool);
+        OrdersMapper.changeStatusOnOrder("pakket", orderId, connectionPool);
         getAllOrders(ctx, connectionPool);
     }
 

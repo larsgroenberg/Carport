@@ -244,23 +244,20 @@
     <form class="form-table" th:if="${session.showallorders}" th:method="POST" method="post">
 
         <div>
-            <h2>Open Orders:</h2>
+            <h2>Modtagede Ordre:</h2>
             <table>
                 <thead>
                 <tr>
                     <th>Ordreid</th>
                     <th>Ordredato</th>
-                    <th>Carport Bredde</th>
-                    <th>Carport Højde</th>
-                    <th>Carport Længde</th>
+                    <th>Dimensioner</th>
                     <th>Skurets Bredde</th>
                     <th>Skurets Længde</th>
                     <th>Materiale Pris</th>
-                    <th>Salgs Price</th>
-                    <th>Userid</th>
-                    <th>Ordre Status</th>
+                    <th>Salgspris</th>
+                    <th>Tag</th>
+                    <th>Mobilnr.</th>
                     <th>Email</th>
-                    <th>Roof</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -268,23 +265,20 @@
                 <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'modtaget'}">
                     <td th:text="${order.orderId}">OrderId</td>
                     <td th:text="${order.orderDate}">Ordre Dato</td>
-                    <td th:text="${order.carportWidth}">CarportWidth</td>
-                    <td th:text="${order.carportHeight}">CarportHeight</td>
-                    <td th:text="${order.carportLength}">CarportLength</td>
-                    <td th:text="${order.shedWidth}">Shed Width</td>
-                    <td th:text="${order.shedLength}">Shed Length</td>
-                    <td th:text="${order.materialCost}">Material Cost</td>
-                    <td th:text="${order.salesPrice}">Sales Price</td>
-                    <td th:text="${order.userId}">UserId</td>
-                    <td th:text="${order.orderStatus}">Order Status</td>
+                    <td th:text="${order.carportWidth} + ',' + ${order.carportLength} + ',' + ${order.carportHeight}">Dimensioner</td>
+                    <td th:text="${order.shedWidth}">Skur bredde</td>
+                    <td th:text="${order.shedLength}">Skur længde</td>
+                    <td th:text="${order.materialCost}">Materiale omkostninger</td>
+                    <td th:text="${order.salesPrice}">Salgspris</td>
+                    <td th:text="${order.roof}">Tag</td>
+                    <td th:text="${order.mobile != null ? order.mobile : 'Intet mobilnummer'}">Mobilnr.</td>
                     <td th:text="${order.userEmail}">Email</td>
-                    <td th:text="${order.roof}">Roof</td>
-                    <td>
-                        <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/admindeleteorder"
+                   <td>
+                        <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/adminDeleteOrder"
                                 class="delete-button">Slet
                         </button>
-                        <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/changeorderstatus"
-                                class="produced-button">Produceret
+                        <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/changeOrderStatus"
+                                class="produced-button">Pakket
                         </button>
                         <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/editOrder"
                                 class="edit-button">Edit
@@ -295,43 +289,37 @@
             </table>
         </div>
         <div>
-            <h2>Orders produced:</h2>
+            <h2>Pakkede ordre:</h2>
             <table>
                 <thead>
                 <tr>
                     <th>Ordreid</th>
                     <th>Ordredato</th>
-                    <th>Carport Bredde</th>
-                    <th>Carport Højde</th>
-                    <th>Carport Længde</th>
+                    <th>Dimensioner</th>
                     <th>Skurets Bredde</th>
                     <th>Skurets Længde</th>
                     <th>Materiale Pris</th>
-                    <th>Salgs Price</th>
-                    <th>Userid</th>
-                    <th>Ordre Status</th>
+                    <th>Salgspris</th>
+                    <th>Tag</th>
+                    <th>Mobilnr.</th>
                     <th>Email</th>
-                    <th>Roof</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'produceret'}">
+                <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'pakket'}">
                     <td th:text="${order.orderId}">OrderId</td>
                     <td th:text="${order.orderDate}">Ordre Dato</td>
-                    <td th:text="${order.carportWidth}">CarportWidth</td>
-                    <td th:text="${order.carportHeight}">CarportHeight</td>
-                    <td th:text="${order.carportLength}">CarportLength</td>
-                    <td th:text="${order.shedWidth}">Shed Width</td>
-                    <td th:text="${order.shedLength}">Shed Length</td>
-                    <td th:text="${order.materialCost}">Material Cost</td>
-                    <td th:text="${order.salesPrice}">Sales Price</td>
-                    <td th:text="${order.userId}">UserId</td>
-                    <td th:text="${order.orderStatus}">Order Status</td>
+                    <td th:text="${order.carportWidth} + ',' + ${order.carportLength} + ',' + ${order.carportHeight}">Dimensioner</td>
+                    <td th:text="${order.shedWidth}">Skur bredde</td>
+                    <td th:text="${order.shedLength}">Skur længde</td>
+                    <td th:text="${order.materialCost}">Materiale omkostninger</td>
+                    <td th:text="${order.salesPrice}">Salgspris</td>
+                    <td th:text="${order.roof}">Tag</td>
+                    <td th:text="${order.mobile != null ? order.mobile : 'Intet mobilnummer'}">Mobilnr.</td>
                     <td th:text="${order.userEmail}">Email</td>
-                    <td th:text="${order.roof}">Roof</td>
                     <td>
-                        <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/orderpickedup"
+                        <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/orderPickedUp"
                                 class="produced-button">Afhentet
                         </button>
                     </td>
@@ -341,23 +329,20 @@
         </div>
 
         <div th:if="${session.customerorders}">
-            <h2>Closed Orders:</h2>
+            <h2>Færdigleverede Ordre:</h2>
             <table>
                 <thead>
                 <tr>
                     <th>Ordreid</th>
                     <th>Ordredato</th>
-                    <th>Carport Bredde</th>
-                    <th>Carport Højde</th>
-                    <th>Carport Længde</th>
+                    <th>Dimensioner</th>
                     <th>Skurets Bredde</th>
                     <th>Skurets Længde</th>
                     <th>Materiale Pris</th>
-                    <th>Salgs Price</th>
-                    <th>Userid</th>
-                    <th>Ordre Status</th>
+                    <th>Salgspris</th>
+                    <th>Tag</th>
+                    <th>Mobilnr.</th>
                     <th>Email</th>
-                    <th>Roof</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -365,17 +350,14 @@
                 <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'leveret'}">
                     <td th:text="${order.orderId}">OrderId</td>
                     <td th:text="${order.orderDate}">Ordre Dato</td>
-                    <td th:text="${order.carportWidth}">CarportWidth</td>
-                    <td th:text="${order.carportHeight}">CarportHeight</td>
-                    <td th:text="${order.carportLength}">CarportLength</td>
-                    <td th:text="${order.shedWidth}">Shed Width</td>
-                    <td th:text="${order.shedLength}">Shed Length</td>
-                    <td th:text="${order.materialCost}">Material Cost</td>
-                    <td th:text="${order.salesPrice}">Sales Price</td>
-                    <td th:text="${order.userId}">UserId</td>
-                    <td th:text="${order.orderStatus}">Order Status</td>
+                    <td th:text="${order.carportWidth} + ',' + ${order.carportLength} + ',' + ${order.carportHeight}">Dimensioner</td>
+                    <td th:text="${order.shedWidth}">Skur bredde</td>
+                    <td th:text="${order.shedLength}">Skur længde</td>
+                    <td th:text="${order.materialCost}">Materiale omkostninger</td>
+                    <td th:text="${order.salesPrice}">Salgspris</td>
+                    <td th:text="${order.roof}">Tag</td>
+                    <td th:text="${order.mobile != null ? order.mobile : 'Intet mobilnummer'}">Mobilnr.</td>
                     <td th:text="${order.userEmail}">Email</td>
-                    <td th:text="${order.roof}">Roof</td>
                 </tr>
                 </tbody>
             </table>
