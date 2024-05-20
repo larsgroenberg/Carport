@@ -356,6 +356,9 @@ public class CarportSvg {
         ctx.sessionAttribute("lengthShedPole", (int) lengthShedPole);
         ctx.sessionAttribute("quantityOfLengthShedPoles", quantityOfLengthShedPoles);
         ctx.sessionAttribute("quantityOfWidthShedPoles", quantityOfWidthShedPoles);
+        if(shedWidth+60<width) {
+            polesWithRemConnection -= 1;
+        }
         ctx.sessionAttribute("polesWithRemConnection", (polesWithRemConnection*2));
         return poleCounter;
     }
