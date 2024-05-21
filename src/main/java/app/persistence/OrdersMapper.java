@@ -28,8 +28,8 @@ public class OrdersMapper {
             Carport carport = ctx.sessionAttribute("newCarport");
             User user = ctx.sessionAttribute("currentUser");
 
-            ps.setDouble(1, 99999);
-            ps.setDouble(2, 99999);
+            ps.setDouble(1, carport.getPrice());
+            ps.setDouble(2, Math.ceil(carport.getPrice() * 1.4));
             ps.setDouble(3, carport.getWidth());
             ps.setDouble(4, carport.getLength());
             ps.setDouble(5, carport.getHeight());

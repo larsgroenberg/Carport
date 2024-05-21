@@ -22,10 +22,10 @@ import static app.persistence.OrdersMapper.getOrderByUserId;
 
 public class UserController {
     public static void addRoutes(Javalin app) {
-        app.post("login", ctx -> {
+        app.post("/ToLogin", ctx -> {
             login(ctx, ConnectionPool.getInstance());
         });
-        app.get("login", ctx -> {
+        app.get("/ToLogin", ctx -> {
             ctx.render("login.html");
         });
 
@@ -164,7 +164,9 @@ public class UserController {
                 ctx.render("adminsite.html");
             } else {
                 // Her sender jeg brugeren tilbage til carportspecs.html
-                ctx.render("carportspecs.html");
+                customerlogin(ctx, connectionPool);
+                //customerCarportInfo(user,ctx);
+                //ctx.render("customersite.html");
             }
         } catch (DatabaseException e) {
             // Her sætter jeg attributten til true hvilket gør at javascriptet vises

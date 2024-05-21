@@ -35,42 +35,13 @@ public class CarportPart {
     private String DBmaterial;
     private String DBunit;
     private String DBname;
-    private String typen;
+    private String DBtype;
     private CarportPart carportPart;
     private double DBtotalQuantityPrice;
     private double roundedDBtotalQuantityPrice;
 
-    public CarportPart(CarportPartType type, int quantity,int partId,double DBprice, int DBlength, int DBheight, int DBwidth, String DBdescription, String DBmaterial, String DBunit, String DBname) {
-        this.type = type;
-        this.quantity = quantity;
-        this.partId = partId;
-        this.DBprice = DBprice;
-        this.DBlength = DBlength;
-        this.DBheight = DBheight;
-        this.DBwidth = DBwidth;
-        this.DBdescription = DBdescription;
-        this.DBmaterial = DBmaterial;
-        this.DBunit = DBunit;
-        this.DBname = DBname;
-    }
-
-    public CarportPart(String type, int quantity,int partId,double DBprice, int DBlength, int DBheight, int DBwidth, String DBdescription, String DBmaterial, String DBunit, String DBname) {
-        this.typen = type;
-        this.quantity = quantity;
-        this.partId = partId;
-        this.DBprice = DBprice;
-        this.DBlength = DBlength;
-        this.DBheight = DBheight;
-        this.DBwidth = DBwidth;
-        this.DBdescription = DBdescription;
-        this.DBmaterial = DBmaterial;
-        this.DBunit = DBunit;
-        this.DBname = DBname;
-    }
-
-
     public CarportPart(int partId, CarportPartType type, int quantity, double DBprice, int DBlength, int DBheight, int DBwidth,
-                       String DBdescription, String DBmaterial, String DBunit, String DBname) {
+                       String DBdescription, String DBmaterial, String DBunit, String DBname, String DBtype) {
         this.partId = partId;
         this.type = type;
         this.quantity = quantity;
@@ -82,15 +53,8 @@ public class CarportPart {
         this.DBmaterial = DBmaterial;
         this.DBunit = DBunit;
         this.DBname = DBname;
-        this.DBtotalQuantityPrice =  roundPrice(DBprice*quantity);
-
-    }
-    public double roundPrice(double totalPrice) {
-        roundedDBtotalQuantityPrice = Math.round(totalPrice*10)/100;
-        return roundedDBtotalQuantityPrice;
-    }
-    public void setTypen(String typen) {
-        this.typen = typen;
+        this.DBtype = DBtype;
+        this.DBtotalQuantityPrice = quantity * DBprice;  // Calculate total price
     }
 
     public CarportPart getCarportPart() {
@@ -101,8 +65,12 @@ public class CarportPart {
         this.carportPart = carportPart;
     }
 
-    public String getTypen() {
-        return typen;
+    public String getDBtype() {
+        return DBtype;
+    }
+
+    public void setDBtype(String DBtype) {
+        this.DBtype = DBtype;
     }
 
     public int getPartId() {

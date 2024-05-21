@@ -20,6 +20,8 @@
             <button type="submit" formaction="/carport-drawing" class="nav-btn active">2. Carport Drawing</button>
             <button type="submit" formaction="/user-details" class="nav-btn">3. User Details</button>
             <button type="submit" formaction="/confirmation" class="nav-btn">4. Confirmation</button>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
         </form>
     </div>
 </header>
@@ -62,41 +64,11 @@
                 <td style="text-align: left;">cm</td>
             </tr>
             <tr>
-                <td>Den samlede pris, uden fortjeneste, for carporten bliver : </td>
+                <td>Den samlede pris: </td>
                 <td style="text-align: right;" th:text="${session.carportprice}"></td>
                 <td style="text-align: left;">kr.</td>
             </tr>
         </table>
-
-        <div th:if="${session.showpartslist}">
-            <!--span class="close" onclick="closeModal()">&times;</span-->
-
-            <table id="partsTable" class="table">
-                <thead>
-                <tr>
-                    <th>Produktbeskrivelse</th>
-                    <th>Længde</th>
-                    <th>Antal</th>
-                    <th>Enhed</th>
-                    <th>Beskrivelse</th>
-                    <th>Enkel Pris</th>
-                    <th>Samlede Pris</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="part : ${session.partsList}">
-                    <td th:text="${part.DBdescription}">Name</td>
-                    <td th:text="${part.DBlength}">Length</td>
-                    <td th:text="${part.quantity}">Quantity</td>
-                    <td th:text="${part.DBunit}">Unit</td>
-                    <td th:text="${part.DBname}">Beskrivelse</td>
-                    <td th:text="${part.DBprice}">Enkel Pris</td>
-                    <td th:text="${part.DBtotalQuantityPrice}">Samlede Pris</td>
-                </tr>
-                </tbody>
-            </table>
-
-        </div>
         <div class="button-container-checkout">
             <input class="shopping" style="margin-right: 20px;" type="submit" value="Ændre Bestilling"
                    formaction="/changeorder">
@@ -106,30 +78,5 @@
         </div>
     </form>
 </div>
-<script>
-
-    // Funktion til at vise modalen
-    /*
-
-        document.addEventListener("DOMContentLoaded", function () {
-            var showpartslist = [[${session.showpartslist}]];
-            if (showpartslist) {
-                var hiddenDiv = document.getElementById("hiddenDiv");
-                hiddenDiv.style.display = "block";
-            }
-        });
-
-        // Funktion for at lukke modalen
-        function closeModal() {
-            var modal = document.getElementById("hiddenDiv");
-            modal.style.display = "none";
-        }
-
-
-    */
-
-
-</script>
-
 </body>
 </html>

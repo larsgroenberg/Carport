@@ -5,6 +5,7 @@ import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.*;
+import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -40,7 +41,9 @@ public class AdminController
             ctx.render("adminsite.html");
         });
         app.post("/changeOrderStatus", ctx -> {
-            changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
+            int orderId = changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
+            Order order = OrdersMapper.getOrderByOrderId(orderId,ConnectionPool.getInstance());
+            EmailService.sendCarportReadyEmail(order);
             ctx.render("adminsite.html");
         });
         app.post("/orderPickedUp", ctx -> {
@@ -182,9 +185,24 @@ public class AdminController
         switch (type) {
             case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
             case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
-            case "brædder" -> partType = CarportPart.CarportPartType.REM;
+            case "remme" -> partType = CarportPart.CarportPartType.REM;
             case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
-            default -> partType = CarportPart.CarportPartType.TAGPLADER;
+            case "tagplader" -> partType = CarportPart.CarportPartType.TAGPLADER;
+            case "brædder" -> partType = CarportPart.CarportPartType.BRÆDDER;
+            case "skurbrædt" -> partType = CarportPart.CarportPartType.SKURBRÆDT;
+            case "understern" -> partType = CarportPart.CarportPartType.UNDERSTERN;
+            case "overstern" -> partType = CarportPart.CarportPartType.OVERSTERN;
+            case "vandbrædder" -> partType = CarportPart.CarportPartType.VANDBRÆDDER;
+            case "reglar" -> partType = CarportPart.CarportPartType.REGLAR;
+            case "lægte" -> partType = CarportPart.CarportPartType.LÆGTE;
+            case "universalbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+            case "skruer" -> partType = CarportPart.CarportPartType.SKRUER;
+            case "bundskruer" -> partType = CarportPart.CarportPartType.BUNDSKRUER;
+            case "bolte" -> partType = CarportPart.CarportPartType.BOLTE;
+            case "vinkelbeslag" -> partType = CarportPart.CarportPartType.VINKELBESLAG;
+            case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
+            case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSEL;
+            default -> partType = CarportPart.CarportPartType.NONE;
         }
 
         part.setType(partType);
@@ -269,11 +287,12 @@ public class AdminController
         ctx.sessionAttribute("currentuser", currentUser);
     }
 
-    private static void changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException
+    private static int changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException
     {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
         OrdersMapper.changeStatusOnOrder("pakket", orderId, connectionPool);
         getAllOrders(ctx, connectionPool);
+        return orderId;
     }
 
     private static void changeOrderStatusToPickedUp(Context ctx, ConnectionPool connectionPool) throws DatabaseException
