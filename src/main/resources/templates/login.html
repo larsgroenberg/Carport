@@ -11,12 +11,7 @@
 <div class="login-page">
     <header>
         <div>
-            <a href="../index.html" th:href="@{/}" >
-                <img alt="logo" src="../public/images/olskersscupcakelogo.png" th:src="@{/images/olskersscupcakelogo.png}"/>
-            </a>
-            <a href="../index.html" th:href="@{/}">
-                <img alt="logo" src="../public/images/cupcakelogo.png" th:src="@{/images/cupcakelogo.png}"/>
-            </a>
+            <img alt="logo" src="../public/images/johannes_fog_as_cover.jpeg" th:src="@{/images/johannes_fog_as_cover.jpeg}"/>
         </div>
     </header>
     <div class="page">
@@ -24,12 +19,8 @@
             <form class="generic-form" method="post">
                 <input type="text" name="email" placeholder="Enter your email"/>
                 <input type="password" name="password" placeholder="Enter your password"/>
-                <button type="submit" formaction="/login">Login</button>
+                <button type="submit" formaction="/ToLogin">Login</button>
             </form>
-
-            <div class="generic-form-createuser">
-                <a href="createuser.html" th:href="@{/createuser}">Create user</a>
-            </div>
         </div>
 
 

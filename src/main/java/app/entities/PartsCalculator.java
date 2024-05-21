@@ -73,7 +73,7 @@ public class PartsCalculator {
             if (String.valueOf(part.getType()).equalsIgnoreCase(type) && part.getDBdescription().equalsIgnoreCase(descriptionText)) {
                 if (descriptionText.length() > 2) part.setDBname(nameText);
                 part.setQuantity(quantityOfPackets);
-                partsList.add(new CarportPart(part.getTypen(), part.getQuantity(), part.getPartId(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname()));
+                partsList.add(new CarportPart(part.getPartId(), part.getType(), part.getQuantity(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname(), part.getDBtype()));
             }
         }
     }
@@ -89,8 +89,7 @@ public class PartsCalculator {
                     part.setDBname(nameText);
                 }
                 part.setQuantity(quantityOfPackets);
-                partsList.add(new CarportPart(part.getTypen(), part.getQuantity(), part.getPartId(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname()));
-            }
+                partsList.add(new CarportPart(part.getPartId(), part.getType(), part.getQuantity(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname(), part.getDBtype()));}
         }
     }
 
@@ -146,20 +145,17 @@ public class PartsCalculator {
                     if (descriptionText.length() > 2) part.setDBname(descriptionText);
                     part.setQuantity((numberOfLongestBoards * quantity));
                     // Herved sikrer jeg at ens part.objekter bliver behandlet korrekt
-                    partsList.add(new CarportPart(part.getTypen(), part.getQuantity(), part.getPartId(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname()));
-                }
+                    partsList.add(new CarportPart(part.getPartId(), part.getType(), part.getQuantity(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname(), part.getDBtype()));}
                 if (part.getDBlength() == closestLength && !singleBoard) {
                     if (descriptionText.length() > 2) part.setDBname(descriptionText);
                     part.setQuantity(quantity);
                     // Herved sikrer jeg at ens part.objekter bliver behandlet korrekt
-                    partsList.add(new CarportPart(part.getTypen(), part.getQuantity(), part.getPartId(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname()));
-                }
+                    partsList.add(new CarportPart(part.getPartId(), part.getType(), part.getQuantity(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname(), part.getDBtype()));}
                 if (part.getDBlength() == closestLength && singleBoard) {
                     if (descriptionText.length() > 2) part.setDBname(descriptionText);
                     part.setQuantity(quantity);
                     // Herved sikrer jeg at ens part.objekter bliver behandlet korrekt
-                    partsList.add(new CarportPart(part.getTypen(), part.getQuantity(), part.getPartId(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname()));
-                }
+                    partsList.add(new CarportPart(part.getPartId(), part.getType(), part.getQuantity(), part.getDBprice(), part.getDBlength(), part.getDBheight(), part.getDBwidth(), part.getDBdescription(), part.getDBmaterial(), part.getDBunit(), part.getDBname(), part.getDBtype()));}
             }
         }
     }

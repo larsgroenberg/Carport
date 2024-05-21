@@ -11,10 +11,10 @@
 
     <h1>Detaljer på din ordre</h1>
     <h2>Carport Specifikationer</h2>
-    <p>Width: <span th:text="${session.carportInfo.carportWidth}">0</span> cm</p>
-    <p>Length: <span th:text="${session.carportInfo.carportLength}">0</span> cm</p>
-    <p>Height: <span th:text="${session.carportInfo.carportHeight}">0</span> cm</p>
-    <p>Roof Type: <span th:if="${session.carportInfo.roof}">Plastic Trapeztag</span></p>
+    <p>Width: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportWidth}">0</span> cm</p>
+    <p>Length: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportLength}">0</span> cm</p>
+    <p>Height: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportHeight}">0</span> cm</p>
+    <p>Roof Type: <span th:if="${session.carportInfo}">Plastic Trapeztag</span></p>
 
     <h2>Dine personlige oplysninger</h2>
     <form th:action="@{/updateName}" method="post">
@@ -45,8 +45,6 @@
             <th>Unit</th>
             <th>Type</th>
             <th>Beskrivelse</th>
-            <th>Enkel Pris</th>
-            <th>Samlede Pris</th>
         </tr>
         </thead>
         <tbody>
@@ -59,8 +57,6 @@
             <td th:text="${part.DBunit}">Unit</td>
             <td th:text="${part.type}">Type</td>
             <td th:text="${part.DBname}">Beskrivelse</td>
-            <td th:text="${part.DBprice}">Enkel Pris</td>
-            <td th:text="${part.DBtotalQuantityPrice}">Samlede Pris</td>
         </tr>
         </tbody>
     </table>

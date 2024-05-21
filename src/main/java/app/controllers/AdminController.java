@@ -185,9 +185,24 @@ public class AdminController
         switch (type) {
             case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
             case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
-            case "brædder" -> partType = CarportPart.CarportPartType.REM;
+            case "remme" -> partType = CarportPart.CarportPartType.REM;
             case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
-            default -> partType = CarportPart.CarportPartType.TAGPLADER;
+            case "tagplader" -> partType = CarportPart.CarportPartType.TAGPLADER;
+            case "brædder" -> partType = CarportPart.CarportPartType.BRÆDDER;
+            case "skurbrædt" -> partType = CarportPart.CarportPartType.SKURBRÆDT;
+            case "understern" -> partType = CarportPart.CarportPartType.UNDERSTERN;
+            case "overstern" -> partType = CarportPart.CarportPartType.OVERSTERN;
+            case "vandbrædder" -> partType = CarportPart.CarportPartType.VANDBRÆDDER;
+            case "reglar" -> partType = CarportPart.CarportPartType.REGLAR;
+            case "lægte" -> partType = CarportPart.CarportPartType.LÆGTE;
+            case "universalbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+            case "skruer" -> partType = CarportPart.CarportPartType.SKRUER;
+            case "bundskruer" -> partType = CarportPart.CarportPartType.BUNDSKRUER;
+            case "bolte" -> partType = CarportPart.CarportPartType.BOLTE;
+            case "vinkelbeslag" -> partType = CarportPart.CarportPartType.VINKELBESLAG;
+            case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
+            case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSEL;
+            default -> partType = CarportPart.CarportPartType.NONE;
         }
 
         part.setType(partType);

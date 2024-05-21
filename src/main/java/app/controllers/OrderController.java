@@ -134,25 +134,27 @@ public class OrderController {
 
         ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
         ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
-        carport = new Carport(length, width, height, withRoof, withShed, length_shed, width_shed, 0);
+        carport = new Carport(length, width, height, withRoof, withShed, length_shed, width_shed,0);
     }
 
-    public static void calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException
+    public static double calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException
     {
         double totalPrice = 0.0;
         dbPartsList = CarportPartMapper.getDBParts(connectionPool);
         ctx.sessionAttribute("dbPartsList", dbPartsList);
-        ctx.sessionAttribute("newCarport", carport);
         PartsCalculator partsCalculator = new PartsCalculator(carport, dbPartsList, ctx, ConnectionPool.getInstance());
         partsCalculator.calculateCarport(ctx);
 
         ArrayList<CarportPart> partsList = ctx.sessionAttribute("partsList");
         for(CarportPart part: partsList) {
-            //System.out.println("Parttype : "+part.getType()+" Beskrivelse : "+part.getDBname()+" Længde : "+part.getDBlength()+", antal : "+part.getQuantity()+" pris i alt : "+part.getDBtotalQuantityPrice());
             totalPrice += (part.getQuantity()*part.getDBprice());
         }
-        System.out.println("Samlet pris for carporten : "+totalPrice);
-        ctx.sessionAttribute("carportprice", totalPrice);
+        totalPrice = Math.ceil(totalPrice);
+        double carportTotalPrice = Math.ceil(totalPrice*1.4);
+        ctx.sessionAttribute("carportprice", carportTotalPrice);
+        carport.setPrice(totalPrice);
+        ctx.sessionAttribute("newCarport", carport);
+        return totalPrice;
     }
 
 }
