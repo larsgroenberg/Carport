@@ -12,6 +12,39 @@ body {
     box-sizing: border-box;
 }
 
+
+/* Page container styles */
+.page-showorder {
+    max-width: 1200px;
+    min-width: 1200px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Page container styles */
+.outer-page {
+    max-width: 1000px;
+    min-width: 1000px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+
+}
+/* Page container styles */
+.inner-page {
+    max-width: 1000px;
+    min-width: 1000px;
+
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
 /* Page container styles */
 .page {
     max-width: 1000px;
@@ -19,9 +52,80 @@ body {
     margin: 20px auto;
     padding: 30px;
     background-color: white;
-    border-radius: 20px;
+    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+
+.dropdown-container-shed {
+    max-width: 1000px;
+    min-width: 1000px;
+    margin: 20px auto;
+    height: 250px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    transition: background-color 0.5s ease, border-color 0.5s ease; /* Transition-effekt */
+}
+
+
+.with-shed {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.with-shed-button {
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: 1px solid #3a4d7f;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    border-radius: 3px; /* Runde kanter */
+    transition: background-color 0.5s ease, border-color 0.5s ease; /* Transition-effekt */
+}
+
+.with-shed-button:hover {
+    background-color: #66b2ff; /* Lysere blå farve ved hover */
+    border-color: #66b2ff;
+}
+
+.with-shed-button:hover::after {
+    content: '✓'; /* Flueben */
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 15px;
+}
+
+.with-shed-button.active {
+    background-color: #3a4d7f; /* Mørkere blå farve når aktiv */
+    border-color: #3a4d7f;
+}
+
+.with-shed-button.active::after {
+    content: '✓'; /* Flueben */
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 15px;
+    opacity: 1; /* Sørg for, at fluebenet er synligt, når knappen er aktiv */
+}
+
+
+
+.with-shed-label {
+    margin-left: 10px;
+}
+
 
 /* Form table styles */
 .form-table {
@@ -68,18 +172,17 @@ body {
 .betal {
     background-color: #28a745;
     color: white;
-    padding: 12px 24px;
+    padding: 20px 30px;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 22px;
     transition: background-color 0.4s, transform 0.2s;
 }
 
 .shopping:hover,
 .betal:hover {
     background-color: #218838;
-    transform: scale(1.05);
 }
 
 .shopping {
@@ -147,18 +250,6 @@ select:focus {
     display: none;
 }
 
-.dropdown-container-shed-wrapper {
-    width: 100%; /* Fast højde til containeren */
-}
-
-.flex-container-shed-div {
-
-    width: 100%;
-
-    padding: 0;
-    margin-bottom: 20px;
-}
-
 /* Button Styles */
 .button-container {
     text-align: center;
@@ -166,19 +257,43 @@ select:focus {
 }
 
 .betal {
-    padding: 15px 30px;
+    padding: 25px 30px;
     background-color: #27ae60;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s;
+    font-size: 28px;
+    transition: background-color 0.4s, transform 0.4s;
 }
 
 .betal:hover {
+    /* Juster denne værdi efter behov for at ændre afstanden */
+
     background-color: #219653;
 }
+#movingButton {
+    position: relative;
+    overflow: hidden;
+    padding: 15px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#movingButton .movingPart {
+    display: inline-block;
+    transition: transform 0.5s ease-in-out;
+}
+
+#movingButton:hover .movingPart {
+    transform: translateX(6px);
+}
+
+
+
+
+
 
 /* Input Styles */
 input[type="text"],

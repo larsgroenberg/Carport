@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
-    <link href="../public/css/InputStyling.css" th:href="@{/css/InputStyling.css}" rel="stylesheet"/>
+    <!-- <link href="../public/css/InputStyling.css" th:href="@{/css/InputStyling.css}" rel="stylesheet"/> -->
+    <link href="../public/css/newShowCarport.css" th:href="@{/css/newShowCarport.css}" rel="stylesheet"/>
 </head>
 
 <header>
@@ -24,55 +25,58 @@
 </header>
 
 <body>
-<div class="login-page">
+<div class="page">
 
-    <div class="page">
+    <form class="generic-form" method="post">
         <h1>User Info</h1>
-        <form class="generic-form" method="post">
-            <div class="form-group">
-                <input type="text" name="email" placeholder="Enter your email" th:value="${session.currentUser != null ? session.currentUser.email : ''}" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="name" placeholder="Enter your name" th:value="${session.currentUser != null ? session.currentUser.name : ''}" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="mobile" placeholder="Enter your mobilenumber" th:value="${session.currentUser != null ? session.currentUser.mobile : ''}" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="address" placeholder="Enter your address" th:value="${session.currentUser != null ? session.currentUser.address : ''}" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="zipcode" placeholder="Enter your zipcode" th:value="${session.currentUser != null ? session.currentUser.zipcode : ''}" />
-            </div>
-
-            <!--div class="form-group">
-                <input type="password" name="password1" placeholder="Enter your password" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
-            </div>
-
-            <div class="form-group">
-                <input type="password" name="password2" placeholder="Enter your password again" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
-            </div-->
-
-
-            <div class="button-container">
-                <button type="submit" formaction="/ToConfirmation" class="betal">Videre</button>
-            </div>
-
-        </form>
-
-        <div id="hiddenDiv" class="modal" th:if="${error}">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <p id="messageText" th:text="${message}"></p>
-            </div>
+        <div class="form-group">
+            <input type="text" name="email" placeholder="Enter your email"
+                   th:value="${session.currentUser != null ? session.currentUser.email : ''}"/>
         </div>
 
+        <div class="form-group">
+            <input type="text" name="name" placeholder="Enter your name"
+                   th:value="${session.currentUser != null ? session.currentUser.name : ''}"/>
+        </div>
+
+        <div class="form-group">
+            <input type="text" name="mobile" placeholder="Enter your mobilenumber"
+                   th:value="${session.currentUser != null ? session.currentUser.mobile : ''}"/>
+        </div>
+
+        <div class="form-group">
+            <input type="text" name="address" placeholder="Enter your address"
+                   th:value="${session.currentUser != null ? session.currentUser.address : ''}"/>
+        </div>
+
+        <div class="form-group">
+            <input type="text" name="zipcode" placeholder="Enter your zipcode"
+                   th:value="${session.currentUser != null ? session.currentUser.zipcode : ''}"/>
+        </div>
+
+        <!--div class="form-group">
+            <input type="password" name="password1" placeholder="Enter your password" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="password2" placeholder="Enter your password again" th:value="${session.currentUser != null ? session.currentUser.password : ''}"/>
+        </div-->
+
+
+        <div class="button-container">
+            <button type="submit" formaction="/ToConfirmation" class="betal">Videre</button>
+        </div>
+
+    </form>
+
+    <div id="hiddenDiv" class="modal" th:if="${error}">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="messageText" th:text="${message}"></p>
+        </div>
     </div>
 </div>
+
 
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
@@ -84,6 +88,7 @@
             showMessage([[${message}]]);
         }
     });
+
     // Funktion for at vise meddelelsen
     function showMessage(message) {
         var modal = document.getElementById("hiddenDiv");
@@ -91,6 +96,7 @@
         messageText.textContent = message; // Sæt meddelelsesindholdet
         modal.style.display = "block"; // Vis modalen
     }
+
     // Funktion for at lukke modalen
     function closeModal() {
         var modal = document.getElementById("hiddenDiv");
