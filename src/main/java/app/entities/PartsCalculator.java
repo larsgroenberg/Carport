@@ -43,7 +43,6 @@ public class PartsCalculator {
             calculateCombinationOfBoards("reglar", ctx.sessionAttribute("quantityOfLengthShedPoles"), (int)(ctx.sessionAttribute("lengthShedPole")), "løsholter til skur gavle");
             calculateCombinationOfBoards("reglar", ctx.sessionAttribute("quantityOfWidthShedPoles"), (int)(ctx.sessionAttribute("widthShedPole")), "løsholter til skur sider");
         }
-        calculateCombinationOfBoards("reglar", ctx.sessionAttribute("quantityOfWidthShedPoles"), (int)(ctx.sessionAttribute("widthShedPole")), "løsholter til skur sider");
         if(carport.isWithRoof()) {
             calculateCombinationOfBoards("tagplader", (int)(Math.ceil(carport.getWidth()/109)), (int)(carport.getLength()+30), descriptionText);
             calculateScrews("bundskruer", 600, 50, "", "skruer til tagplader");

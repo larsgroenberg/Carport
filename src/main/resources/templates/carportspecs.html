@@ -7,9 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
-
     <link href="../public/css/newShowCarport.css" th:href="@{/css/newShowCarport.css}" rel="stylesheet"/>
-
 </head>
 
 <header>
@@ -26,8 +24,9 @@
 </header>
 
 <body>
-<div class="page">
+<div class="outer-page">
     <form class="form-table" id="myForm" action="" method="post">
+        <div class="inner-page">
         <h1>Carport Detajler</h1>
         <div class="form-group">
             <h2>Carport bredde:</h2>
@@ -62,8 +61,7 @@
                 <select name="carport_trapeztag" id="carport_trapeztag" required>
                     <option selected disabled>Vælg tagtype på carport</option>
                     <option value="Uden tagplader"
-                            th:selected="${session.newCarport != null && !session.newCarport.withRoof}">Uden
-                        tagplader
+                            th:selected="${session.newCarport != null && !session.newCarport.withRoof}">Uden tagplader
                     </option>
                     <option value="Med Plasttrapezplader"
                             th:selected="${session.newCarport != null && session.newCarport.withRoof}">Med
@@ -74,40 +72,47 @@
         </div>
 
         <div class="form-group">
-             <div class="with-shed" style="margin-bottom: 15px;">
-                <input type="checkbox" onclick="toggleShedDropdown()" id="with-shed" name="with-shed" value="Bike"
-                       th:checked="${session.newCarport != null && session.newCarport.withShed}">
-                <label for="with-shed"> Skur?</label>
+            <div class="with-shed">
+                <button type="button" onclick="toggleShedVisibility()" id="with-shed-button" class="with-shed-button"></button>
+                <label for="with-shed-button" class="with-shed-label">Vælg skur</label>
             </div>
-            <div class="dropdown-container-shed-wrapper">
-                <div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
-                    <div class="flex-container-shed-div">
-                        <h2>Skur bredde:</h2>
-                        <select name="width_shed" id="width-shed" required>
-                            <option value="0" selected>Vælg bredden på skuret</option>
-                            <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
-                        </select>
-                    </div>
-                    <div class="flex-container-shed-div">
-                        <h2>Skur længde:</h2>
-                        <select name="length_shed" id="length-shed" required>
-                            <option value="0" selected>Vælg længden på skuret</option>
-                            <!--De restende options bliver tilføjet igennem javascript, se updateShedOptions -->
-                        </select>
-                    </div>
-                </div>
-            </div>
+        </div>
+</div>
 
-        </div>
-        <div class="button-container">
-            <input class="betal" type="submit" value="Se Tegning" formaction="/createcarport">
-        </div>
+
+<div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
+    <div class="flex-container-shed-div">
+        <h2>Skur bredde:</h2>
+        <select name="width_shed" id="width-shed" required>
+            <option value="0" selected>Vælg bredden på skuret</option>
+            <!--De resterende options bliver tilføjet igennem javascript, se updateShedOptions -->
+        </select>
+    </div>
+    <div class="flex-container-shed-div">
+        <h2>Skur længde:</h2>
+        <select name="length_shed" id="length-shed" required>
+            <option value="0" selected>Vælg længden på skuret</option>
+            <!--De resterende options bliver tilføjet igennem javascript, se updateShedOptions -->
+        </select>
+    </div>
+</div>
+
+
+
+<div class="button-container">
+    <button id="movingButton" class="betal" formaction="/createcarport">
+        <span class="staticPart">Se Tegning </span><span class="movingPart"> &#x2192;</span>
+    </button>
+</div>
     </form>
 </div>
 
 <script th:inline="javascript">
-    var myThymeleafVariable = /*[[${newCarport}]]*/ '';
 
+
+
+
+    var myThymeleafVariable = /*[[${newCarport}]]*/ '';
 
 
     const shedLengthSelect = document.getElementById('length-shed');
@@ -131,47 +136,70 @@
         460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600
     ];
 
-    function toggleShedDropdown() {
-        var shedCheckbox = document.getElementById("with-shed");
-        var shedDropdown = document.getElementById("dropdown-container-shed");
+    function toggleShedVisibility() {
 
-        if (shedCheckbox.checked) {
-            shedDropdown.style.display = "inline-block";
+        var shedDropdown = document.getElementById("dropdown-container-shed");
+        var button = document.getElementById("with-shed-button");
+
+        if (shedDropdown.style.display === "none" || shedDropdown.style.display === "") {
+            shedDropdown.style.display = "block";
+            button.classList.add("active");
         } else {
             shedDropdown.style.display = "none";
+            button.classList.remove("active");
         }
         updateShedOptions();
     }
+
+    function toggleShedDropdown() {
+        var shedCheckbox = document.getElementById("with-shed");
+        var shedDropdown = document.getElementById("dropdown-container-shed");
+        var shedWrapper = document.getElementById("dropdown-container-shed-wrapper");
+        var shedButton = document.getElementById("with-shed");
+
+        if (shedCheckbox.checked) {
+            shedWrapper.style.display = "block"; // Vis dropdown-container-shed-wrapper
+            shedDropdown.style.display = "block";
+            //shedDropdown.style.display = "block"; // Vis dropdown-container-shed
+
+            shedButton.classList.add("active"); // Tilføj klassen "active" til knappen
+        } else {
+            shedDropdown.style.display = "none"; // Skjul dropdown-container-shed
+            shedWrapper.style.display = "none"; // Skjul dropdown-container-shed-wrapper
+            shedButton.classList.remove("active"); // Fjern klassen "active" fra knappen
+        }
+        //updateShedOptions();
+    }
+
     //console.log(myThymeleafVariable);
-function addCarportOptions(){
-    carportHeightElement.innerHTML = '<option value="0" disabled selected>Vælg højde på carporten</option>';
-    carportHeights.forEach(height => {
-        // Check if the current width matches the value stored in the session
-        let selected = (myThymeleafVariable != null && myThymeleafVariable.height === height) ? 'selected' : '';
-        // Append the option with the selected attribute if necessary
-        carportHeightElement.innerHTML += `<option value="${height}" ${selected}>${height} cm</option>`;
+    function addCarportOptions() {
+        carportHeightElement.innerHTML = '<option value="0" disabled selected>Vælg højde på carporten</option>';
+        carportHeights.forEach(height => {
+            // Check if the current width matches the value stored in the session
+            let selected = (myThymeleafVariable != null && myThymeleafVariable.height === height) ? 'selected' : '';
+            // Append the option with the selected attribute if necessary
+            carportHeightElement.innerHTML += `<option value="${height}" ${selected}>${height} cm</option>`;
 
-    });
+        });
 
-    carportLengthElement.innerHTML = '<option value="0" disabled selected>Vælg længde på carporten</option>';
-    carportLengths.forEach(length => {
-        // Check if the current width matches the value stored in the session
-        let selected = (myThymeleafVariable != null && myThymeleafVariable.length === length) ? 'selected' : '';
-        // Append the option with the selected attribute if necessary
-        carportLengthElement.innerHTML += `<option value="${length}" ${selected}>${length} cm</option>`;
+        carportLengthElement.innerHTML = '<option value="0" disabled selected>Vælg længde på carporten</option>';
+        carportLengths.forEach(length => {
+            // Check if the current width matches the value stored in the session
+            let selected = (myThymeleafVariable != null && myThymeleafVariable.length === length) ? 'selected' : '';
+            // Append the option with the selected attribute if necessary
+            carportLengthElement.innerHTML += `<option value="${length}" ${selected}>${length} cm</option>`;
 
-    });
+        });
 
-    carportWidthElement.innerHTML = '<option value="0" disabled selected>Vælg bredde på carporten</option>';
-    shedWidths.forEach(width => {
-        // Check if the current width matches the value stored in the session
-        let selected = (myThymeleafVariable != null && myThymeleafVariable.width === width) ? 'selected' : '';
-        // Append the option with the selected attribute if necessary
-        carportWidthElement.innerHTML += `<option value="${width}" ${selected}>${width} cm</option>`;
+        carportWidthElement.innerHTML = '<option value="0" disabled selected>Vælg bredde på carporten</option>';
+        shedWidths.forEach(width => {
+            // Check if the current width matches the value stored in the session
+            let selected = (myThymeleafVariable != null && myThymeleafVariable.width === width) ? 'selected' : '';
+            // Append the option with the selected attribute if necessary
+            carportWidthElement.innerHTML += `<option value="${width}" ${selected}>${width} cm</option>`;
 
-    });
-}
-
+        });
+    }
 
     function updateShedOptions() {
         const carportLength = parseInt(document.getElementById('carport_length').value);
@@ -190,7 +218,7 @@ function addCarportOptions(){
         // Filter shed widths based on carport width
         shedWidthSelect.innerHTML = '<option value="0" disabled selected>Vælg bredde på skuret</option>';
         shedWidths.forEach(width => {
-            if (width <= (carportWidth-60)) {
+            if (width <= (carportWidth - 60)) {
                 // Check if the current width matches the value stored in the session
                 let selected = (myThymeleafVariable != null && myThymeleafVariable.shedWidth === width) ? 'selected' : '';
                 // Append the option with the selected attribute if necessary
@@ -199,16 +227,12 @@ function addCarportOptions(){
         });
     }
 
-        document.getElementById('carport_length').addEventListener('change', updateShedOptions);
-        document.getElementById('carport_width').addEventListener('change', updateShedOptions);
-        document.getElementById('with-shed').addEventListener('change', toggleShedDropdown);
+    document.getElementById('carport_length').addEventListener('change', updateShedOptions);
+    document.getElementById('carport_width').addEventListener('change', updateShedOptions);
 
-addCarportOptions();
-    toggleShedDropdown();
+    addCarportOptions();
     updateShedOptions();
 
 </script>
-
 </body>
-
 </html>

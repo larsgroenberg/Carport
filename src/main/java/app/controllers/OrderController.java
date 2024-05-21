@@ -105,8 +105,6 @@ public class OrderController {
             width_shed = Double.parseDouble(widthShedString.trim());
         }
 
-        //length_shed = Double.parseDouble(ctx.formParam("length_shed"));
-        //width_shed = Double.parseDouble(ctx.formParam("width_shed"));
         String roof = (ctx.formParam("carport_trapeztag"));
         double postLength = height + 90;
 
