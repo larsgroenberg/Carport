@@ -17,8 +17,8 @@ public class Carport {
     private double shedWidth;
     private double price;
 
-    public Carport(ArrayList<CarportPart> carportPartList, double length, double width, double height, boolean withRoof, boolean withShed, double shedLength, double shedWidth, double price) {
-        CarportPartList = carportPartList;
+    public Carport(double length, double width, double height, boolean withRoof, boolean withShed, double shedLength, double shedWidth, double price) {
+        this.CarportPartList = new ArrayList<>();
         this.length = length;
         this.width = width;
         this.height = height;
@@ -35,6 +35,7 @@ public class Carport {
         this.width = width;
         this.height = height;
     }
+
 
     @Override
     public String toString() {

@@ -10,14 +10,17 @@ public class CarportPart {
         OVERSTERN,
         UNDERSTERN,
         BRÆDDER,
+        SKURBRÆDT,
         VANDBRÆDDER,
         REGLAR,
         LÆGTE,
         SKRUER,
+        BUNDSKRUER,
         UNIVERSALBESLAG,
+        VINKELBESLAG,
         BOLTE,
         FIRKANTSKIVER,
-        HÆNGSLER,
+        HÆNGSEL,
         NONE
     }
 
@@ -33,8 +36,9 @@ public class CarportPart {
     private String DBunit;
     private String DBname;
     private String DBtype;
+    private CarportPart carportPart;
     private double DBtotalQuantityPrice;
-
+    private double roundedDBtotalQuantityPrice;
 
     public CarportPart(CarportPartType type, int quantity) {
         this.type = type;
@@ -69,6 +73,14 @@ public class CarportPart {
         this.DBunit = DBunit;
         this.DBname = DBname;
         this.DBtotalQuantityPrice = quantity * DBprice;  // Calculate total price
+    }
+
+    public CarportPart getCarportPart() {
+        return carportPart;
+    }
+
+    public void setCarportPart(CarportPart carportPart) {
+        this.carportPart = carportPart;
     }
 
     public String getDBtype() {

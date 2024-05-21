@@ -4,6 +4,7 @@ import java.util.*;
 
 import app.entities.*;
 import app.exceptions.DatabaseException;
+import app.persistence.CarportPartMapper;
 import app.persistence.ConnectionPool;
 import app.persistence.OrdersMapper;
 import app.persistence.UserMapper;
@@ -12,16 +13,19 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import app.services.CarportSvg;
 
+
 public class OrderController {
-    static Carport carport;
-
-
+    private static Carport carport;
+    private static Order order;
+    private static ArrayList<CarportPart> dbPartsList;
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
             ctx.render("carportspecs.html", prepareModel(ctx));
         });
         app.post("/createcarport", ctx -> {
-            showOrder(ctx);
+            showOrder(ctx, ConnectionPool.getInstance());
+            calculateAndCreatePartsList(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("showpartslist", true);
             ctx.render("showOrder.html");
         });
         app.post("/ordercarport", ctx -> {
@@ -85,53 +89,72 @@ public class OrderController {
         return OrdersMapper.getOrderByUserId(userId, connectionPool);
     }
 
-    public static void showOrder(Context ctx) throws DatabaseException {
+    public static void showOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         double length = Double.parseDouble(ctx.formParam("carport_length"));
         double width = Double.parseDouble(ctx.formParam("carport_width"));
         double height = Double.parseDouble(ctx.formParam("carport_height"));
-        double length_shed = 0;
-        double width_shed = 0;
-        try{
-            length_shed = Double.parseDouble(ctx.formParam("length_shed"));
-            width_shed = Double.parseDouble(ctx.formParam("width_shed"));
-        } catch (NullPointerException e) {
-            //"Ingen skur mål angivet"
+        String lengthShedString = ctx.formParam("length_shed");
+        String widthShedString = ctx.formParam("width_shed");
+        double length_shed = 0.0;
+        double width_shed = 0.0;
+
+        if (lengthShedString != null && !lengthShedString.isEmpty()) {
+            length_shed = Double.parseDouble(lengthShedString.trim());
         }
+        if (widthShedString != null && !widthShedString.isEmpty()) {
+            width_shed = Double.parseDouble(widthShedString.trim());
+        }
+
+        //length_shed = Double.parseDouble(ctx.formParam("length_shed"));
+        //width_shed = Double.parseDouble(ctx.formParam("width_shed"));
         String roof = (ctx.formParam("carport_trapeztag"));
+        double postLength = height + 90;
 
         // TODO: gør dette pænere
         boolean withRoof = !roof.contains("Uden");
         boolean withShed = length_shed > 0;
+        ctx.sessionAttribute("carport_trapeztag", roof);
+        ctx.sessionAttribute("carport_width", (int) width);
+        ctx.sessionAttribute("carport_length", (int) length);
+        ctx.sessionAttribute("postlength", (int) postLength);
+        if(length_shed > 0) {
+            ctx.sessionAttribute("shed", true);
+        }
+
+        dbPartsList = CarportPartMapper.getDBParts(connectionPool);
+        ctx.sessionAttribute("newdbPartsList", dbPartsList);
 
         Locale.setDefault(new Locale("da-DK"));
 
-        CarportSvg svgFromTop = new CarportSvg((int) width, (int) length, (int) height, length_shed, width_shed);
-        CarportSvg svgFromSide = new CarportSvg((int) width, (int) length, (int) height, length_shed, width_shed, roof);
+        CarportSvg svgFromTop = new CarportSvg(ctx, (int) width, (int) length, (int) height, length_shed, width_shed);
+        CarportSvg svgFromSide = new CarportSvg(ctx, (int) width, (int) length, (int) height, length_shed, width_shed, roof);
+        ctx.sessionAttribute("totalPoles", svgFromTop.getTotalPoles());
+        ctx.sessionAttribute("totalBeams", svgFromTop.getTotalBeams());
+        ctx.sessionAttribute("totalRafters", svgFromTop.getTotalRafters());
+        ctx.sessionAttribute("totalCrossSupports", svgFromTop.getTotalCrossSupports());
+        ctx.sessionAttribute("totalBoards", svgFromSide.getTotalBoards());
 
         ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
         ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
-
-        //todo: fiks således at shed ikke bliver tilføjet når flueben tjekkes på og af.
-        Carport newCarport = new Carport(new ArrayList<CarportPart>(), length, width, height, withRoof, withShed, length_shed, width_shed, 0);
-
-        newCarport.setBEAM(new CarportPart(CarportPart.CarportPartType.REM, svgFromTop.getMaterialQuantity().get("totalBeams")));
-        newCarport.setSUPPORTPOST(new CarportPart(CarportPart.CarportPartType.STOLPE, svgFromTop.getMaterialQuantity().get("totalPoles")));
-        newCarport.setRAFT(new CarportPart(CarportPart.CarportPartType.SPÆR, svgFromTop.getMaterialQuantity().get("totalRafters")));
-        newCarport.setCROSSSUPPORT(new CarportPart(CarportPart.CarportPartType.HULBÅND, svgFromTop.getMaterialQuantity().get("totalCrossSupports")));
-
-        ctx.sessionAttribute("newCarport", newCarport);
-        PartsCalculator partsCalculator = new PartsCalculator(ctx, ConnectionPool.getInstance());
-
-        ctx.sessionAttribute("carportprice", partsCalculator.getTotalPrice());
-
-        System.out.println(partsCalculator.getCheapestPartList());
-
-        ctx.sessionAttribute("partslist", partsCalculator.getCheapestPartList());
-        ctx.sessionAttribute("showpartslist", true);
+        carport = new Carport(length, width, height, withRoof, withShed, length_shed, width_shed, 0);
     }
 
+    public static void calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException
+    {
+        double totalPrice = 0.0;
+        dbPartsList = CarportPartMapper.getDBParts(connectionPool);
+        ctx.sessionAttribute("dbPartsList", dbPartsList);
+        ctx.sessionAttribute("newCarport", carport);
+        PartsCalculator partsCalculator = new PartsCalculator(carport, dbPartsList, ctx, ConnectionPool.getInstance());
+        partsCalculator.calculateCarport(ctx);
 
-
-
+        ArrayList<CarportPart> partsList = ctx.sessionAttribute("partsList");
+        for(CarportPart part: partsList) {
+            //System.out.println("Parttype : "+part.getType()+" Beskrivelse : "+part.getDBname()+" Længde : "+part.getDBlength()+", antal : "+part.getQuantity()+" pris i alt : "+part.getDBtotalQuantityPrice());
+            totalPrice += (part.getQuantity()*part.getDBprice());
+        }
+        System.out.println("Samlet pris for carporten : "+totalPrice);
+        ctx.sessionAttribute("carportprice", totalPrice);
+    }
 
 }

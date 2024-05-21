@@ -15,10 +15,11 @@ body {
 /* Page container styles */
 .page {
     max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
+    min-width: 1000px;
+    margin: 20px auto;
+    padding: 30px;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -42,7 +43,6 @@ body {
 /* Table styles */
 .carporttable {
     width: 100%;
-    border-collapse: collapse;
     margin-bottom: 20px;
 }
 
@@ -103,5 +103,101 @@ body {
 
 #partsTable th {
     background-color: #f2f2f2;
+}
+
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+select {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #ecf0f1;
+    color: #576574;
+    font-size: 18px;
+    appearance: none;
+}
+
+select:focus {
+    outline: none;
+    border-color: #95a5a6;
+    box-shadow: 0 0 0 2px #95a5a6;
+}
+
+/* Checkbox Styles */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input {
+    margin-right: 10px;
+}
+
+/* Dropdown Container */
+.dropdown-container-shed {
+    display: none;
+}
+
+.dropdown-container-shed-wrapper {
+    width: 100%; /* Fast højde til containeren */
+}
+
+.flex-container-shed-div {
+
+    width: 100%;
+
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+/* Button Styles */
+.button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.betal {
+    padding: 15px 30px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.betal:hover {
+    background-color: #219653;
+}
+
+/* Input Styles */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #ecf0f1;
+    color: #576574;
+    font-size: 18px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #95a5a6;
+    box-shadow: 0 0 0 2px #95a5a6;
 }
 
