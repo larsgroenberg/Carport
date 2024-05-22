@@ -5,32 +5,31 @@
     <title>Tegning</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
-    <link href="../public/css/newShowCarport.css" th:href="@{/css/newShowCarport.css}" rel="stylesheet"/>
-
+    <link href="../public/css/carport.css" th:href="@{/css/carport.css}" rel="stylesheet"/>
 </head>
 
-<header>
-    <!-- Navigation bar -->
-    <div class="navbar">
-        <h1>Fog</h1>
-        <form id="navigationForm" method="get">
-            <button type="submit" formaction="/" class="nav-btn">1. Carport Specs</button>
-            <button type="submit" formaction="/carport-drawing" class="nav-btn active">2. Carport Drawing</button>
-            <button type="submit" formaction="/user-details" class="nav-btn">3. User Details</button>
-            <button type="submit" formaction="/confirmation" class="nav-btn">4. Confirmation</button>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
-        </form>
-    </div>
-</header>
-
-
 <body>
-<div class="page-showorder">
-    <form class="form-table" th:method="get">
-        <h1>Tegning af din carport</h1>
+<div class="container">
+<div class="left-inner-page">
+    <header>
+        <div class="navbar">
+            <h1>Fog</h1>
+            <form id="navigationForm" method="get">
+                <button type="submit" formaction="/" class="nav-btn">1. Specifikationer</button>
+                <button type="submit" formaction="/carport-drawing" class="nav-btn active">2. Tegning</button>
+                <button type="submit" formaction="/user-details" class="nav-btn">3. Registrering</button>
+                <button type="submit" formaction="/confirmation" class="nav-btn">4. Bekræftelse</button>
+                <br><br><br>
+                <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
+            </form>
+        </div>
+    </header>
+</div>
+
+
+
+<div class="right-drawing-page ">
+    <form class="drawing" th:method="get">
 
         <div class="carport-svg-topview">
             <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
@@ -69,14 +68,15 @@
                 <td style="text-align: left;">kr.</td>
             </tr>
         </table>
-        <div class="button-container-checkout">
-            <input class="shopping" style="margin-right: 20px;" type="submit" value="Ændre Bestilling"
-                   formaction="/changeorder">
-            <button class="betal" type="submit" name="ordercarport" th:value="${length}" formaction="/user-details">
-                Videre
+        <div class="container-checkout">
+            <button class="return-button" style="margin-right: 20px;" type="submit" name="orderId" value="Ændre Bestilling" formaction="/changeorder"
+                    >Tilbage</button>
+            <button id="movingButton" name="ordercarport" th:value="${length}" formaction="/user-details">
+                <span class="staticPart">Videre  </span><span class="movingPart"> &#x2192;</span>
             </button>
         </div>
     </form>
+</div>
 </div>
 </body>
 </html>

@@ -115,7 +115,7 @@ header div {
     width: 60%;
     font-size: 1.2rem;
     font-family: Arial, sans-serif;
-    border-radius: 5px;
+    border-radius: 20px;
     border: none;
     background-color: #28a745;
     color: white;
@@ -133,7 +133,7 @@ header div {
     padding: 10px;
     margin-bottom: 15px;
     font-size: 1.2rem;
-    border-radius: 5px;
+    border-radius: 20px;
     border-color: lightgrey;
 }
 
