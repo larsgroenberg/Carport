@@ -87,5 +87,14 @@ public class CarportSvgTest {
         assertEquals(10, result);
     }
 
+    //Beams/Rem skulle gerne altid kun være 2
+    @Test
+    void addBeams() {
+        assertEquals(2,carportSvg.addBeams(width,length));
+    }
+
+
+
+
     //TODO: tilføj flere tests
 }
