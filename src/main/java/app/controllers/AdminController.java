@@ -40,6 +40,21 @@ public class AdminController
             getPartById(ctx, ConnectionPool.getInstance());
             ctx.render("adminsite.html");
         });
+        app.post("/addPart", ctx -> {
+            //addPart(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("addPart", true);
+            ctx.render("adminsite.html");
+        });
+
+        app.post("/closeaddpartformular", ctx -> {
+            ctx.sessionAttribute("addPart", false);
+            ctx.render("adminsite.html");
+        });
+        app.post("/addNewPart", ctx -> {
+            addPart(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("addPart", false);
+            ctx.render("adminsite.html");
+        });
         app.post("/changeOrderStatus", ctx -> {
             int orderId = changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
             Order order = OrdersMapper.getOrderByOrderId(orderId,ConnectionPool.getInstance());
@@ -62,6 +77,7 @@ public class AdminController
         });
         app.post("/getAllParts", ctx -> {
             getPartsList(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("addPart", false);
             ctx.sessionAttribute("showallparts", true);
             ctx.render("adminsite.html");
         });
@@ -85,6 +101,7 @@ public class AdminController
         });
         app.post("/getAllOrders", ctx -> {
             getAllOrders(ctx, ConnectionPool.getInstance());
+            ctx.sessionAttribute("addPart", false);
             ctx.sessionAttribute("showallparts", false);
             ctx.sessionAttribute("showallorders", true);
             ctx.render("adminsite.html");
@@ -92,6 +109,7 @@ public class AdminController
         app.post("/seeAllSale", ctx -> {
             seeAllSale(ctx, ConnectionPool.getInstance());
             ctx.sessionAttribute("showallsale", true);
+            ctx.sessionAttribute("addPart", false);
             ctx.sessionAttribute("showallorders", false);
             ctx.render("adminsite.html");
         });
@@ -216,6 +234,51 @@ public class AdminController
 
         ctx.sessionAttribute("showallparts", true);
         ctx.sessionAttribute("showpart", false);
+    }
+
+    private static void addPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException
+    {
+
+        String description = ctx.formParam("description");
+        int partLength = Integer.parseInt(ctx.formParam("length"));
+        int partHeigth = Integer.parseInt(ctx.formParam("height"));
+        int partWidth = Integer.parseInt(ctx.formParam("width"));
+        String type = ctx.formParam("type");
+        CarportPart.CarportPartType partType;
+        switch (type) {
+            case "stolpe" -> partType = CarportPart.CarportPartType.STOLPE;
+            case "spær" -> partType = CarportPart.CarportPartType.SPÆR;
+            case "remme" -> partType = CarportPart.CarportPartType.REM;
+            case "hulbånd" -> partType = CarportPart.CarportPartType.HULBÅND;
+            case "tagplader" -> partType = CarportPart.CarportPartType.TAGPLADER;
+            case "brædder" -> partType = CarportPart.CarportPartType.BRÆDDER;
+            case "skurbrædt" -> partType = CarportPart.CarportPartType.SKURBRÆDT;
+            case "understern" -> partType = CarportPart.CarportPartType.UNDERSTERN;
+            case "overstern" -> partType = CarportPart.CarportPartType.OVERSTERN;
+            case "vandbrædder" -> partType = CarportPart.CarportPartType.VANDBRÆDDER;
+            case "reglar" -> partType = CarportPart.CarportPartType.REGLAR;
+            case "lægte" -> partType = CarportPart.CarportPartType.LÆGTE;
+            case "universalbeslag" -> partType = CarportPart.CarportPartType.UNIVERSALBESLAG;
+            case "skruer" -> partType = CarportPart.CarportPartType.SKRUER;
+            case "bundskruer" -> partType = CarportPart.CarportPartType.BUNDSKRUER;
+            case "bolte" -> partType = CarportPart.CarportPartType.BOLTE;
+            case "vinkelbeslag" -> partType = CarportPart.CarportPartType.VINKELBESLAG;
+            case "firkantskiver" -> partType = CarportPart.CarportPartType.FIRKANTSKIVER;
+            case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSEL;
+            default -> partType = CarportPart.CarportPartType.NONE;
+        }
+        partType = CarportPart.CarportPartType.valueOf(ctx.formParam("type"));
+        String partName = ctx.formParam("name");
+        String partMaterial = ctx.formParam("material");
+        String partUnit = ctx.formParam("unit");
+        double partPrice = Double.parseDouble(ctx.formParam("price"));
+        CarportPart part = new CarportPart(0, partType, 0, partPrice, partLength, partHeigth, partWidth, description, partMaterial, partUnit, partName, String.valueOf(partType));
+
+        ctx.sessionAttribute("part", part);
+
+        part = ctx.sessionAttribute("part");
+        CarportPartMapper.addPart(part, connectionPool);
+
     }
 
     private static void editCarportPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException
