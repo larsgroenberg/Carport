@@ -1,117 +1,104 @@
 <!DOCTYPE html>
-<!--suppress ThymeleafVariablesResolveInspection -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
-
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
-    <title>BookingBois</title>
+    <title>Fog Design Din Carport</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../public/css/navbarStyling.css" th:href="@{/css/navbarStyling.css}" rel="stylesheet"/>
-    <link href="../public/css/newShowCarport.css" th:href="@{/css/newShowCarport.css}" rel="stylesheet"/>
+    <link href="../public/css/carport.css" th:href="@{/css/carport.css}" rel="stylesheet"/>
 </head>
+<body>
+<div class="container">
+    <div class="left-inner-page">
+        <header>
+            <div class="navbar">
+                <h1>Fog</h1>
+                <form id="navigationForm" method="get">
+                    <button type="submit" formaction="/" class="nav-btn active">1. Specifikationer</button>
+                    <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Tegning</button>
+                    <button type="submit" formaction="/user-details" class="nav-btn">3. Registrering</button>
+                    <button type="submit" formaction="/confirmation" class="nav-btn">4. Bekræftelse</button>
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
+                </form>
+            </div>
+        </header>
+    </div>
 
-<header>
-    <!-- Navigation bar -->
-    <div class="navbar">
-        <h1>Fog</h1>
-        <form id="navigationForm" method="get">
-            <button type="submit" formaction="/" class="nav-btn active">1. Carport Specs</button>
-            <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Carport Drawing</button>
-            <button type="submit" formaction="/user-details" class="nav-btn">3. User Details</button>
-            <button type="submit" formaction="/confirmation" class="nav-btn">4. Confirmation</button>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
+    <div class="right-inner-page">
+        <form class="form-table" id="myForm" action="" method="post">
+            <div class="form-group">
+                <h2>Carport bredde:</h2>
+                <div class="select-wrapper">
+                    <select name="carport_width" id="carport_width" required>
+                        <option selected disabled>Vælg bredde</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <h2>Carport længde:</h2>
+                <div class="select-wrapper">
+                    <select name="carport_length" id="carport_length" required>
+                        <option selected disabled>Vælg længde</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <h2>Carport højde:</h2>
+                <div class="select-wrapper">
+                    <select name="carport_height" id="carport_height" required>
+                        <option selected disabled>Vælg højde</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <h2>Tag på Carport:</h2>
+                <div class="select-wrapper">
+                    <select name="carport_trapeztag" id="carport_trapeztag" required>
+                        <option selected disabled>Tilvalg af tag</option>
+                        <option value="Uden tagplader"
+                                th:selected="${session.newCarport != null && !session.newCarport.withRoof}">Uden
+                            tagplader
+                        </option>
+                        <option value="Med Plasttrapezplader"
+                                th:selected="${session.newCarport != null && session.newCarport.withRoof}">Med
+                            Plasttrapezplader
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="with-shed">
+                    <button type="button" onclick="toggleShedVisibility()" id="with-shed-button"
+                            class="with-shed-button"></button>
+                    <label for="with-shed-button" class="with-shed-label">Vælg skur</label>
+                </div>
+            </div>
+            <div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
+                <div class="flex-container-shed-div">
+                    <h2>Skur bredde:</h2>
+                    <select name="width_shed" id="width-shed" required>
+                        <option value="0" selected>Vælg bredden på skuret</option>
+                        <!--De resterende options bliver tilføjet igennem javascript, se updateShedOptions -->
+                    </select>
+                </div>
+                <div class="flex-container-shed-div">
+                    <h2>Skur længde:</h2>
+                    <select name="length_shed" id="length-shed" required>
+                        <option value="0" selected>Vælg længden på skuret</option>
+                        <!--De resterende options bliver tilføjet igennem javascript, se updateShedOptions -->
+                    </select>
+                </div>
+            </div>
+            <div class="button-container">
+                <button id="movingButton" formaction="/createcarport">
+                    <span class="staticPart">Se Tegning  </span><span class="movingPart"> &#x2192;</span>
+                </button>
+            </div>
+
         </form>
     </div>
-</header>
-
-<body>
-<div class="outer-page">
-    <form class="form-table" id="myForm" action="" method="post">
-        <div class="inner-page">
-        <h1>Carport Detajler</h1>
-        <div class="form-group">
-            <h2>Carport bredde:</h2>
-            <div class="select-wrapper">
-                <select name="carport_width" id="carport_width" required>
-                    <option selected disabled>Vælg bredde på carport</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <h2>Carport længde:</h2>
-            <div class="select-wrapper">
-                <select name="carport_length" id="carport_length" required>
-                    <option selected disabled>Vælg længde på carport</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <h2>Carport højde:</h2>
-            <div class="select-wrapper">
-                <select name="carport_height" id="carport_height" required>
-                    <option selected disabled>Vælg højde på carport</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <h2>Carport trapeztag:</h2>
-            <div class="select-wrapper">
-                <select name="carport_trapeztag" id="carport_trapeztag" required>
-                    <option selected disabled>Vælg tagtype på carport</option>
-                    <option value="Uden tagplader"
-                            th:selected="${session.newCarport != null && !session.newCarport.withRoof}">Uden tagplader
-                    </option>
-                    <option value="Med Plasttrapezplader"
-                            th:selected="${session.newCarport != null && session.newCarport.withRoof}">Med
-                        Plasttrapezplader
-                    </option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="with-shed">
-                <button type="button" onclick="toggleShedVisibility()" id="with-shed-button" class="with-shed-button"></button>
-                <label for="with-shed-button" class="with-shed-label">Vælg skur</label>
-            </div>
-        </div>
 </div>
-
-
-<div class="dropdown-container-shed" id="dropdown-container-shed" style="display: none;">
-    <div class="flex-container-shed-div">
-        <h2>Skur bredde:</h2>
-        <select name="width_shed" id="width-shed" required>
-            <option value="0" selected>Vælg bredden på skuret</option>
-            <!--De resterende options bliver tilføjet igennem javascript, se updateShedOptions -->
-        </select>
-    </div>
-    <div class="flex-container-shed-div">
-        <h2>Skur længde:</h2>
-        <select name="length_shed" id="length-shed" required>
-            <option value="0" selected>Vælg længden på skuret</option>
-            <!--De resterende options bliver tilføjet igennem javascript, se updateShedOptions -->
-        </select>
-    </div>
-</div>
-
-
-
-<div class="button-container">
-    <button id="movingButton" class="betal" formaction="/createcarport">
-        <span class="staticPart">Se Tegning </span><span class="movingPart"> &#x2192;</span>
-    </button>
-</div>
-    </form>
-</div>
-
 <script th:inline="javascript">
-
-
 
 
     var myThymeleafVariable = /*[[${newCarport}]]*/ '';
@@ -153,27 +140,6 @@
         updateShedOptions();
     }
 
-    function toggleShedDropdown() {
-        var shedCheckbox = document.getElementById("with-shed");
-        var shedDropdown = document.getElementById("dropdown-container-shed");
-        var shedWrapper = document.getElementById("dropdown-container-shed-wrapper");
-        var shedButton = document.getElementById("with-shed");
-
-        if (shedCheckbox.checked) {
-            shedWrapper.style.display = "block"; // Vis dropdown-container-shed-wrapper
-            shedDropdown.style.display = "block";
-            //shedDropdown.style.display = "block"; // Vis dropdown-container-shed
-
-            shedButton.classList.add("active"); // Tilføj klassen "active" til knappen
-        } else {
-            shedDropdown.style.display = "none"; // Skjul dropdown-container-shed
-            shedWrapper.style.display = "none"; // Skjul dropdown-container-shed-wrapper
-            shedButton.classList.remove("active"); // Fjern klassen "active" fra knappen
-        }
-        //updateShedOptions();
-    }
-
-    //console.log(myThymeleafVariable);
     function addCarportOptions() {
         carportHeightElement.innerHTML = '<option value="0" disabled selected>Vælg højde på carporten</option>';
         carportHeights.forEach(height => {

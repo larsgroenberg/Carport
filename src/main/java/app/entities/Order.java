@@ -52,21 +52,10 @@ public class Order {
         this.mobile = mobile;
     }
 
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
     public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
 
     public double getMaterialCost() {
         return materialCost;

@@ -9,63 +9,60 @@
 </head>
 <body>
 
-    <h1>Detaljer på din ordre</h1>
-    <h2>Carport Specifikationer</h2>
-    <p>Width: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportWidth}">0</span> cm</p>
-    <p>Length: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportLength}">0</span> cm</p>
-    <p>Height: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportHeight}">0</span> cm</p>
-    <p>Roof Type: <span th:if="${session.carportInfo}">Plastic Trapeztag</span></p>
+<h1>Detaljer på din ordre</h1>
+<h2>Carport Specifikationer</h2>
+<p>Width: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportWidth}">0</span> cm</p>
+<p>Length: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportLength}">0</span> cm</p>
+<p>Height: <span th:if="${session.carportInfo}" th:text="${session.carportInfo.carportHeight}">0</span> cm</p>
+<p>Roof Type: <span th:if="${session.carportInfo}">Plastic Trapeztag</span></p>
 
-    <h2>Dine personlige oplysninger</h2>
-    <form th:action="@{/updateName}" method="post">
-        <label for="mobile">Name:</label>
-        <input type="text" id="name" name="name" th:value="${session.currentUser.name}" required />
-        <input type="hidden" name="user_id" th:value="${session.currentUser.userId}" />
-        <button type="submit">Update Name</button>
-    </form>
-    <form th:action="@{/updateMobile}" method="post">
-        <label for="mobile">Mobile Number:</label>
-        <input type="text" id="mobile" name="mobile" th:value="${session.currentUser.mobile}" required />
-        <input type="hidden" name="user_id" th:value="${session.currentUser.userId}" />
-        <button type="submit">Update Mobile</button>
-    </form>
-    <p>Email: <span th:text="${session.currentUser.email}">Email not found</span></p>
-    <p>Address: <span th:text="${session.currentUser.address}">Address not found</span></p>
-    <p>Zipcode: <span th:text="${session.currentUser.zipcode}">Zipcode not found</span></p>
+<h2>Dine personlige oplysninger</h2>
+<form th:action="@{/updateName}" method="post">
+    <label for="mobile">Name:</label>
+    <input type="text" id="name" name="name" th:value="${session.currentUser.name}" required/>
+    <input type="hidden" name="user_id" th:value="${session.currentUser.userId}"/>
+    <button type="submit">Update Name</button>
+</form>
+<form th:action="@{/updateMobile}" method="post">
+    <label for="mobile">Mobile Number:</label>
+    <input type="text" id="mobile" name="mobile" th:value="${session.currentUser.mobile}" required/>
+    <input type="hidden" name="user_id" th:value="${session.currentUser.userId}"/>
+    <button type="submit">Update Mobile</button>
+</form>
+<p>Email: <span th:text="${session.currentUser.email}">Email not found</span></p>
+<p>Address: <span th:text="${session.currentUser.address}">Address not found</span></p>
+<p>Zipcode: <span th:text="${session.currentUser.zipcode}">Zipcode not found</span></p>
 
-    <h2>Stykliste</h2>
-    <table id="partsTable" class="table">
-        <thead>
-        <tr>
-            <th>Materiale</th>
-            <th>Længde</th>
-            <th>Højde</th>
-            <th>Bredde</th>
-            <th>Antal</th>
-            <th>Unit</th>
-            <th>Type</th>
-            <th>Beskrivelse</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="part : ${session.customerPartsList}">
-            <td th:text="${part.DBdescription}">Name</td>
-            <td th:text="${part.DBlength}">Length</td>
-            <td th:text="${part.DBheight}">Height</td>
-            <td th:text="${part.DBwidth}">Width</td>
-            <td th:text="${part.quantity}">Quantity</td>
-            <td th:text="${part.DBunit}">Unit</td>
-            <td th:text="${part.type}">Type</td>
-            <td th:text="${part.DBname}">Beskrivelse</td>
-        </tr>
-        </tbody>
-    </table>
+<h2>Stykliste</h2>
+<table id="partsTable" class="table">
+    <thead>
+    <tr>
+        <th>Materiale</th>
+        <th>Længde</th>
+        <th>Højde</th>
+        <th>Bredde</th>
+        <th>Antal</th>
+        <th>Unit</th>
+        <th>Type</th>
+        <th>Beskrivelse</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="part : ${session.customerPartsList}">
+        <td th:text="${part.DBdescription}">Name</td>
+        <td th:text="${part.DBlength}">Length</td>
+        <td th:text="${part.DBheight}">Height</td>
+        <td th:text="${part.DBwidth}">Width</td>
+        <td th:text="${part.quantity}">Quantity</td>
+        <td th:text="${part.DBunit}">Unit</td>
+        <td th:text="${part.type}">Type</td>
+        <td th:text="${part.DBname}">Beskrivelse</td>
+    </tr>
+    </tbody>
+</table>
 
-    <h2>Pris på din carport</h2>
-    <p><span th:text="${session.carportInfo.salesPrice}">0</span> DKK</p>
-
-
-
+<h2>Pris på din carport</h2>
+<p><span th:text="${session.carportInfo.salesPrice}">0</span> DKK</p>
 
 </body>
 </html>

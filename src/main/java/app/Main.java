@@ -3,7 +3,6 @@ package app;
 
 import app.config.ThymeleafConfig;
 import app.controllers.AdminController;
-import app.controllers.CarportController;
 import app.controllers.OrderController;
 import app.controllers.UserController;
 import io.javalin.Javalin;
@@ -14,14 +13,12 @@ public class Main
     public static void main(String[] args) {
 
         // Initializing Javalin and Jetty webserver
-
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
         }).start(7070);
 
         //Routing
-        //CarportController.addRoutes(app);
         OrderController.addRoutes(app);
         UserController.addRoutes(app);
         AdminController.addRoutes(app);

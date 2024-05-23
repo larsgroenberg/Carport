@@ -10,52 +10,51 @@
 <body>
 <div class="container">
     <div class="topnav">
-        <a th:if="${session.currentUser == null}" href="login.html" class="right" th:href="@{/login/}">Login</a>
-        <a th:if="${session.currentUser != null}" href="index.html" class="right" th:href="@{/logout/}">Logout</a>
         <a th:if="${session.currentUser != null}" class="right" th:text="${session.currentUser.email}"></a>
     </div>
-
-    <h1>Carport Admin Panel</h1>
 
     <form method="post">
         <div style="text-align: center">
             <input type="text" name="username_input" placeholder="Enter username" class="enter-username">
         </div>
         <div class="form-choice">
-            <input type="submit" formaction="/getAllParts" value="Show Parts List"/>
-            <input type="submit" formaction="/getOrderByName" value="Show Customer Orders"/>
-            <input type="submit" formaction="/getAllOrders" value="Show All Customers Orders"/>
-            <input type="submit" formaction="/seeAllSale" value="See Current Sale"/>
+            <input type="submit" formaction="/getAllParts" value="Se listen over byggematerialer"/>
+            <input type="submit" formaction="/getOrderByName" value="Se kundeordre"/>
+            <input type="submit" formaction="/getAllOrders" value="Se alle ordre"/>
+            <input type="submit" formaction="/seeAllSale" value="Se nuværende salg"/>
+            <input type="submit" formaction="/addPart" value="Tilføj byggemateriale"/>
         </div>
-        <div id="vismodalmedbesked" class="modal-med-fejlbesked" th:if="${session.modalmedbesked}" >
+        <div id="vismodalmedbesked" class="modal-med-fejlbesked" th:if="${session.modalmedbesked}">
             <div class="modal-fejl-content">
                 <p id="textMessage" th:text="${session.message}"></p>
                 <div style="text-align: center; background-color: #f9f9f9;">
-                    <button class="closemessage" type="submit" name="partid" th:value="${modalmedbesked}" formaction="/lukmodal">Close message</button>
+                    <button class="closemessage" type="submit" name="partid" th:value="${modalmedbesked}"
+                            formaction="/lukmodal">Close message
+                    </button>
                 </div>
             </div>
         </div>
-        <div id="showsaleandcost" class="modal-med-salg" th:if="${session.showallsale}" >
+        <div id="showsaleandcost" class="modal-med-salg" th:if="${session.showallsale}">
             <div class="modal-med-salg-content">
                 <table class="sales-table">
-                        <tr>
-                            <td style="background-color: #f0f0f0;">Samlet omsætning i kr. : </td>
-                            <td th:text="${session.totalSale}"></td>
-                        </tr>
-                        <tr>
-                            <td>Samlede omkostninger i kr. : </td>
-                            <td th:text="${session.totalCost}"></td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #f0f0f0;">Samlet fortjeneste i kr. : </td>
-                            <td th:text="${session.totalRevenue}"></td>
-                        </tr>
-                        <tr>
-                            <td>Antal solgte carporte: </td>
-                            <td th:text="${session.carportSold}"></td>
-                        </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;">Omsætning i kr. :</td>
+                        <td th:text="${session.totalSale}"></td>
+                    </tr>
+                    <tr>
+                        <td>Omkostninger i kr. :</td>
+                        <td th:text="${session.totalCost}"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;">Fortjeneste i kr. :</td>
+                        <td th:text="${session.totalRevenue}"></td>
+                    </tr>
+                    <tr>
+                        <td>Solgte carporte:</td>
+                        <td th:text="${session.carportSold}"></td>
+                    </tr>
                 </table>
-                <div style="text-align: center; background-color: #f9f9f9;">
+                <div style="text-align: center; background-color: #f9f9f9; padding: 10px;"> <!-- Tilføjet padding -->
                     <button class="closemessage" type="submit" name="partid" th:value="${modalmedbesked}" formaction="/luksalg">Close</button>
                 </div>
             </div>
@@ -64,216 +63,240 @@
 
     <form class="form-table" th:method="POST" method="post">
         <div th:if="${session.showallparts}">
-            <h2>PartsList:</h2>
+            <h2>Byggematerialer:</h2>
             <table>
                 <thead>
                 <tr>
                     <th>PartId</th>
                     <th>Description</th>
-                    <th>Length</th>
-                    <th>Height</th>
-                    <th>Width</th>
+                    <th class="hide-on-mobile">Length</th>
+                    <th class="hide-on-mobile">Height</th>
+                    <th class="hide-on-mobile">Width</th>
                     <th>Type</th>
-                    <th>Material</th>
-                    <th>Unit</th>
-                    <th>Price</th>
-                    <th>Name</th>
-                    <th>Quantity</th>
+                    <th class="hide-on-mobile">Material</th>
+                    <th class="hide-on-mobile">Unit</th>
+                    <th class="hide-on-mobile">Price</th>
+                    <th class="hide-on-mobile">Name</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="part : ${session.partslist}">
-                    <td th:text="${part.partId}">PartId</td>
-                    <td style="text-align: left;" th:text="${part.DBdescription}">Description</td>
-                    <td th:text="${part.DBlength}">Length</td>
-                    <td th:text="${part.DBheight}">Height</td>
-                    <td th:text="${part.DBwidth}">Width</td>
-                    <td th:text="${part.DBtype}">Type</td>
-                    <td th:text="${part.DBmaterial}">Material</td>
-                    <td th:text="${part.DBunit}">Unit</td>
-                    <td th:text="${part.DBprice}">Price</td>
-                    <td th:text="${part.DBname}">Name</td>
-                    <td>
-                        <button type="submit" name="partId" th:value="${part.partId}" formaction="/editPart" class="produced-button">Edit</button>
+                    <td data-label="PartId" th:text="${part.partId}">PartId</td>
+                    <td data-label="Description" style="text-align: left;" th:text="${part.DBdescription}">Description
+                    </td>
+                    <td class="hide-on-mobile" data-label="Length" th:text="${part.DBlength}">Length</td>
+                    <td class="hide-on-mobile" data-label="Height" th:text="${part.DBheight}">Height</td>
+                    <td class="hide-on-mobile" data-label="Width" th:text="${part.DBwidth}">Width</td>
+                    <td data-label="Type" th:text="${part.DBtype}">Type</td>
+                    <td class="hide-on-mobile" data-label="Material" th:text="${part.DBmaterial}">Material</td>
+                    <td class="hide-on-mobile" data-label="Unit" th:text="${part.DBunit}">Unit</td>
+                    <td class="hide-on-mobile" data-label="Price" th:text="${part.DBprice}">Price</td>
+                    <td class="hide-on-mobile" data-label="Name" th:text="${part.DBname}">Name</td>
+                    <td data-label="Edit">
+                        <button type="submit" name="partId" th:value="${part.partId}" formaction="/editPart"
+                                class="produced-button">Edit
+                        </button>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
-
     </form>
+
     <form th:method="POST" method="post">
         <div id="hiddenformular" class="modal" th:if="${session.showpart}">
             <div class="form-container">
-                <form class="generic-form" method="post">
-                    <table class="editpart">
-                        <tr>
-                            <td style="text-align: right;"><label>Description:</label></td>
-                            <td><input style="width: calc(100%);" type="text" id="description" name="description" th:value="${session.part.DBdescription}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Length:</label></td>
-                            <td><input type="text" name="length" th:value="${session.part.DBlength}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Height:</label></td>
-                            <td><input type="text" name="height" th:value="${session.part.DBheight}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Width:</label></td>
-                            <td><input type="text" name="width" th:value="${session.part.DBwidth}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Type:</label></td>
-                            <td><input type="text" name="type" th:value="${session.part.type}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Material:</label></td>
-                            <td><input type="text" name="material" th:value="${session.part.DBmaterial}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Unit:</label></td>
-                            <td><input type="text" name="unit" th:value="${session.part.DBunit}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Price:</label></td>
-                            <td><input type="text" name="price" th:value="${session.part.DBprice}"/></td>
-                        </tr>
-                    </table>
-                    <div style="text-align: center;" class="button-container-checkout"></br>
-                        <button class="betal" type="submit" name="partid" th:value="${session.part.partId}" formaction="/updatePart">Gem Ændringer</button>
-                    </div>
-                </form>
+                <table class="editorder">
+                    <tr>
+                        <td style="text-align: right;"><label for="description">Description:</label></td>
+                        <td><input type="text" id="description" name="description"
+                                   th:value="${session.part.DBdescription}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="length">Length:</label></td>
+                        <td><input type="text" id="length" name="length" th:value="${session.part.DBlength}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="height">Height:</label></td>
+                        <td><input type="text" id="height" name="height" th:value="${session.part.DBheight}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="width">Width:</label></td>
+                        <td><input type="text" id="width" name="width" th:value="${session.part.DBwidth}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="type">Type:</label></td>
+                        <td><input type="text" id="type" name="type" th:value="${session.part.type}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="material">Material:</label></td>
+                        <td><input type="text" id="material" name="material" th:value="${session.part.DBmaterial}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="unit">Unit:</label></td>
+                        <td><input type="text" id="unit" name="unit" th:value="${session.part.DBunit}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label for="price">Price:</label></td>
+                        <td><input type="text" id="price" name="price" th:value="${session.part.DBprice}"/></td>
+                    </tr>
+                </table>
+                <div style="text-align: center;" class="button-container-checkout">
+                    <button class="betal-button" type="submit" name="partid" th:value="${session.part.partId}"
+                            formaction="/updatePart">Gem Ændringer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form th:method="POST" method="post" th:if="${session.addPart}">
+        <div id="addpartformular" class="modal">
+            <div class="form-container">
+                <table class="editorder">
+                    <tr>
+                        <td style="text-align: right;"><label>Description:</label></td>
+                        <td><input style="width: calc(100%);" type="text" name="description" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Length:</label></td>
+                        <td><input type="text" name="length" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Height:</label></td>
+                        <td><input type="text" name="height" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Width:</label></td>
+                        <td><input type="text" name="width" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Type:</label></td>
+                        <td><input type="text" name="type" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Material:</label></td>
+                        <td><input type="text" name="material" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Unit:</label></td>
+                        <td><input type="text" name="unit" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Name:</label></td>
+                        <td><input type="text" name="name" required/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Price:</label></td>
+                        <td><input type="text" name="price" required/></td>
+                    </tr>
+                </table>
+                <div style="text-align: center;" class="button-container-checkout">
+                    <button  class="betal-button" type="submit" th:formaction="@{/addNewPart}">Gem Byggemateriale</button>
+                    <button class="closemessage" type="button" onclick="document.getElementById('addpartformular').style.display='none'">Close message</button>
+                </div>
             </div>
         </div>
     </form>
 
     <form th:method="POST">
-        <div id="hiddenorderformular" class="order-modal" th:if="${session.showorder}">
+        <div id="hiddenorderformular" class="modal" th:if="${session.showorder}">
             <div class="form-container">
-                <form class="generic-form" method="post">
-                    <table class="editorder">
-                        <tr>
-                            <td style="text-align: right;"><label>Materialcost:</label></td>
-                            <td><input type="text" id="materialCost" name="materialCost" th:value="${session.order.materialCost}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Salesprice:</label></td>
-                            <td><input type="text" name="salesPrice" th:value="${session.order.salesPrice}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Carportwidth:</label></td>
-                            <td><input type="text" name="carportWidth" th:value="${session.order.carportWidth}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Carportlength:</label></td>
-                            <td><input type="text" name="carportLength" th:value="${session.order.carportLength}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Carportheight:</label></td>
-                            <td><input type="text" name="carportHeight" th:value="${session.order.carportHeight}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>UserId:</label></td>
-                            <td><input type="text" name="userId" th:value="${session.order.userId}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><label>Orderstatus:</label></td>
-                            <td><input type="text" name="orderStatus" th:value="${session.order.orderstatus}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Shedwidth:</label></td>
-                            <td><input type="text" name="shedWidth" th:value="${session.order.shedWidth}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Shedlength:</label></td>
-                            <td><input type="text" name="shedLength" th:value="${session.order.shedLength}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Usermail:</label></td>
-                            <td><input type="text" name="userEmail" th:value="${session.order.userEmail}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Orderdate:</label></td>
-                            <td><input type="text" name="orderDate" th:value="${session.order.orderDate}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; width: 40px;"><label>Roof:</label></td>
-                            <td><input type="text" name="roof" th:value="${session.order.roof}"/></td>
-                        </tr>
-                    </table>
-                    <div style="text-align: center;" class="button-container-checkout"></br>
-                        <button class="betal" type="submit" name="orderId" th:value="${session.order.orderId}" formaction="/updateOrder">Gem Ændringer</button>
-                    </div>
-                </form>
-            </div>
+                <table class="editorder">
+                    <tr>
+                        <td style="text-align: right;"><label>Materialcost:</label></td>
+                        <td><input type="text" id="materialCost" name="materialCost" th:value="${session.order.materialCost}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Salesprice:</label></td>
+                        <td><input type="text" name="salesPrice" th:value="${session.order.salesPrice}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Carportwidth:</label></td>
+                        <td><input type="text" name="carportWidth" th:value="${session.order.carportWidth}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Carportlength:</label></td>
+                        <td><input type="text" name="carportLength" th:value="${session.order.carportLength}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Carportheight:</label></td>
+                        <td><input type="text" name="carportHeight" th:value="${session.order.carportHeight}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Shedwidth:</label></td>
+                        <td><input type="text" name="shedWidth" th:value="${session.order.shedWidth}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Shedlength:</label></td>
+                        <td><input type="text" name="shedLength" th:value="${session.order.shedLength}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Roof:</label></td>
+                        <td> <input type="text" name="roof" th:value="${session.order.roof}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>UserId:</label></td>
+                        <td><input type="text" name="userId" th:value="${session.order.userId}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><label>Orderstatus:</label></td>
+                        <td><input type="text" name="orderStatus" th:value="${session.order.orderstatus}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Usermail:</label></td>
+                        <td><input type="text" name="userEmail" th:value="${session.order.userEmail}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width: 40px;"><label>Orderdate:</label></td>
+                        <td><input type="text" name="orderDate" th:value="${session.order.orderDate}"/></td>
+                    </tr>
+
+                </table>
+                <div style="text-align: center;" class="button-container-checkout"></br>
+                    <button class="betal-button" type="submit" name="orderId" th:value="${session.order.orderId}"
+                            formaction="/updateOrder">Gem Ændringer
+                    </button>
+                </div>
+          </div>
         </div>
     </form>
 
-    <form class="form-table" th:method="POST" method="post">
-        <div th:if="${customer}">
-            <h2>Customer Search:</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>Balance</th>
-                    <th>Add to Balance</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="customer : ${customer}">
-                    <td th:id="email" th:text="${customer.email}">Email</td>
-                    <td th:text="${customer.name}">Name</td>
-                    <td th:text="'+45 ' + ${customer.mobile}">Mobile</td>
-                    <td th:text="${customer.balance}">Balance</td>
-                    <td>
-                        <input type="hidden" name="email" th:value="${customer.email}"/>
-                        <input type="text" name="balance_input" placeholder="Enter Amount" class="enter-amount"/>
-                        <input type="submit" value="Add To Balance"/>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </form>
     <form class="form-table" th:if="${session.showallorders}" th:method="POST" method="post">
-
         <div>
             <h2>Modtagede Ordre:</h2>
             <table>
                 <thead>
                 <tr>
-                    <th>Ordreid</th>
+                    <th class="hide-on-mobile">Ordreid</th>
                     <th>Ordredato</th>
-                    <th>Dimensioner</th>
-                    <th>Skurets Bredde</th>
-                    <th>Skurets Længde</th>
-                    <th>Materiale Pris</th>
+                    <th class="hide-on-mobile">Carport</th>
+                    <th class="hide-on-mobile">Skur</th>
+                    <th class="hide-on-mobile">Materiale Pris</th>
                     <th>Salgspris</th>
-                    <th>Tag</th>
+                    <th class="hide-on-mobile">Tag</th>
                     <th>Mobilnr.</th>
-                    <th>Email</th>
+                    <th class="hide-on-mobile">Email</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'modtaget'}">
-                    <td th:text="${order.orderId}">OrderId</td>
+                    <td class="hide-on-mobile" th:text="${order.orderId}">OrderId</td>
                     <td th:text="${order.orderDate}">Ordre Dato</td>
-                    <td th:text="${order.carportWidth} + ',' + ${order.carportLength} + ',' + ${order.carportHeight}">Dimensioner</td>
-                    <td th:text="${order.shedWidth}">Skur bredde</td>
-                    <td th:text="${order.shedLength}">Skur længde</td>
-                    <td th:text="${order.materialCost}">Materiale omkostninger</td>
+                    <td class="hide-on-mobile"
+                        th:text="${order.carportWidth} + '*' + ${order.carportLength} + '*' + ${order.carportHeight}">
+                        Dimensioner
+                    </td>
+                    <td class="hide-on-mobile" th:text="${order.shedWidth} + '*' + ${order.shedLength}">Skur</td>
+                    <td class="hide-on-mobile" th:text="${order.materialCost}">Materiale omkostninger</td>
                     <td th:text="${order.salesPrice}">Salgspris</td>
-                    <td th:text="${order.roof}">Tag</td>
+                    <td class="hide-on-mobile" th:text="${order.roof}">Tag</td>
                     <td th:text="${order.mobile != null ? order.mobile : 'Intet mobilnummer'}">Mobilnr.</td>
-                    <td th:text="${order.userEmail}">Email</td>
-                   <td>
+                    <td class="hide-on-mobile" th:text="${order.userEmail}">Email</td>
+                    <td>
                         <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/adminDeleteOrder"
                                 class="delete-button">Slet
                         </button>
@@ -293,31 +316,32 @@
             <table>
                 <thead>
                 <tr>
-                    <th>Ordreid</th>
+                    <th class="hide-on-mobile">Ordreid</th>
                     <th>Ordredato</th>
-                    <th>Dimensioner</th>
-                    <th>Skurets Bredde</th>
-                    <th>Skurets Længde</th>
-                    <th>Materiale Pris</th>
+                    <th class="hide-on-mobile">Carport</th>
+                    <th class="hide-on-mobile">Skur</th>
+                    <th class="hide-on-mobile">Materiale Pris</th>
                     <th>Salgspris</th>
-                    <th>Tag</th>
+                    <th class="hide-on-mobile">Tag</th>
                     <th>Mobilnr.</th>
-                    <th>Email</th>
+                    <th class="hide-on-mobile">Email</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'pakket'}">
-                    <td th:text="${order.orderId}">OrderId</td>
+                    <td class="hide-on-mobile" th:text="${order.orderId}">OrderId</td>
                     <td th:text="${order.orderDate}">Ordre Dato</td>
-                    <td th:text="${order.carportWidth} + ',' + ${order.carportLength} + ',' + ${order.carportHeight}">Dimensioner</td>
-                    <td th:text="${order.shedWidth}">Skur bredde</td>
-                    <td th:text="${order.shedLength}">Skur længde</td>
-                    <td th:text="${order.materialCost}">Materiale omkostninger</td>
+                    <td class="hide-on-mobile"
+                        th:text="${order.carportWidth} + '*' + ${order.carportLength} + '*' + ${order.carportHeight}">
+                        Dimensioner
+                    </td>
+                    <td class="hide-on-mobile" th:text="${order.shedWidth} + '*' + ${order.shedLength}">Skur</td>
+                    <td class="hide-on-mobile" th:text="${order.materialCost}">Materiale omkostninger</td>
                     <td th:text="${order.salesPrice}">Salgspris</td>
-                    <td th:text="${order.roof}">Tag</td>
+                    <td class="hide-on-mobile" th:text="${order.roof}">Tag</td>
                     <td th:text="${order.mobile != null ? order.mobile : 'Intet mobilnummer'}">Mobilnr.</td>
-                    <td th:text="${order.userEmail}">Email</td>
+                    <td class="hide-on-mobile" th:text="${order.userEmail}">Email</td>
                     <td>
                         <button type="submit" name="orderId" th:value="${order.orderId}" formaction="/orderPickedUp"
                                 class="produced-button">Afhentet
@@ -329,40 +353,40 @@
         </div>
 
         <div th:if="${session.customerorders}">
-            <h2>Færdigleverede Ordre:</h2>
+            <h2>Leverede Ordre:</h2>
             <table>
                 <thead>
                 <tr>
-                    <th>Ordreid</th>
+                    <th class="hide-on-mobile">Ordreid</th>
                     <th>Ordredato</th>
-                    <th>Dimensioner</th>
-                    <th>Skurets Bredde</th>
-                    <th>Skurets Længde</th>
-                    <th>Materiale Pris</th>
+                    <th class="hide-on-mobile">Carport</th>
+                    <th class="hide-on-mobile">Skur</th>
+                    <th class="hide-on-mobile">Materiale Pris</th>
                     <th>Salgspris</th>
-                    <th>Tag</th>
+                    <th class="hide-on-mobile">Tag</th>
                     <th>Mobilnr.</th>
-                    <th>Email</th>
+                    <th class="hide-on-mobile">Email</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="order : ${session.customerorders}" th:if="${order.orderStatus == 'leveret'}">
-                    <td th:text="${order.orderId}">OrderId</td>
+                    <td class="hide-on-mobile" th:text="${order.orderId}">OrderId</td>
                     <td th:text="${order.orderDate}">Ordre Dato</td>
-                    <td th:text="${order.carportWidth} + ',' + ${order.carportLength} + ',' + ${order.carportHeight}">Dimensioner</td>
-                    <td th:text="${order.shedWidth}">Skur bredde</td>
-                    <td th:text="${order.shedLength}">Skur længde</td>
-                    <td th:text="${order.materialCost}">Materiale omkostninger</td>
+                    <td class="hide-on-mobile"
+                        th:text="${order.carportWidth} + '*' + ${order.carportLength} + '*' + ${order.carportHeight}">
+                        Dimensioner
+                    </td>
+                    <td class="hide-on-mobile" th:text="${order.shedWidth} + '*' + ${order.shedLength}">Skur</td>
+                    <td class="hide-on-mobile" th:text="${order.materialCost}">Materiale omkostninger</td>
                     <td th:text="${order.salesPrice}">Salgspris</td>
-                    <td th:text="${order.roof}">Tag</td>
+                    <td class="hide-on-mobile" th:text="${order.roof}">Tag</td>
                     <td th:text="${order.mobile != null ? order.mobile : 'Intet mobilnummer'}">Mobilnr.</td>
-                    <td th:text="${order.userEmail}">Email</td>
+                    <td class="hide-on-mobile" th:text="${order.userEmail}">Email</td>
                 </tr>
                 </tbody>
             </table>
         </div>
-    </form>
     </form>
 </div>
 
@@ -391,11 +415,13 @@
             hiddenformular.style.display = "block";
         }
     });
-
-    function closeModal() {
-        var modal = document.getElementById("hiddenformular");
-        modal.style.display = "none"; // Skjul modalen
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        var addpart = [[${session.addPart}]];
+        if (addpart) {
+            var addpartformular = document.getElementById("addpartformular");
+            addpartformular.style.display = "block";
+        }
+    });
 
     document.addEventListener("DOMContentLoaded", function () {
         var showorder = [[${session.showorder}]];
@@ -404,38 +430,6 @@
             hiddenorderformular.style.display = "block";
         }
     });
-
-
-    // Funktion for at vise meddelelsen
-    function showMessage(message) {
-        var modal = document.getElementById("hiddenMessage");
-        var messageText = document.getElementById("textMessage"); // Vælg det korrekte element
-        messageText.textContent = message; // Sæt meddelelsesindholdet
-        modal.style.display = "block"; // Vis modalen
-    }
-
-
-    // Funktion for at lukke modalen og indstille modalmedbesked til false
-    function closeMessage() {
-        var modal = document.getElementById("hiddenMessage");
-        modal.style.display = "none"; // Skjul modalen
-        // Indstil modalmedbesked til false
-        var modalmedbesked = false;
-    }
-
-    // Funktion til at opdatere sessionattributten
-    function updateSessionAttribute() {
-        // Hent værdien af sessionattributten fra Thymeleaf-variablen
-        var modalbesked = [[${modalmedbesked}]];
-
-        // Opdater værdien af sessionattributten
-        [[${modalmedbesked}]] = false; // eller din nye værdi
-
-        // Eventuel anden logik eller behandling her
-
-        // Vis den opdaterede værdi (valgfrit)
-        console.log("Sessionattribut opdateret til: " + [[${modalmedbesked}]]);
-    }
 
 </script>
 </body>

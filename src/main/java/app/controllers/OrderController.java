@@ -16,8 +16,8 @@ import app.services.CarportSvg;
 
 public class OrderController {
     private static Carport carport;
-    private static Order order;
     private static ArrayList<CarportPart> dbPartsList;
+
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
             ctx.render("carportspecs.html", prepareModel(ctx));
@@ -46,10 +46,8 @@ public class OrderController {
             EmailService.sendEmail(user);
 
             ctx.render("checkoutpage.html");
-            //todo: skal nok lige kigges igennem og laves check for diverse ting og sager.
         });
 
-        //todo: find på smart måde således at brugere ikke bliver ført videre såfremt de ikke er nået dertil i processen.
         app.get("/carport-drawing", ctx -> {
             if (ctx.sessionAttribute("newCarport") != null) {
                 ctx.render("showOrder.html");
@@ -58,7 +56,7 @@ public class OrderController {
 
         app.get("/user-details", ctx -> {
             if (ctx.sessionAttribute("newCarport") != null) {
-                ctx.render("createuser.html");
+                ctx.render("usercredentials.html");
             } else ctx.render("carportspecs.html");
 
         });
@@ -76,17 +74,6 @@ public class OrderController {
         // Add session attributes to the model
         model.put("newCarport", ctx.sessionAttribute("newCarport"));
         return model;
-    }
-    private static void index(Context ctx) {
-        ctx.render("adminsite.html");
-    }
-
-    public static Order getOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
-        return OrdersMapper.getOrderByOrderId(orderId, connectionPool);
-    }
-
-    public static Order getOrderByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException {
-        return OrdersMapper.getOrderByUserId(userId, connectionPool);
     }
 
     public static void showOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
@@ -115,7 +102,7 @@ public class OrderController {
         ctx.sessionAttribute("carport_width", (int) width);
         ctx.sessionAttribute("carport_length", (int) length);
         ctx.sessionAttribute("postlength", (int) postLength);
-        if(length_shed > 0) {
+        if (length_shed > 0) {
             ctx.sessionAttribute("shed", true);
         }
 
@@ -134,23 +121,22 @@ public class OrderController {
 
         ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
         ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
-        carport = new Carport(length, width, height, withRoof, withShed, length_shed, width_shed,0);
+        carport = new Carport(length, width, height, withRoof, withShed, length_shed, width_shed, 0);
     }
 
-    public static double calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    public static double calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         double totalPrice = 0.0;
         dbPartsList = CarportPartMapper.getDBParts(connectionPool);
         ctx.sessionAttribute("dbPartsList", dbPartsList);
-        PartsCalculator partsCalculator = new PartsCalculator(carport, dbPartsList, ctx, ConnectionPool.getInstance());
+        PartsCalculator partsCalculator = new PartsCalculator(carport, dbPartsList);
         partsCalculator.calculateCarport(ctx);
 
         ArrayList<CarportPart> partsList = ctx.sessionAttribute("partsList");
-        for(CarportPart part: partsList) {
-            totalPrice += (part.getQuantity()*part.getDBprice());
+        for (CarportPart part : partsList) {
+            totalPrice += (part.getQuantity() * part.getDBprice());
         }
         totalPrice = Math.ceil(totalPrice);
-        double carportTotalPrice = Math.ceil(totalPrice*1.4);
+        double carportTotalPrice = Math.ceil(totalPrice * 1.4);
         ctx.sessionAttribute("carportprice", carportTotalPrice);
         carport.setPrice(totalPrice);
         ctx.sessionAttribute("newCarport", carport);
