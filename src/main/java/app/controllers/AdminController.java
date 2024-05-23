@@ -8,7 +8,6 @@ import app.persistence.*;
 import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
