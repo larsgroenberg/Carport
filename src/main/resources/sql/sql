@@ -1,38 +1,4 @@
 
-
-CREATE TABLE IF NOT EXISTS public.itemlist
-(
-    itemlist_id serial NOT NULL,
-    description character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    quantity integer NOT NULL,
-    price double precision NOT NULL,
-    order_id integer NOT NULL,
-    CONSTRAINT itemlist_pkey PRIMARY KEY (itemlist_id)
-    );
-
-CREATE TABLE IF NOT EXISTS public.materialer
-(
-    materiale_id serial NOT NULL,
-    description character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    measuring_unit character varying(75) COLLATE pg_catalog."default" NOT NULL,
-    price double precision NOT NULL,
-    type character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT materialer_pkey PRIMARY KEY (materiale_id)
-    );
-
-CREATE TABLE IF NOT EXISTS public.orders
-(
-    order_id serial NOT NULL,
-    user_id integer NOT NULL,
-    orderdate character varying(14) COLLATE pg_catalog."default" NOT NULL,
-    orderprice integer NOT NULL,
-    status character varying(60) COLLATE pg_catalog."default" NOT NULL,
-    length integer NOT NULL,
-    width integer NOT NULL,
-    with_roof boolean NOT NULL DEFAULT false,
-    CONSTRAINT orders_pkey PRIMARY KEY (order_id)
-    );
-
 CREATE TABLE IF NOT EXISTS public.ordrene
 (
     order_id serial NOT NULL,
@@ -47,8 +13,10 @@ CREATE TABLE IF NOT EXISTS public.ordrene
     shed_length double precision NOT NULL DEFAULT 0,
     email character varying(75) COLLATE pg_catalog."default",
     orderdate character varying(14) COLLATE pg_catalog."default",
+    roof character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    wall boolean NOT NULL DEFAULT false,
     CONSTRAINT ordrene_pkey PRIMARY KEY (order_id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS public.parts
 (
@@ -60,9 +28,10 @@ CREATE TABLE IF NOT EXISTS public.parts
     width integer NOT NULL,
     type character varying(100) COLLATE pg_catalog."default" NOT NULL,
     material character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    unit character varying(20) COLLATE pg_catalog."default",
+    unit character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    name character varying(200) COLLATE pg_catalog."default",
     CONSTRAINT partslist_pkey PRIMARY KEY (part_id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS public.partslist
 (
@@ -70,20 +39,10 @@ CREATE TABLE IF NOT EXISTS public.partslist
     part_id integer NOT NULL,
     order_id integer NOT NULL,
     quantity integer NOT NULL,
-    partslistprice double precision NOT NULL DEFAULT 2,
+    partslistprice double precision NOT NULL,
+    description character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    unit character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    part_length integer NOT NULL,
+    name character varying(200) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT partslist_pkey1 PRIMARY KEY (partlist_id)
-    );
-
-CREATE TABLE IF NOT EXISTS public.users
-(
-    user_id serial NOT NULL,
-    email character varying(75) COLLATE pg_catalog."default" NOT NULL,
-    password character varying(75) COLLATE pg_catalog."default" NOT NULL,
-    is_admin boolean NOT NULL DEFAULT false,
-    name character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    mobile character varying(16) COLLATE pg_catalog."default" NOT NULL,
-    address character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    zipcode character varying(4) COLLATE pg_catalog."default",
-    CONSTRAINT users_pkey PRIMARY KEY (user_id),
-    CONSTRAINT users_email_key UNIQUE (email)
-    );
+);
