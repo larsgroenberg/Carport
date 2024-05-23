@@ -231,7 +231,6 @@ public class AdminController {
     }
 
     private static void addPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-
         String description = ctx.formParam("description");
         int partLength = Integer.parseInt(ctx.formParam("length"));
         int partHeigth = Integer.parseInt(ctx.formParam("height"));
@@ -271,7 +270,6 @@ public class AdminController {
 
         part = ctx.sessionAttribute("part");
         CarportPartMapper.addPart(part, connectionPool);
-
     }
 
     private static void editCarportPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
