@@ -20,7 +20,8 @@ public class OrderController {
     private static ArrayList<CarportPart> dbPartsList;
     public static void addRoutes(Javalin app) {
         app.get("/", ctx -> {
-            ctx.render("carportspecs.html", prepareModel(ctx));
+            //ctx.render("carportspecs.html", prepareModel(ctx));
+            ctx.render("adminsite.html");
         });
         app.post("/createcarport", ctx -> {
             showOrder(ctx, ConnectionPool.getInstance());
