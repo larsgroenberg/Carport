@@ -68,33 +68,29 @@ public class CarportPartMapper {
         return part;
     }
 
-    /*
-    public static void addPart(int price, String description, int length, int height, int width, String type, String material, String unit, String name, ConnectionPool connectionPool) throws DatabaseException {
+
+    public static void addPart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
+
         String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit, name) VALUES (?,?,?,?,?,?,?,?,?)";
 
-        try (
-                Connection connection = connectionPool.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)
-        )
-        {
-            ps.setInt(1, price);
-            ps.setString(2, description);
-            ps.setInt(3, length);
-            ps.setInt(4, height);
-            ps.setInt(5, width);
-            ps.setString(6, type);
-            ps.setString(7, material);
-            ps.setString(8, unit);
-            ps.setString(9, name);
+        try(Connection connection = connectionPool.getConnection()){
+            try(PreparedStatement ps = connection.prepareStatement(sql)){
+                ps.setDouble(1, part.getDBprice());
+                ps.setString(2, part.getDBdescription());
+                ps.setInt(3, part.getDBlength());
+                ps.setInt(4, part.getDBheight());
+                ps.setInt(5, part.getDBwidth());
+                ps.setString(6, part.getDBtype());
+                ps.setString(7, part.getDBmaterial());
+                ps.setString(8, part.getDBunit());
+                ps.setString(9, part.getDBname());
 
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected != 1) {
-                throw new DatabaseException("Fejl ved indsættelse af et nyt styk materiale");
+                ps.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
+        }catch (SQLException e){
+            throw new DatabaseException("Byggematerialet kunne ikke indsættes i databasen", e.getMessage());
         }
-    }*/
+    }
 
     public static void updatePart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
 
