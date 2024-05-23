@@ -52,71 +52,55 @@ public class Order {
         this.mobile = mobile;
     }
 
+    public String getMobile() { return mobile; }
     public int getOrderId() {
         return orderId;
     }
-
-
     public double getMaterialCost() {
         return materialCost;
     }
-
     public void setMaterialCost(double materialCost) {
         this.materialCost = materialCost;
     }
-
     public double getSalesPrice() {
         return salesPrice;
     }
-
     public void setSalesPrice(double salesPrice) {
         this.salesPrice = salesPrice;
     }
-
     public double getCarportWidth() {
         return carportWidth;
     }
-
     public void setCarportWidth(double carportWidth) {
         this.carportWidth = carportWidth;
     }
-
     public double getCarportLength() {
         return carportLength;
     }
-
     public void setCarportLength(double carportLength) {
         this.carportLength = carportLength;
     }
-
     public double getCarportHeight() {
         return carportHeight;
     }
-
     public void setCarportHeight(double carportHeight) {
         this.carportHeight = carportHeight;
     }
-
     public int getUserId() {
         return userId;
     }
-
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
     public String getOrderStatus() {
         return orderStatus;
     }
-
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
-
     public double getShedWidth() {
         return shedWidth;
     }
-
     public void setShedWidth(double shedWidth) {
         this.shedWidth = shedWidth;
     }
