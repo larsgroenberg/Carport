@@ -11,7 +11,6 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class OrdersMapper {
     static java.util.Date today = new Date();
@@ -23,7 +22,7 @@ public class OrdersMapper {
 
         try (
                 Connection connection = connectionPool.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
         ) {
             Carport carport = ctx.sessionAttribute("newCarport");
             User user = ctx.sessionAttribute("currentUser");
@@ -94,38 +93,6 @@ public class OrdersMapper {
         }
     }
 
-    public static int addOrder(double materialCost, double salesPrice, double carportWidth, double carportLength, double carportHeight, int userId, String orderStatus, double shedWidth, double shedLength, String email, String orderDate, String roof, boolean iswall, ConnectionPool connectionPool) throws DatabaseException{
-        String sql = "INSERT INTO ordrene (material_cost, sales_price, carport_width, carport_length, carport_height, user_id, order_status, shed_width, shed_length, email, orderdate, roof, wall) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)){
-                ps.setDouble(1, materialCost);
-                ps.setDouble(2, salesPrice);
-                ps.setDouble(3, carportWidth);
-                ps.setDouble(4, carportLength);
-                ps.setDouble(5, carportHeight);
-                ps.setInt(6, userId);
-                ps.setString(7, orderStatus);
-                ps.setDouble(8, shedWidth);
-                ps.setDouble(9, shedLength);
-                ps.setString(10, email);
-                ps.setString(11, orderDate);
-                ps.setString(12, roof);
-                ps.setBoolean(13, iswall);
-
-                ps.executeUpdate();
-                ResultSet rs = ps.getGeneratedKeys(); // order_id er autogenereret
-                rs.next();
-                return rs.getInt(1);
-            } catch (SQLException e){
-                e.printStackTrace();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at gemme ordren", e.getMessage());
-        }
-        return 0;
-    }
-
     public static Order getOrderByEmail(String email, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "select * from public.ordrene where email=?";
         try
@@ -158,40 +125,6 @@ public class OrdersMapper {
         }
     }
 
-    public static Order getOrderByName(String name, ConnectionPool connectionPool) throws DatabaseException {
-
-        String sql = "select * from public.ordrene where user_id=?";
-        try
-                (
-                        Connection connection = connectionPool.getConnection();
-                        PreparedStatement ps = connection.prepareStatement(sql)
-                ) {
-            ps.setString(1, name);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                int orderId = rs.getInt("order_id");
-                int userId = rs.getInt("user_id");
-                int carportLength = rs.getInt("carport_length");
-                int carportWidth = rs.getInt("carport_width");
-                int carportHeight = rs.getInt("carport_height");
-                int materialCost = rs.getInt("material_cost");
-                String orderStatus = rs.getString("order_status");
-                int shedWidth = rs.getInt("shed_width");
-                int shedLength = rs.getInt("shed_length");
-                int salesPrice = rs.getInt("sales_price");
-                String email = rs.getString("email");
-                String orderDate = rs.getString("orderdate");
-                String roof = rs.getString("roof");
-                boolean wall = rs.getBoolean("wall");
-                return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
-
-            } else {
-                throw new DatabaseException("Fejl i hentning af ordre!");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("DB fejl", e.getMessage());
-        }
-    }
     public static ArrayList<Order> getAllOrders(ConnectionPool connectionPool) throws DatabaseException {
 
         ArrayList<Order> orderList = new ArrayList<>();
@@ -237,11 +170,11 @@ public class OrdersMapper {
         Order order = null;
         String sql = "SELECT * FROM ordrene WHERE order_id = ?";
 
-        try (Connection connection = connectionPool.getConnection() ){
-            try (PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setInt(1,orderId);
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setInt(1, orderId);
                 ResultSet rs = ps.executeQuery();
-                if(rs.next()) {
+                if (rs.next()) {
                     double materialCost = rs.getDouble("material_cost");
                     double salesPrice = rs.getDouble("sales_price");
                     double carportWidth = rs.getDouble("carport_width");
@@ -260,7 +193,7 @@ public class OrdersMapper {
                     throw new DatabaseException("Der findes ikke ordre med det ordreId i databasen");
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på ordreid", e.getMessage());
         }
         return order;
@@ -272,11 +205,11 @@ public class OrdersMapper {
         Order order = null;
         String sql = "SELECT * FROM ordrene WHERE user_id = ?";
 
-        try (Connection connection = connectionPool.getConnection() ){
-            try (PreparedStatement ps = connection.prepareStatement(sql)){
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();
-                if(rs.next()) {
+                if (rs.next()) {
                     int orderId = rs.getInt("order_id");
                     double materialCost = rs.getDouble("material_cost");
                     double salesPrice = rs.getDouble("sales_price");
@@ -295,7 +228,7 @@ public class OrdersMapper {
                     throw new DatabaseException("Der findes ikke en ordre med det userId i databasen");
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på userid", e.getMessage());
         }
         return order;
@@ -321,12 +254,12 @@ public class OrdersMapper {
         }
     }
 
-    public static void updateOrder(Order order, ConnectionPool connectionPool) throws DatabaseException{
+    public static void updateOrder(Order order, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "UPDATE ordrene SET material_cost = ?, sales_price = ?, carport_width = ?, carport_length = ?, carport_height = ?, user_id = ?, order_status = ?, shed_width = ?, shed_length = ?, email = ?, orderdate = ?, roof = ?, wall = ? WHERE order_id = ?;";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setDouble(1, order.getMaterialCost());
                 ps.setDouble(2, order.getSalesPrice());
                 ps.setDouble(3, order.getCarportWidth());
@@ -344,40 +277,8 @@ public class OrdersMapper {
 
                 ps.executeUpdate();
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Det lykkedes ikke at opdatere ordren", e.getMessage());
-        }
-    }
-
-    public static void adjustSalesPrice(int orderId, double newSalesPrice, ConnectionPool connectionPool) throws DatabaseException{
-
-        String sql = "UPDATE ordrene SET sales_price = ? WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-             ps.setDouble(1 ,newSalesPrice);
-             ps.setInt(2,orderId);
-
-             ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at justere salgsprisen", e.getMessage());
-        }
-    }
-
-    public static void adjustMaterialCostPrice(int orderId, double newMaterialCostPrice, ConnectionPool connectionPool) throws DatabaseException{
-
-        String sql = "UPDATE ordrene SET material_cost = ? WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                ps.setDouble(1 ,newMaterialCostPrice);
-                ps.setInt(2,orderId);
-
-                ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at justere salgsprisen", e.getMessage());
         }
     }
 
@@ -385,32 +286,14 @@ public class OrdersMapper {
 
         String sql = "UPDATE ordrene SET order_status = ? WHERE order_id = ?";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setString(1, orderStatus);
                 ps.setInt(2, order_id);
                 ps.executeUpdate();
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Det lykkedes ikke at ændre status på ordren", e.getMessage());
-        }
-    }
-
-    // Denne metode er ikke tilpasset den nye kode
-    public static void updateSpecificOrderById(int orderId, double carportWidth, double carportLength, double carportHeight, ConnectionPool connectionPool) throws DatabaseException {
-
-        String sql = "UPDATE ordrene SET carport_width = ?, carport_length = ?, carport_height = ? WHERE order_id = ?";
-
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setDouble(1, carportWidth);
-                ps.setDouble(2, carportLength);
-                ps.setDouble(3, carportHeight);
-                ps.setDouble(4, orderId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e){
-            throw new DatabaseException("Det lykkedes ikke at ændre dimensionerne på carporten", e.getMessage());
         }
     }
 }

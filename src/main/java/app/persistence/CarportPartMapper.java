@@ -2,22 +2,21 @@ package app.persistence;
 
 import app.entities.CarportPart;
 import app.exceptions.DatabaseException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CarportPartMapper {
-
-    //todo: tjek efter lignende functioner og erstat eller andet
     public static ArrayList<CarportPart> getDBParts(ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<CarportPart> partList = new ArrayList<>();
         String sql = "SELECT * FROM parts";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ResultSet rs = ps.executeQuery();
 
-                while (rs.next()){
+                while (rs.next()) {
                     int partId = rs.getInt("part_id");
                     Double price = rs.getDouble("price");
                     String description = rs.getString("description");
@@ -29,10 +28,10 @@ public class CarportPartMapper {
                     String unit = rs.getString("unit");
                     String name = rs.getString("name");
                     CarportPart.CarportPartType partType = mapToCarportPartType(type);
-                    partList.add(new CarportPart(partId,partType,0, price, length, height, width, description, material_name, unit, name, type));
+                    partList.add(new CarportPart(partId, partType, 0, price, length, height, width, description, material_name, unit, name, type));
                 }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("We couldn't get the part", e.getMessage());
         }
         return partList;
@@ -60,7 +59,7 @@ public class CarportPartMapper {
                 String unit = rs.getString("unit");
                 String name = rs.getString("name");
                 CarportPart.CarportPartType partType = mapToCarportPartType(type);
-                part = new CarportPart(partId,partType,0, price, length, height, width, description, material_name, unit, name, type);
+                part = new CarportPart(partId, partType, 0, price, length, height, width, description, material_name, unit, name, type);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
@@ -73,8 +72,8 @@ public class CarportPartMapper {
 
         String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit, name) VALUES (?,?,?,?,?,?,?,?,?)";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setDouble(1, part.getDBprice());
                 ps.setString(2, part.getDBdescription());
                 ps.setInt(3, part.getDBlength());
@@ -87,7 +86,7 @@ public class CarportPartMapper {
 
                 ps.executeUpdate();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Byggematerialet kunne ikke indsættes i databasen", e.getMessage());
         }
     }
@@ -96,8 +95,8 @@ public class CarportPartMapper {
 
         String sql = "UPDATE parts SET price = ?, description = ?, length = ?, height = ?, width = ?, type = ?, material = ?, unit = ?, name = ? WHERE part_id = ?;";
 
-        try(Connection connection = connectionPool.getConnection()){
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setDouble(1, part.getDBprice());
                 ps.setString(2, part.getDBdescription());
                 ps.setInt(3, part.getDBlength());
@@ -111,7 +110,7 @@ public class CarportPartMapper {
 
                 ps.executeUpdate();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Part'en kunne ikke opdateres i databasen", e.getMessage());
         }
     }
@@ -127,20 +126,20 @@ public class CarportPartMapper {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 CarportPart.CarportPartType partType = mapToCarportPartType(rs.getString("type")); // This now returns a list of types
-                    partsList.add(new CarportPart(
-                            rs.getInt("part_id"),
-                            partType,
-                            rs.getInt("quantity"),
-                            rs.getDouble("DBprice"),
-                            rs.getInt("DBlength"),
-                            rs.getInt("DBheight"),
-                            rs.getInt("DBwidth"),
-                            rs.getString("DBdescription"),
-                            rs.getString("DBmaterial"),
-                            rs.getString("DBunit"),
-                            rs.getString("DBname"),
-                            rs.getString("DBtype")
-                    ));
+                partsList.add(new CarportPart(
+                        rs.getInt("part_id"),
+                        partType,
+                        rs.getInt("quantity"),
+                        rs.getDouble("DBprice"),
+                        rs.getInt("DBlength"),
+                        rs.getInt("DBheight"),
+                        rs.getInt("DBwidth"),
+                        rs.getString("DBdescription"),
+                        rs.getString("DBmaterial"),
+                        rs.getString("DBunit"),
+                        rs.getString("DBname"),
+                        rs.getString("DBtype")
+                ));
 
             }
         } catch (SQLException e) {

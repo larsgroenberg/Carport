@@ -10,73 +10,74 @@
 
 <body>
 <div class="container">
-<div class="left-inner-page">
-    <header>
-        <div class="navbar">
-            <h1>Fog</h1>
-            <form id="navigationForm" method="get">
-                <button type="submit" formaction="/" class="nav-btn">1. Specifikationer</button>
-                <button type="submit" formaction="/carport-drawing" class="nav-btn active">2. Tegning</button>
-                <button type="submit" formaction="/user-details" class="nav-btn">3. Registrering</button>
-                <button type="submit" formaction="/confirmation" class="nav-btn">4. Bekræftelse</button>
-                <br><br><br>
-                <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
-            </form>
-        </div>
-    </header>
-</div>
+    <div class="left-inner-page">
+        <header>
+            <div class="navbar">
+                <h1>Fog</h1>
+                <form id="navigationForm" method="get">
+                    <button type="submit" formaction="/" class="nav-btn">1. Specifikationer</button>
+                    <button type="submit" formaction="/carport-drawing" class="nav-btn active">2. Tegning</button>
+                    <button type="submit" formaction="/user-details" class="nav-btn">3. Registrering</button>
+                    <button type="submit" formaction="/confirmation" class="nav-btn">4. Bekræftelse</button>
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
+                </form>
+            </div>
+        </header>
+    </div>
 
 
+    <div class="right-drawing-page ">
+        <form class="drawing" th:method="get">
 
-<div class="right-drawing-page ">
-    <form class="drawing" th:method="get">
+            <div class="carport-svg-topview">
+                <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
+                <div class="carport-svg-topview" th:utext="${session.svgFromTop}"></div>
+            </div>
 
-        <div class="carport-svg-topview">
-            <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
-            <div class="carport-svg-topview" th:utext="${session.svgFromTop}"></div>
-        </div>
-
-        <table class="carporttable">
-            <tr>
-                <td>Carport bredde:</td>
-                <td style="text-align: right;" th:text="${session.newCarport.width}"></td>
-                <td style="text-align: left;">cm</td>
-            </tr>
-            <tr>
-                <td>Carport længde:</td>
-                <td style="text-align: right;" th:text="${session.newCarport.length}"></td>
-                <td style="text-align: left;">cm</td>
-            </tr>
-            <tr>
-                <td>Carport højde:</td>
-                <td style="text-align: right;" th:text="${session.newCarport.height}"></td>
-                <td style="text-align: left;">cm</td>
-            </tr>
-            <tr th:if="${session.newCarport.shedWidth} != 0">
-                <td>Skur bredde:</td>
-                <td style="text-align: right;" th:text="${session.newCarport.shedWidth}"></td>
-                <td style="text-align: left;">cm</td>
-            </tr>
-            <tr th:if="${session.newCarport.shedLength} != 0">
-                <td>Skur længde:</td>
-                <td style="text-align: right;" th:text="${session.newCarport.shedLength}"></td>
-                <td style="text-align: left;">cm</td>
-            </tr>
-            <tr>
-                <td>Den samlede pris: </td>
-                <td style="text-align: right;" th:text="${session.carportprice}"></td>
-                <td style="text-align: left;">kr.</td>
-            </tr>
-        </table>
-        <div class="container-checkout">
-            <button class="return-button" style="margin-right: 20px;" type="submit" name="orderId" value="Ændre Bestilling" formaction="/changeorder"
-                    >Tilbage</button>
-            <button id="movingButton" name="ordercarport" th:value="${length}" formaction="/user-details">
-                <span class="staticPart">Videre  </span><span class="movingPart"> &#x2192;</span>
-            </button>
-        </div>
-    </form>
-</div>
+            <table class="carporttable">
+                <tr>
+                    <td>Carport bredde:</td>
+                    <td style="text-align: right;" th:text="${session.newCarport.width}"></td>
+                    <td style="text-align: left;">cm</td>
+                </tr>
+                <tr>
+                    <td>Carport længde:</td>
+                    <td style="text-align: right;" th:text="${session.newCarport.length}"></td>
+                    <td style="text-align: left;">cm</td>
+                </tr>
+                <tr>
+                    <td>Carport højde:</td>
+                    <td style="text-align: right;" th:text="${session.newCarport.height}"></td>
+                    <td style="text-align: left;">cm</td>
+                </tr>
+                <tr th:if="${session.newCarport.shedWidth} != 0">
+                    <td>Skur bredde:</td>
+                    <td style="text-align: right;" th:text="${session.newCarport.shedWidth}"></td>
+                    <td style="text-align: left;">cm</td>
+                </tr>
+                <tr th:if="${session.newCarport.shedLength} != 0">
+                    <td>Skur længde:</td>
+                    <td style="text-align: right;" th:text="${session.newCarport.shedLength}"></td>
+                    <td style="text-align: left;">cm</td>
+                </tr>
+                <tr>
+                    <td>Den samlede pris:</td>
+                    <td style="text-align: right;" th:text="${session.carportprice}"></td>
+                    <td style="text-align: left;">kr.</td>
+                </tr>
+            </table>
+            <div class="container-checkout">
+                <button class="return-button" style="margin-right: 20px;" type="submit" name="orderId"
+                        value="Ændre Bestilling" formaction="/changeorder"
+                >Tilbage
+                </button>
+                <button id="movingButton" name="ordercarport" th:value="${length}" formaction="/user-details">
+                    <span class="staticPart">Videre  </span><span class="movingPart"> &#x2192;</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

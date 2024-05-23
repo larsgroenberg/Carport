@@ -1,20 +1,16 @@
 package app.entities;
 
-public class User
-{
+public class User {
     private int userId;
     private String email;
     private String password;
     private boolean isAdmin;
     private String name;
     private String mobile;
-
-
     private String address;
     private String zipcode;
 
-    public User(int userId, String email, String password, boolean isAdmin, String name, String mobile, String address, String zipcode)
-    {
+    public User(int userId, String email, String password, boolean isAdmin, String name, String mobile, String address, String zipcode) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -24,29 +20,20 @@ public class User
         this.address = address;
         this.zipcode = zipcode;
     }
+
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public String getZipcode() {
         return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public String getEmail() {
         return email;
@@ -60,16 +47,9 @@ public class User
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public boolean isAdmin() {
         return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
     }
 
     public String getName() {

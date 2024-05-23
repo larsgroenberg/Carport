@@ -4,10 +4,6 @@ import java.util.ArrayList;
 
 public class Carport {
     private ArrayList<CarportPart> CarportPartList;
-    private CarportPart SUPPORTPOST;
-    private CarportPart BEAM;
-    private CarportPart RAFT;
-    private CarportPart CROSSSUPPORT;
     private double length;
     private double width;
     private double height;
@@ -52,56 +48,12 @@ public class Carport {
                 '}';
     }
 
-    public CarportPart getSUPPORTPOST() {
-        return SUPPORTPOST;
-    }
-
-    public void setSUPPORTPOST(CarportPart SUPPORTPOST) {
-        this.SUPPORTPOST = SUPPORTPOST;
-    }
-
-    public CarportPart getBEAM() {
-        return BEAM;
-    }
-
-    public void setBEAM(CarportPart BEAM) {
-        this.BEAM = BEAM;
-    }
-
-    public CarportPart getRAFT() {
-        return RAFT;
-    }
-
-    public void setRAFT(CarportPart RAFT) {
-        this.RAFT = RAFT;
-    }
-
-    public CarportPart getCROSSSUPPORT() {
-        return CROSSSUPPORT;
-    }
-
-    public void setCROSSSUPPORT(CarportPart CROSSSUPPORT) {
-        this.CROSSSUPPORT = CROSSSUPPORT;
-    }
-
     public double getHeight() {
         return height;
     }
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public ArrayList<CarportPart> getCarportPartList() {
-        return CarportPartList;
-    }
-
-    public void addToCarportPartList(CarportPart carportPart){
-        CarportPartList.add(carportPart);
-    }
-
-    public void setCarportPartList(ArrayList<CarportPart> carportPartList) {
-        CarportPartList = carportPartList;
     }
 
     public double getLength() {
@@ -124,17 +76,11 @@ public class Carport {
         return withRoof;
     }
 
-    public void setWithRoof(boolean withRoof) {
-        this.withRoof = withRoof;
-    }
 
     public boolean isWithShed() {
         return withShed;
     }
 
-    public void setWithShed(boolean withShed) {
-        this.withShed = withShed;
-    }
 
     public double getShedLength() {
         return shedLength;

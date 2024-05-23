@@ -20,17 +20,17 @@ class CarportPartMapperTest {
 
     @Test
     void getDBParts() throws DatabaseException {
-        assertTrue(!CarportPartMapper.getDBParts(connectionPool).isEmpty());
+        assertFalse(CarportPartMapper.getDBParts(connectionPool).isEmpty());
     }
 
     @Test
     void getPartById() throws DatabaseException {
-        assertTrue(!CarportPartMapper.getPartById(1,connectionPool).getDBname().isEmpty());
+        assertFalse(CarportPartMapper.getPartById(1, connectionPool).getDBname().isEmpty());
     }
 
 
     @Test
     void getCompletePartsListByOrderId() throws DatabaseException {
-        assertTrue(!CarportPartMapper.getCompletePartsListByOrderId(435,connectionPool).isEmpty());
+        assertFalse(CarportPartMapper.getCompletePartsListByOrderId(435, connectionPool).isEmpty());
     }
 }

@@ -22,7 +22,7 @@ public class Svg {
             "marker-start: url(#beginArrow);\n" + "marker-end: url(#endArrow);\"/>\n";
     public static final String VERTICAL_TEXT_TEMPLATE = "<text x=\"%.2f\" y=\"%d\" transform=\"rotate(%d)\">%s</text>\n";
     public static final String HORIZONTAL_TEXT_TEMPLATE = "<text x=\"%.2f\" y=\"%d\" transform=\"rotate(%d)\" style=\"writing-mode: tb;\">%s</text>\n";
-    private StringBuilder svg = new StringBuilder();
+    private final StringBuilder svg = new StringBuilder();
 
     public Svg(int x, int y, String viewBox, String width) {
         svg.append(String.format(SVG_TEMPLATE, x, y, viewBox, width));
@@ -36,6 +36,7 @@ public class Svg {
     public void addLineWithStroke(double x1, double y1, double x2, double y2, String style) {
         svg.append(String.format(SVG_LINE_TEMPLATE_WITH_STROKE, x1, y1, x2, y2, style));
     }
+
     public void addLine(double x1, double y1, double x2, double y2, String style) {
         svg.append(String.format(SVG_LINE_TEMPLATE, x1, y1, x2, y2, style));
     }

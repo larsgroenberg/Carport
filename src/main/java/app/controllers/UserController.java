@@ -14,9 +14,7 @@ import io.javalin.http.Context;
 import java.security.SecureRandom;
 
 import java.util.List;
-import java.util.Map;
 
-import static app.persistence.OrdersMapper.getOrderByEmail;
 import static app.persistence.OrdersMapper.getOrderByUserId;
 
 
@@ -29,20 +27,17 @@ public class UserController {
             ctx.render("login.html");
         });
 
-        app.get("logout", ctx -> logout(ctx, ConnectionPool.getInstance()));
+        app.get("logout", UserController::logout);
 
         app.post("/ToConfirmation", ctx -> {
-            createUser(ctx, ConnectionPool.getInstance());
+            createUser(ctx);
             ctx.render("checkoutpage.html");
         });
-        app.post("/createuser", ctx -> createUser(ctx, ConnectionPool.getInstance()));
-        app.get("createuser", ctx -> ctx.render("createuser.html"));
+        app.post("/createuser", UserController::createUser);
+        app.get("createuser", ctx -> ctx.render("usercredentials.html"));
 
-        app.get("/customersitelogin", ctx ->{
-            ctx.render("customersitelogin");
-        });
-        app.post("customerdashboard",ctx -> {
-            customerlogin(ctx,ConnectionPool.getInstance());
+        app.post("customerdashboard", ctx -> {
+            customerlogin(ctx, ConnectionPool.getInstance());
         });
         app.get("/customersite", ctx -> {
             ctx.render("customersite.html");
@@ -69,6 +64,7 @@ public class UserController {
             ctx.status(500).html("Server Error: " + e.getMessage());
         }
     }
+
     private static void updateName(Context ctx) {
         try {
             int userId = Integer.parseInt(ctx.formParam("user_id"));
@@ -85,43 +81,20 @@ public class UserController {
         }
     }
 
-
-    //todo: programmet vil crashe såfremt der allerede findes en bruger med disse oplysninger
-    private static void createUser(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+    private static void createUser(Context ctx) {
 
         // Hent form parametre
         String email = ctx.formParam("email");
-        //String password1 = ctx.formParam("password1");
-        //String password2 = ctx.formParam("password2");
         String name = ctx.formParam("name");
         String mobile = ctx.formParam("mobile");
         String address = ctx.formParam("address");
         String zipcode = ctx.formParam("zipcode");
 
         String password = generatePassword(20);
-        //boolean userexist = UserMapper.userexist(email, connectionPool);
-
-        if (/*!userexist*/true) {
-            //if (password1.equals(password2)) {
-                User newUser = new User(0,email,password,false,name,mobile,address,zipcode);
-                ctx.sessionAttribute("currentUser", newUser);
-
-                //UserMapper.createuser(email, password1, name, mobile, address, zipcode,connectionPool);
-                //ctx.attribute("message", "Du er hermed oprettet med brugernavn: " + email + ". Nu kan du logge på.");
-                //ctx.attribute("login", true);
-                //ctx.render("login.html");
-
-            /*} else {
-                ctx.attribute("message", "Passwords matcher ikke! Prøv igen");
-                ctx.attribute("error", true);
-                //ctx.render("createuser.html");
-            }*/
-        } else {
-            ctx.attribute("message", "En bruger med denne email findes allerede. Venligst vælg en anden email");
-            //ctx.attribute("login", true);
-            //ctx.render("login.html");
-        }
+        User newUser = new User(0, email, password, false, name, mobile, address, zipcode);
+        ctx.sessionAttribute("currentUser", newUser);
     }
+
     public static String generatePassword(int length) {
         String upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowerLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -139,11 +112,11 @@ public class UserController {
         return new String(password);
     }
 
-    private static void logout(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-            // Her sletter jeg alle sessionAttributter
-            ctx.req().getSession().invalidate();
-            // Her sender jeg brugeren tilbage til forsiden carportspecs.html
-            ctx.redirect("/");
+    private static void logout(Context ctx) {
+        // Her sletter jeg alle sessionAttributter
+        ctx.req().getSession().invalidate();
+        // Her sender jeg brugeren tilbage til forsiden carportspecs.html
+        ctx.redirect("/");
     }
 
     public static void login(Context ctx, ConnectionPool connectionPool) {
@@ -165,8 +138,6 @@ public class UserController {
             } else {
                 // Her sender jeg brugeren tilbage til carportspecs.html
                 customerlogin(ctx, connectionPool);
-                //customerCarportInfo(user,ctx);
-                //ctx.render("customersite.html");
             }
         } catch (DatabaseException e) {
             // Her sætter jeg attributten til true hvilket gør at javascriptet vises
@@ -176,19 +147,20 @@ public class UserController {
             ctx.render("login.html");
         }
     }
-    public static void customerlogin(Context ctx, ConnectionPool connectionPool){
+
+    public static void customerlogin(Context ctx, ConnectionPool connectionPool) {
         String email = ctx.formParam("email");
         String password = ctx.formParam("password");
         try {
             User user = UserMapper.login(email, password, connectionPool);
-            customerCarportInfo(user,ctx);
+            customerCarportInfo(user, ctx);
             ctx.sessionAttribute("currentUser", user);
             ctx.render("customersite.html");
 
 
         } catch (DatabaseException e) {
             ctx.attribute("message", "Forkert brugernavn eller password. Prøv igen eller opret brugeren!");
-            ctx.render("customersitelogin.html");
+            ctx.render("login.html");
 
         }
     }

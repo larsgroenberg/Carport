@@ -388,7 +388,6 @@
             </table>
         </div>
     </form>
-    </form>
 </div>
 
 <script>
@@ -424,11 +423,6 @@
         }
     });
 
-    function closeModal() {
-        var modal = document.getElementById("hiddenformular");
-        modal.style.display = "none"; // Skjul modalen
-    }
-
     document.addEventListener("DOMContentLoaded", function () {
         var showorder = [[${session.showorder}]];
         if (showorder) {
@@ -436,38 +430,6 @@
             hiddenorderformular.style.display = "block";
         }
     });
-
-
-    // Funktion for at vise meddelelsen
-    function showMessage(message) {
-        var modal = document.getElementById("hiddenMessage");
-        var messageText = document.getElementById("textMessage"); // Vælg det korrekte element
-        messageText.textContent = message; // Sæt meddelelsesindholdet
-        modal.style.display = "block"; // Vis modalen
-    }
-
-
-    // Funktion for at lukke modalen og indstille modalmedbesked til false
-    function closeMessage() {
-        var modal = document.getElementById("hiddenMessage");
-        modal.style.display = "none"; // Skjul modalen
-        // Indstil modalmedbesked til false
-        var modalmedbesked = false;
-    }
-
-    // Funktion til at opdatere sessionattributten
-    function updateSessionAttribute() {
-        // Hent værdien af sessionattributten fra Thymeleaf-variablen
-        var modalbesked = [[${modalmedbesked}]];
-
-        // Opdater værdien af sessionattributten
-        [[${modalmedbesked}]] = false; // eller din nye værdi
-
-        // Eventuel anden logik eller behandling her
-
-        // Vis den opdaterede værdi (valgfrit)
-        console.log("Sessionattribut opdateret til: " + [[${modalmedbesked}]]);
-    }
 
 </script>
 </body>

@@ -13,10 +13,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class AdminController
-{
-    public static void addRoutes(Javalin app)
-    {
+public class AdminController {
+    public static void addRoutes(Javalin app) {
         app.get("/adminSite", ctx -> {
             ctx.render("adminsite.html");
         });
@@ -57,7 +55,7 @@ public class AdminController
         });
         app.post("/changeOrderStatus", ctx -> {
             int orderId = changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
-            Order order = OrdersMapper.getOrderByOrderId(orderId,ConnectionPool.getInstance());
+            Order order = OrdersMapper.getOrderByOrderId(orderId, ConnectionPool.getInstance());
             EmailService.sendCarportReadyEmail(order);
             ctx.render("adminsite.html");
         });
@@ -122,19 +120,19 @@ public class AdminController
             ctx.render("adminsite.html");
         });
     }
-    private static void seeAllSale(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+
+    private static void seeAllSale(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
         ctx.sessionAttribute("customerorders", customerOrders);
         double totalSale = 0, totalCost = 0, totalRevenue = 0;
         int carportSold = 0;
-        for(Order order: customerOrders) {
-            if(order.getOrderStatus().equalsIgnoreCase("leveret")) {
+        for (Order order : customerOrders) {
+            if (order.getOrderStatus().equalsIgnoreCase("leveret")) {
                 totalSale += order.getSalesPrice();
                 totalCost += order.getMaterialCost();
                 carportSold++;
             }
-            totalRevenue = totalSale-totalCost;
+            totalRevenue = totalSale - totalCost;
         }
         // Her afrunder vi til nærmeste hele 10 øre
         totalSale = Math.round(totalSale * 10) / 10.0;
@@ -153,21 +151,18 @@ public class AdminController
         ctx.sessionAttribute("carportSold", carportSold);
     }
 
-    private static void editOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void editOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
         Order order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
         ctx.sessionAttribute("order", order);
     }
 
-    private static void deleteOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException, SQLException
-    {
+    private static void deleteOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException, SQLException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
         OrdersMapper.deleteOrderByOrderId(orderId, connectionPool);
     }
 
-    private static void updateOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void updateOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         Order order = ctx.sessionAttribute("order");
         order.setMaterialCost(Double.parseDouble(ctx.formParam("materialCost")));
         order.setSalesPrice(Double.parseDouble(ctx.formParam("salesPrice")));
@@ -191,8 +186,7 @@ public class AdminController
         ctx.sessionAttribute("showorder", false);
     }
 
-    private static void updatePart(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void updatePart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         CarportPart part = ctx.sessionAttribute("part");
         part.setDBdescription(ctx.formParam("description"));
         part.setDBlength(Integer.parseInt(ctx.formParam("length")));
@@ -236,8 +230,7 @@ public class AdminController
         ctx.sessionAttribute("showpart", false);
     }
 
-    private static void addPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void addPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
 
         String description = ctx.formParam("description");
         int partLength = Integer.parseInt(ctx.formParam("length"));
@@ -281,8 +274,7 @@ public class AdminController
 
     }
 
-    private static void editCarportPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void editCarportPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int partId = Integer.parseInt(ctx.formParam("partId"));
         CarportPart part = CarportPartMapper.getPartById(partId, connectionPool);
         ctx.sessionAttribute("part", part);
@@ -290,41 +282,36 @@ public class AdminController
         ctx.sessionAttribute("showallparts", true);
     }
 
-    private static void getPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<CarportPart> partList = CarportPartMapper.getDBParts(connectionPool);
         ctx.sessionAttribute("partslist", partList);
         System.out.println(partList.get(1).getType());
     }
 
-    private static void getPartById(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getPartById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int partId = Integer.parseInt(ctx.formParam("partid"));
         CarportPart part = CarportPartMapper.getPartById(partId, connectionPool);
         ctx.sessionAttribute("part", part);
     }
 
-    private static void getAllOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getAllOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
         ctx.sessionAttribute("customerorders", customerOrders);
     }
 
-    private static void getOrderByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getOrderByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
         Order customerOrder = OrdersMapper.getOrderByEmail(email, connectionPool);
         ctx.sessionAttribute("customerOrders", customerOrder);
     }
 
-    private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         User user = null;
         String userName = ctx.formParam("username_input");
         user = UserMapper.getCustomerByName(userName, connectionPool);
-        if(user != null) {
+        if (user != null) {
             Order order = OrdersMapper.getOrderByUserId(user.getUserId(), connectionPool);
-            System.out.println(""+order.getUserEmail());
+            System.out.println(order.getUserEmail());
             ctx.sessionAttribute("order", order);
             ctx.sessionAttribute("modalmedbesked", false);
             ctx.sessionAttribute("showorder", true);
@@ -336,32 +323,28 @@ public class AdminController
         }
     }
 
-    private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
         User currentUser = UserMapper.getCustomerByName(userName, connectionPool);
         ctx.sessionAttribute("currentuser", currentUser);
     }
 
-    private static void getCustomerByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void getCustomerByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
         User currentUser = UserMapper.getCustomerByEmail(email, connectionPool);
         ctx.sessionAttribute("currentuser", currentUser);
     }
 
-    private static int changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static int changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
         OrdersMapper.changeStatusOnOrder("pakket", orderId, connectionPool);
         getAllOrders(ctx, connectionPool);
         return orderId;
     }
 
-    private static void changeOrderStatusToPickedUp(Context ctx, ConnectionPool connectionPool) throws DatabaseException
-    {
+    private static void changeOrderStatusToPickedUp(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        OrdersMapper.changeStatusOnOrder( "leveret", orderId, connectionPool);
+        OrdersMapper.changeStatusOnOrder("leveret", orderId, connectionPool);
         getAllOrders(ctx, connectionPool);
     }
 }

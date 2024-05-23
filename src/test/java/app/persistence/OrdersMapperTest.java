@@ -24,6 +24,6 @@ class OrdersMapperTest {
 
     @Test
     void getAllOrders() throws DatabaseException {
-        assertTrue(!OrdersMapper.getAllOrders(connectionPool).isEmpty());
+        assertFalse(OrdersMapper.getAllOrders(connectionPool).isEmpty());
     }
 }

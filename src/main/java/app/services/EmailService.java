@@ -52,6 +52,7 @@ public class EmailService {
             throw ex;
         }
     }
+
     public static void sendEmail(User currentUser) throws IOException {
         Email from = new Email("auto.mail.sender.service@gmail.com");
 
@@ -71,7 +72,7 @@ public class EmailService {
         personalization.addDynamicTemplateData("name", name);
         personalization.addDynamicTemplateData("email", email);
         personalization.addDynamicTemplateData("password", password);
-        personalization.addDynamicTemplateData("link", "http://localhost:7070/customersitelogin");
+        personalization.addDynamicTemplateData("link", "http://localhost:7070/ToLogin");
         mail.addPersonalization(personalization);
 
         mail.addCategory("carportapp");
