@@ -1,6 +1,7 @@
 package app.controllers;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import app.entities.*;
 import app.exceptions.DatabaseException;
@@ -26,10 +27,10 @@ public class OrderController {
             showOrder(ctx, ConnectionPool.getInstance());
             calculateAndCreatePartsList(ctx, ConnectionPool.getInstance());
             ctx.sessionAttribute("showpartslist", true);
-            ctx.render("showOrder.html");
+            ctx.render("showorder.html");
         });
         app.post("/ordercarport", ctx -> {
-            ctx.render("showOrder.html");
+            ctx.render("showorder.html");
         });
         app.get("/changeorder", ctx -> {
             ctx.render("carportspecs.html", prepareModel(ctx));
@@ -50,7 +51,7 @@ public class OrderController {
 
         app.get("/carport-drawing", ctx -> {
             if (ctx.sessionAttribute("newCarport") != null) {
-                ctx.render("showOrder.html");
+                ctx.render("showorder.html");
             } else ctx.render("carportspecs.html");
         });
 
@@ -125,6 +126,7 @@ public class OrderController {
     }
 
     public static double calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        Logger.getLogger(OrderController.class.getName()).info("Calculating and creating parts list...");
         double totalPrice = 0.0;
         dbPartsList = CarportPartMapper.getDBParts(connectionPool);
         ctx.sessionAttribute("dbPartsList", dbPartsList);

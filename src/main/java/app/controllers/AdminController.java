@@ -42,7 +42,6 @@ public class AdminController {
             ctx.sessionAttribute("addPart", true);
             ctx.render("adminsite.html");
         });
-
         app.post("/closeaddpartformular", ctx -> {
             ctx.sessionAttribute("addPart", false);
             ctx.render("adminsite.html");

@@ -31,6 +31,7 @@ public class UserController {
 
         app.post("/ToConfirmation", ctx -> {
             createUser(ctx);
+            ctx.sessionAttribute("confirmed", null);
             ctx.render("checkoutpage.html");
         });
         app.post("/createuser", UserController::createUser);
@@ -44,10 +45,7 @@ public class UserController {
         });
         app.post("/updateMobile", UserController::updateMobile);
         app.post("/updateName", UserController::updateName);
-
-
     }
-
 
     private static void updateMobile(Context ctx) {
         try {
@@ -178,5 +176,4 @@ public class UserController {
             ctx.status(500).result("Failed to retrieve order: " + e.getMessage());
         }
     }
-
 }
