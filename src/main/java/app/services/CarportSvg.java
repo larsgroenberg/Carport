@@ -25,6 +25,7 @@ public class CarportSvg {
     private double totalHeightOfBoards;
     private double lengthOfBoard;
 
+    // Nedenstående konstruktør bruger vi til at tegne carporten fra siden
     public CarportSvg(Context ctx, int width, int length, int height, double shedLength, double shedWidth, String roof) {
         this.length = length;
         this.width = width;
@@ -97,7 +98,7 @@ public class CarportSvg {
     }
 
 
-    //i så fald kunden har valgt at tilkøbe et skur tilføjer vi det her
+    //i så fald kunden har valgt at tilkøbe et skur tilføjer vi det til tegningen her
     private int addShed(Context ctx, int length, int height, double shedWidth, double shedLength) {
 
         //Adding boards to the shed
@@ -145,7 +146,6 @@ public class CarportSvg {
         carportSvg.addLine(0, 16.5, 0, 16.5 + 10, "stroke:#000000; fill: #ffffff");
         carportSvg.addLine(length + 6.5, 16.5 + y2, length + 6.5, 16.5 + y2 + 10, "stroke:#000000; fill: #ffffff");
     }
-
 
     // Taget set fra siden med et fald på 12,8%
     private void addRoof(int width, int length) {
@@ -469,7 +469,6 @@ public class CarportSvg {
                 addTextV((((length - 142) / 3) / 2) + x2 + x2 + 175 - 20, height + 55 + 90, 0, "" + x2);
             }
         }
-
         carportOuterSvg.addArrow(75, width + 30, 175, width + 30, "stroke:#000000; marker-end: url(#endArrow);");
     }
 
@@ -483,6 +482,7 @@ public class CarportSvg {
         carportOuterSvg.addTextV(width, length, rotate, text, "text-anchor: middle;");
     }
 
+    // Her smider vi den indre tegning ind i den ydre
     @Override
     public String toString() {
         carportOuterSvg.addSvg(carportSvg);

@@ -9,7 +9,6 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
-
 import java.io.IOException;
 
 /**
@@ -56,7 +55,7 @@ public class EmailService {
     public static void sendEmail(User currentUser) throws IOException {
         Email from = new Email("auto.mail.sender.service@gmail.com");
 
-        from.setName("Johannes Fog Byggemarked");
+        from.setName("Johannes Fogs Byggemarked");
 
         Mail mail = new Mail();
         mail.setFrom(from);
@@ -72,7 +71,8 @@ public class EmailService {
         personalization.addDynamicTemplateData("name", name);
         personalization.addDynamicTemplateData("email", email);
         personalization.addDynamicTemplateData("password", password);
-        personalization.addDynamicTemplateData("link", "http://localhost:7070/ToLogin");
+        personalization.addDynamicTemplateData("link", " https://carport.thegreenway.dk/login.html");
+
         mail.addPersonalization(personalization);
 
         mail.addCategory("carportapp");

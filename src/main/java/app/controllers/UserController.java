@@ -26,7 +26,9 @@ public class UserController {
         app.get("/ToLogin", ctx -> {
             ctx.render("login.html");
         });
-
+        app.get("/login.html", ctx -> {
+            ctx.render("login.html");
+        });
         app.get("logout", UserController::logout);
 
         app.post("/ToConfirmation", ctx -> {

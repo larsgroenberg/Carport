@@ -2,7 +2,6 @@ package app.persistence;
 
 import app.entities.User;
 import app.exceptions.DatabaseException;
-
 import java.sql.*;
 
 public class UserMapper {
@@ -36,7 +35,6 @@ public class UserMapper {
         }
     }
 
-
     public static int createuser(String email, String password, String name, String mobile, String address, String zipcode, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "insert into users (email, password, is_admin, name, mobile, address, zipcode) values (?,?,?,?,?,?,?)";
 
@@ -57,7 +55,6 @@ public class UserMapper {
                 throw new DatabaseException("Fejl ved oprettelse af ny bruger");
             }
 
-
             int id = 0;
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -68,10 +65,7 @@ public class UserMapper {
         } catch (SQLException e) {
             String msg = "Der er sket en fejl. Prøv igen";
             if (e.getMessage().startsWith("ERROR: duplicate key value ")) {
-
                 msg = "Din e-email findes allerede. Vælg en andet";
-
-
             }
             throw new DatabaseException(msg, e.getMessage());
         }

@@ -37,13 +37,10 @@
 <table id="partsTable" class="table">
     <thead>
     <tr>
-        <th>Materiale</th>
+        <th>Materialetype</th>
         <th>Længde</th>
-        <th>Højde</th>
-        <th>Bredde</th>
         <th>Antal</th>
-        <th>Unit</th>
-        <th>Type</th>
+        <th>Enhed</th>
         <th>Beskrivelse</th>
     </tr>
     </thead>
@@ -51,18 +48,15 @@
     <tr th:each="part : ${session.customerPartsList}">
         <td th:text="${part.DBdescription}">Name</td>
         <td th:text="${part.DBlength}">Length</td>
-        <td th:text="${part.DBheight}">Height</td>
-        <td th:text="${part.DBwidth}">Width</td>
         <td th:text="${part.quantity}">Quantity</td>
         <td th:text="${part.DBunit}">Unit</td>
-        <td th:text="${part.type}">Type</td>
         <td th:text="${part.DBname}">Beskrivelse</td>
     </tr>
     </tbody>
 </table>
 
 <h2>Pris på din carport</h2>
-<p><span th:text="${session.carportInfo.salesPrice}">0</span> DKK</p>
+<h2><span th:text="${session.carportInfo.salesPrice}">0</span> DKK</h2>
 
 </body>
 </html>

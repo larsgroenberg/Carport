@@ -6,7 +6,6 @@ import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import io.javalin.http.Context;
-
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,21 +40,16 @@ public class OrdersMapper {
             ps.setBoolean(12, carport.isWithRoof());
             ps.setBoolean(13, carport.isWithShed());
 
-
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
-                throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
+                throw new DatabaseException("Fejl ved oprettelse af partslistlinie i tabellen partslist");
             }
-
             int id = 0;
-
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 id = rs.getInt(1);
             }
             return id;
-
-
         } catch (SQLException | DatabaseException e) {
             throw new RuntimeException(e);
         }
@@ -81,7 +75,6 @@ public class OrdersMapper {
                 ps.setString(6, part.getDBunit());
                 ps.setInt(7, part.getDBlength());
                 ps.setString(8, part.getDBname());
-
 
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected != 1) {
@@ -118,10 +111,10 @@ public class OrdersMapper {
                 boolean wall = rs.getBoolean("wall");
                 return new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
             } else {
-                throw new DatabaseException("Fejl i hentning af ordre!");
+                throw new DatabaseException("Fejl i forsøg på at hente ordren");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("DB fejl", e.getMessage());
+            throw new DatabaseException("Databasefejl ", e.getMessage());
         }
     }
 
@@ -159,9 +152,8 @@ public class OrdersMapper {
                 orderList.add(order);
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Vi kunne ikke hente ordrelisten fra databasen!", e.getMessage());
+            throw new DatabaseException("Vi kunne ikke hente ordrelisten fra databasen ", e.getMessage());
         }
-
         return orderList;
     }
 
@@ -190,11 +182,11 @@ public class OrdersMapper {
                     boolean wall = rs.getBoolean("wall");
                     order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
                 } else {
-                    throw new DatabaseException("Der findes ikke ordre med det ordreId i databasen");
+                    throw new DatabaseException("Der findes ikke ordre med det ordreId i databasen ");
                 }
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på ordreid", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på ordreid ", e.getMessage());
         }
         return order;
     }
@@ -225,17 +217,16 @@ public class OrdersMapper {
                     boolean wall = rs.getBoolean("wall");
                     order = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, email, orderDate, roof, wall);
                 } else {
-                    throw new DatabaseException("Der findes ikke en ordre med det userId i databasen");
+                    throw new DatabaseException("Der findes ikke en ordre med det userId i databasen ");
                 }
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på userid", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at hente brugerens ordre ved at søge på userid ", e.getMessage());
         }
         return order;
     }
 
     public static void deleteOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException, SQLException {
-
 
         String sql = "DELETE FROM ordrene WHERE order_id = ?";
 
@@ -247,7 +238,7 @@ public class OrdersMapper {
             int rowsAffected = ps.executeUpdate();
 
             if (rowsAffected == 0) {
-                System.out.println("Ordren kunne ikke findes i databasen");
+                System.out.println("Ordren kunne ikke findes i databasen ");
             }
         } catch (SQLException e) {
             throw new DatabaseException("Fejl: " + e.getMessage());
@@ -278,7 +269,7 @@ public class OrdersMapper {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Det lykkedes ikke at opdatere ordren", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at opdatere ordren ", e.getMessage());
         }
     }
 
@@ -293,7 +284,7 @@ public class OrdersMapper {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Det lykkedes ikke at ændre status på ordren", e.getMessage());
+            throw new DatabaseException("Det lykkedes ikke at ændre status på ordren ", e.getMessage());
         }
     }
 }
