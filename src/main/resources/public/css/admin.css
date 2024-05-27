@@ -624,6 +624,7 @@ table.editpart td {
 
     .container {
         width: 95%;
+        padding: 5px;
     }
 
     h1 {
