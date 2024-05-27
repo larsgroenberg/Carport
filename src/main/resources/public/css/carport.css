@@ -568,7 +568,7 @@ input[type="text"]:focus {
     margin-top: 50px;
 }
 
-@media only screen and (max-height: 1080px) {
+@media (max-height: 1080px) {
     .right-inner-page {
         padding: 30px 20px 20px 80px;
     }
@@ -577,7 +577,10 @@ input[type="text"]:focus {
     }
 }
 
-@media (max-width: 1350px) {
+@media (max-width: 1920px) {
+    .drawing {
+        width: 80%;
+    }
 
     payment {
         padding: 15px 40px;
