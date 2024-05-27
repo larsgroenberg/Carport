@@ -114,6 +114,10 @@
                                    th:value="${session.part.DBdescription}"/></td>
                     </tr>
                     <tr>
+                        <td style="text-align: right;"><label for="length">Name:</label></td>
+                        <td><input type="text" id="name" name="name" th:value="${session.part.DBname}"/></td>
+                    </tr>
+                    <tr>
                         <td style="text-align: right;"><label for="length">Length:</label></td>
                         <td><input type="text" id="length" name="length" th:value="${session.part.DBlength}"/></td>
                     </tr>
@@ -131,8 +135,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: right;"><label for="material">Material:</label></td>
-                        <td><input type="text" id="material" name="material" th:value="${session.part.DBmaterial}"/>
-                        </td>
+                        <td><input type="text" id="material" name="material" th:value="${session.part.DBmaterial}"/></td>
                     </tr>
                     <tr>
                         <td style="text-align: right;"><label for="unit">Unit:</label></td>
@@ -266,7 +269,7 @@
 
     <form class="form-table" th:if="${session.showallorders}" th:method="POST" method="post">
         <div>
-            <h2>Modtagede Ordre:</h2>
+            <h2>Modtagede ordre:</h2>
             <table>
                 <thead>
                 <tr>
@@ -353,7 +356,7 @@
         </div>
 
         <div th:if="${session.customerorders}">
-            <h2>Leverede Ordre:</h2>
+            <h2>Leverede ordre:</h2>
             <table>
                 <thead>
                 <tr>

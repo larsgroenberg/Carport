@@ -55,6 +55,7 @@ public class AdminController {
             int orderId = changeOrderStatusToProduced(ctx, ConnectionPool.getInstance());
             Order order = OrdersMapper.getOrderByOrderId(orderId, ConnectionPool.getInstance());
             EmailService.sendCarportReadyEmail(order);
+            ctx.sessionAttribute("showallorders", true);
             ctx.render("adminsite.html");
         });
         app.post("/orderPickedUp", ctx -> {
@@ -187,6 +188,7 @@ public class AdminController {
     private static void updatePart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         CarportPart part = ctx.sessionAttribute("part");
         part.setDBdescription(ctx.formParam("description"));
+        part.setDBname(ctx.formParam("name"));
         part.setDBlength(Integer.parseInt(ctx.formParam("length")));
         part.setDBheight(Integer.parseInt(ctx.formParam("height")));
         part.setDBwidth(Integer.parseInt(ctx.formParam("width")));
