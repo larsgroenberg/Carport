@@ -572,12 +572,13 @@ input[type="text"]:focus {
     .right-inner-page {
         padding: 30px 20px 20px 80px;
     }
+    .drawing {
+        width: 80%;
+    }
 }
 
 @media (max-width: 1350px) {
-    .drawing {
-        width: 95%;
-    }
+
     payment {
         padding: 15px 40px;
         font-size: 15px;
