@@ -11,14 +11,15 @@
     <div class="left-inner-page">
         <header>
             <div class="navbar">
-                <h1>Fog</h1>
+                <div class="logo-over">
+                    <h1>Fog</h1>
+                </div>
                 <form id="navigationForm" method="get">
-                    <button type="submit" formaction="/" class="nav-btn active">1. Specifikationer</button>
-                    <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Tegning</button>
-                    <button type="submit" formaction="/user-details" class="nav-btn">3. Registrering</button>
-                    <button type="submit" formaction="/confirmation" class="nav-btn">4. Bekræftelse</button>
-                    <br><br><br><br><br>
-                    <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
+                    <button type="submit" formaction="/" class="nav-btn active"><div class="number-active">1</div><span>Specifikationer</span></button>
+                    <button type="submit" formaction="/carport-drawing" class="nav-btn-under"><div class="number">2</div><span>Tegning</span></button>
+                    <button type="submit" formaction="/user-details" class="nav-btn"><div class="number">3</div><span>Registrering</span></button>
+                    <button type="submit" formaction="/confirmation" class="nav-btn"><div class="number">4</div><span>Bekræftelse</span></button>
+                    <button type="submit" formaction="/ToLogin" class="nav-btn"><span>Login</span></button>
                 </form>
             </div>
         </header>
@@ -118,11 +119,15 @@
         610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750,
         760, 770, 780];
 
+    const carportWidths = [
+        240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450,
+        460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600
+    ];
     const shedLengths = [180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300];
 
     const shedWidths = [
-        240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450,
-        460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600
+        180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450,
+        460, 470, 480, 490, 500, 510, 520, 530, 540
     ];
 
     function toggleShedVisibility() {
@@ -154,7 +159,7 @@
         });
 
         carportWidthElement.innerHTML = '<option value="" disabled selected>Vælg bredde på carporten</option>';
-        shedWidths.forEach(width => {
+        carportWidths.forEach(width => {
             let selected = (myThymeleafVariable != null && myThymeleafVariable.width === width) ? 'selected' : '';
             carportWidthElement.innerHTML += `<option value="${width}" ${selected}>${width} cm</option>`;
         });

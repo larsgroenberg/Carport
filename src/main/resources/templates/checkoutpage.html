@@ -13,21 +13,22 @@
     <div class="left-inner-page">
         <header>
             <div class="navbar" th:if="${session.confirmed == null}">
-                <h1>Fog</h1>
+                <div class="logo">
+                    <h1>Fog</h1>
+                </div>
                 <form id="navigationForm" method="get">
-                    <button type="submit" formaction="/" class="nav-btn">1. Specifikationer</button>
-                    <button type="submit" formaction="/carport-drawing" class="nav-btn">2. Tegning</button>
-                    <button type="submit" formaction="/user-details" class="nav-btn">3. Registrering</button>
-                    <button type="submit" formaction="/confirmation" class="nav-btn active">4. Bekræftelse</button>
-                    <br><br><br><br><br>
-                    <button type="submit" formaction="/ToLogin" class="nav-btn">Login</button>
+                    <button type="submit" formaction="/" class="nav-btn"><div class="number">1</div><span>Specifikationer</span></button>
+                    <button type="submit" formaction="/carport-drawing" class="nav-btn"><div class="number">2</div><span>Tegning</span></button>
+                    <button type="submit" formaction="/user-details" class="nav-btn-over"><div class="number">3</div><span>Registrering</span></button>
+                    <button type="submit" formaction="/confirmation" class="nav-btn active"><div class="number-active">4</div><span>Bekræftelse</span></button>
+                    <button type="submit" formaction="/ToLogin" class="nav-btn-under"><span>Login</span></button>
                 </form>
             </div>
         </header>
     </div>
     <div class="right-inner-page">
-        <h1>Ordrebekræftelse</h1>
-        <h2>Carport Specifikationer</h2>
+        <h2>Ordrebekræftelse</h2>
+        <h3>Carport Specifikationer</h3>
         <p>Bredde: <span th:text="${session.newCarport.width}">0</span> cm</p>
         <p>Længde: <span th:text="${session.newCarport.length}">0</span> cm</p>
         <p>Højde: <span th:text="${session.newCarport.height}">0</span> cm</p>
@@ -38,8 +39,7 @@
             <p>Skur længde: <span th:text="${session.newCarport.shedLength}">0</span> cm</p>
         </div>
 
-        <!-- User info -->
-        <h2>Personal Details</h2>
+        <h3>Personal Details</h3>
         <p>Name: <span th:text="${session.currentUser.name}">Name not found</span></p>
         <p>Email: <span th:text="${session.currentUser.email}">Email not found</span></p>
         <p>Mobile Number: <span th:text="${session.currentUser.mobile}">Mobile number not found</span></p>
@@ -47,8 +47,8 @@
         <p>Zipcode: <span th:text="${session.currentUser.zipcode}">Zipcode not found</span></p>
 
         <!-- Money offer on the carport -->
-        <h2>Den samlede pris: </h2>
-        <h2 th:text="${session.carportprice} + kr."></h2>
+        <h3>Den samlede pris: </h3>
+        <h3 th:text="${session.carportprice} + kr."></h3>
 
         <form method="post">
             <div class="button-container">

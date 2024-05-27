@@ -469,7 +469,6 @@ public class CarportSvg {
                 addTextV((((length - 142) / 3) / 2) + x2 + x2 + 175 - 20, height + 55 + 90, 0, "" + x2);
             }
         }
-        carportOuterSvg.addArrow(75, width + 30, 175, width + 30, "stroke:#000000; marker-end: url(#endArrow);");
     }
 
     // Den horizontale tekst

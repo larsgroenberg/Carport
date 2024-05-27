@@ -1,23 +1,15 @@
 package app.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-
 import io.javalin.http.Context;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-
 
 public class CarportSvgTest {
 
     private Context ctx;
     private CarportSvg carportSvg;
-
     int width = 500;
     int length = 700;
     int height = 250;
@@ -74,12 +66,10 @@ public class CarportSvgTest {
         // Then
         assertEquals(8, result);
 
-
         // When
         result = carportSvg.addPoles(ctx, width, length, height, shedLength-300, shedWidth-500);
         // Then
         assertEquals(6, result);
-
 
         // When
         result = carportSvg.addPoles(ctx, width, length+300, height, shedLength, shedWidth);

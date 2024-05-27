@@ -12,11 +12,9 @@ import java.util.logging.Logger;
  */
 public class ConnectionPool {
     private static final String DEFAULT_USER = "postgres";
-    private static final String DEFAULT_PASSWORD = "hsY67kdHtryg43X";
-    //private static final String DEFAULT_URL = "jdbc:postgresql://db:5432/%s?currentSchema=public";
+    private static final String DEFAULT_PASSWORD = System.getenv("Default_Password");
     private static final String DEFAULT_URL = "jdbc:postgresql://161.35.204.41:5432/%s?currentSchema=public";
     private static final String DEFAULT_DB = "carport";
-
     public static ConnectionPool instance = null;
     public static HikariDataSource ds = null;
 

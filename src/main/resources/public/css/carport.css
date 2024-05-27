@@ -17,7 +17,7 @@ h1 {
 
 .left-inner-page {
     background-color: #3a4d7f;
-    padding: 12px;
+    padding: 0px 0px 0px 45px;
     flex: 0 0 425px;
     box-sizing: border-box;
 }
@@ -26,41 +26,176 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background-color: white;
 }
 
 .navbar h1 {
     margin-bottom: 80px;
+    margin-top: 80px;
+    margin-left: 50px;
     color: white;
+    text-align: left;
+    font-size: 120px;
+}
+
+.logo-over {
+    background-color: #3a4d7f;
+    border-radius: 0px 0px 25px 0px;
+}
+
+.logo {
+    background-color: #3a4d7f;
+    border-radius: 0px 0px 0px 0px;
+}
+
+#navigationForm {
+    background-color: white;
+}
+
+.number-active {
+    color: white;
+    padding: 6px 9px 6px 9px;
+    font-size: 12px;
     text-align: center;
-    font-size: 100px;
+    border-radius: 25px 25px 25px 25px;
+    background-color: #3a4d7f;
+    margin-right: 15px;
+}
+
+.number {
+    color: #3a4d7f;
+    padding: 6px 9px 6px 9px;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 25px 25px 25px 25px;
+    background-color: white;
+    margin-right: 15px;
 }
 
 .nav-btn {
-    margin-bottom: 10px;
-    padding: 15px;
-    background-color: transparent;
-    color: white;
-    border: 1px solid white;
-    border-radius: 25px;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: #3a4d7f;
     font-size: 22px;
-    text-align: center;
+    color: white;
+    border: none;
+    border-radius: 0px 0px 0px 0px;
+    padding: 15px 15px 15px 15px;
     transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
+    /*overflow: hidden; */
     width: 100%;
+    text-align: left;
 }
 
 .nav-btn.active {
-    background-color: #1a2e4c;
-}
-
-.nav-btn:hover {
     background-color: white;
     color: #3a4d7f;
+    /*border: 1px solid white;*/
+    border-radius: 10px 10px 0px 0px;
+}
+
+.nav-btn.active span::after {
+    height: 2px;
+}
+
+.nav-btn span {
+    position: relative;
+}
+
+.nav-btn span::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: width 0.4s ease, left 0.4s ease;
+}
+
+.nav-btn:hover span::after {
+    width:100%;
+    left: 0%;
+}
+
+.nav-btn-under {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 15px 15px 15px 15px;
+    background-color: #3a4d7f;
+    color: white;
+    border: none;
+    border-radius: 0px 25px 0px 0px;
+    cursor: pointer;
+    font-size: 22px;
+    text-align: left;
+    transition: background-color 0.4s, color 0.4s;
+    /* overflow: hidden; */
+    width: 100%;
+}
+
+.nav-btn-under span::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: width 0.4s ease, left 0.4s ease;
+}
+
+.nav-btn-under:hover span::after {
+    width: 100%;
+    left: 0%;
+}
+
+.nav-btn-under span {
+    position: relative;
+}
+
+.nav-btn-over {
+    display: flex;
+    align-items: center;
+    padding: 15px 15px 15px 15px;
+    background-color: #3a4d7f;
+    color: white;
+    border: none;
+    border-radius: 0px 0px 25px 0px;
+    cursor: pointer;
+    font-size: 22px;
+    text-align: left;
+    transition: background-color 0.4s, color 0.4s;
+    /*overflow: hidden;*/
+    width: 100%;
+}
+
+.nav-btn-over span::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: width 0.4s ease, left 0.4s ease;
+}
+
+.nav-btn-over:hover span::after {
+    width: 100%;
+    left: 0%;
+}
+
+.nav-btn-over span {
+    position: relative;
 }
 
 .right-inner-page {
     flex: 1;
-    padding: 130px 20px 20px 80px;
+    padding: 160px 20px 20px 80px;
     overflow-y: auto;
     box-sizing: border-box;
 }
@@ -160,7 +295,7 @@ select:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 15px;
-    opacity: 1; /* fluebenet er synligt, når knappen er aktiv */
+    opacity: 1;
 }
 
 .with-shed-label {
@@ -450,7 +585,8 @@ input[type="text"]:focus {
     }
 
     .left-inner-page {
-        flex: 0 0 220px;
+        flex: 0 0 260px;
+        padding: 0px 0px 0px 20px;
     }
 
     .right-inner-page {
@@ -459,22 +595,51 @@ input[type="text"]:focus {
 
     .right-drawing-page {
         width:80%;
-        padding: 5px 0px 0px 5px;
+        padding: 60px 0px 0px 5px;
     }
     .navbar h1 {
-        padding-top: 50px;
-        padding-bottom: 0px;
-        margin-bottom: 20px;
-        font-size: 4.5em;
+       margin-top: 50px;
+       margin-bottom: 50px;
+       margin-left: 25px;
+       text-align: left;
+       font-size: 90px;
     }
 
     .carporttable {
         width: 95%;
     }
 
+    .nav-btn span {
+        position: relative;
+        font-size: 18px;
+    }
+
     .nav-btn {
-        font-size: 14px;
-        padding: 8px;
+        padding: 6px;
+        position: relative;
+        font-size: 20px;
+    }
+
+    .nav-btn-over span {
+        position: relative;
+        font-size: 18px;
+    }
+
+    .nav-btn-over {
+        padding: 6px;
+        position: relative;
+        font-size: 20px;
+    }
+
+    .nav-btn-under span {
+        position: relative;
+        font-size: 18px;
+    }
+
+    .nav-btn-under {
+        padding: 6px;
+        position: relative;
+        font-size: 20px;
     }
 
     .right-inner-page h1 {
@@ -501,8 +666,6 @@ input[type="text"]:focus {
     input[type="text"] {
         width: 90%;
         padding: 10px;
-        border: 2px solid #ccc;
-        border-radius: 25px;
         font-size: 16px;
     }
 
@@ -534,31 +697,59 @@ input[type="text"]:focus {
     input[type="text"] {
         width: 95%;
         padding: 6px;
-        border: 2px solid #ccc;
-        border-radius: 25px;
         font-size: 12px;
     }
 
     .left-inner-page {
-        flex: 0 0 150px;
+        flex: 0 0 200px;
     }
 
     .right-inner-page {
-        padding: 20px 20px 20px 20px;
+        padding: 120px 20px 20px 20px;
     }
     .container-checkout {
         margin-top: 15px;
     }
 
     .navbar h1 {
-        font-size: 2.4em;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        margin-left: 20px;
+        text-align: left;
+        font-size: 60px;
+    }
+
+    .nav-btn span {
+        position: relative;
+        font-size: 14px;
     }
 
     .nav-btn {
-        font-size: 12px;
         padding: 6px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-over span {
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-over {
+        padding: 6px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-under span {
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-under {
+        padding: 6px;
+        position: relative;
+        font-size: 14px;
     }
 
     .right-inner-page h1 {
@@ -603,12 +794,12 @@ input[type="text"]:focus {
 
     #movingForwardButton {
         font-size: 12px;
-        padding: 6px 33px;
+        padding: 5px 23px;
     }
 
     #movingBackButton {
         font-size: 12px;
-        padding: 6px 33px;
+        padding: 5px 23px;
         margin-right: 7px;
     }
 
@@ -616,4 +807,137 @@ input[type="text"]:focus {
         font-size: 13px;
     }
 
+    .with-shed-label {
+        margin-left: 10px;
+        font-size: 14px;
+    }
+
+    .number {
+        margin-right: 10px;
+    }
+
+    .number-active {
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    h1  {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        font-size: 1em;
+    }
+
+    input[type="text"] {
+        width: 95%;
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .left-inner-page {
+        flex: 0 0 160px;
+    }
+
+    .right-inner-page {
+        padding: 120px 20px 20px 20px;
+    }
+    .container-checkout {
+        margin-top: 15px;
+    }
+
+    .navbar h1 {
+        margin-top: 25px;
+        margin-bottom: 25px;
+        margin-left: 15px;
+        text-align: left;
+        font-size: 50px;
+    }
+
+    .nav-btn span {
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn {
+        padding: 6px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-over span {
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-over {
+        padding: 6px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-under span {
+        position: relative;
+        font-size: 14px;
+    }
+
+    .nav-btn-under {
+        padding: 6px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    .right-inner-page h1 {
+        font-size: 1.3em;
+    }
+
+    .right-inner-page h2 {
+        font-size: 1.0em;
+    }
+
+    .right-inner-page p {
+        font-size: 0.7em;
+    }
+
+    .right-inner-page h3 {
+        font-size: 0.7em;
+    }
+
+    select {
+        width: 100%;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .container-checkout {
+        width: 97%;
+    }
+
+    .carporttable {
+        font-size: 12px;
+    }
+
+    #movingButton {
+        padding: 10px 15px;
+        font-size: 11px;
+    }
+
+    .payment {
+        padding: 9px 20px;
+        font-size: 13px;
+    }
+
+    #movingForwardButton {
+        font-size: 12px;
+        padding: 5px 23px;
+    }
+
+    #movingBackButton {
+        font-size: 12px;
+        padding: 5px 23px;
+        margin-right: 7px;
+    }
+
+    #movingDrawingButton {
+        font-size: 13px;
+    }
 }
