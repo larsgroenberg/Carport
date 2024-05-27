@@ -521,7 +521,7 @@ input[type="text"]:focus {
 }
 
 .payment {
-    padding: 15px 40px;
+    padding: 10px 30px;
     font-size: 20px;
     cursor: pointer;
     display: inline-block;
@@ -530,6 +530,40 @@ input[type="text"]:focus {
     background-color: #3a4d7f;
     color: white;
     transition: background-color 0.3s ease-in-out;
+}
+
+#paymentButton {
+    position: relative;
+    overflow: hidden;
+    padding: 10px 23px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 25px;
+    background-color: #3a4d7f;
+    color: #ffffff;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#paymentButton .staticPart {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+#paymentButton .movingPart {
+    display: inline-block;
+    transition: transform 0.5s ease-in-out;
+}
+
+#paymentButton:hover {
+    background-color: #1a2e4c;
+}
+
+#paymentButton:hover .movingPart {
+    transform: translateX(6px);
 }
 
 .payment:hover {
@@ -702,7 +736,7 @@ input[type="text"]:focus {
     }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 560px) {
     h1  {
         margin-bottom: 5px;
         margin-top: 5px;
@@ -808,18 +842,18 @@ input[type="text"]:focus {
     }
 
     #movingForwardButton {
-        font-size: 12px;
-        padding: 5px 23px;
+        font-size: 14px;
+        padding: 10px 23px;
     }
 
     #movingBackButton {
-        font-size: 12px;
-        padding: 5px 23px;
+        font-size: 14px;
+        padding: 10px 23px;
         margin-right: 7px;
     }
 
     #movingDrawingButton {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .with-shed-label {
@@ -833,6 +867,10 @@ input[type="text"]:focus {
 
     .number-active {
         margin-right: 10px;
+    }
+
+    #paymentButton {
+        font-size: 14px;
     }
 }
 
