@@ -574,17 +574,17 @@ input[type="text"]:focus {
         width: 60%;
     }
     .drawing {
-        width: 35%;
+        width: 60%;
     }
 }
 
 @media (max-width: 1920px) {
-    .right-drawing-page {
+    .right-inner-page {
         padding: 30px 20px 20px 80px;
         width: 60%;
     }
     .drawing {
-        width: 60%;
+        width: 35%;
     }
 
     payment {
