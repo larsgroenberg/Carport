@@ -6,7 +6,6 @@ import app.controllers.OrderController;
 import app.controllers.UserController;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
-import java.util.logging.Logger;
 
 public class Main
 {
