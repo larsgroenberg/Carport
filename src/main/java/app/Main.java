@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public class Main
 {
     public static void main(String[] args) {
+
         // Initialiserer Javalin og Jetty webserver
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");
@@ -21,8 +22,6 @@ public class Main
         OrderController.addRoutes(app);
         UserController.addRoutes(app);
         AdminController.addRoutes(app);
-
-        Logger.getLogger(Main.class.getName()).info("Application started successfully.");
     }
 }
 
