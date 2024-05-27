@@ -569,7 +569,7 @@ input[type="text"]:focus {
 }
 
 @media (max-height: 1080px) {
-    .right-inner-page {
+    .right-drawing-page {
         padding: 30px 20px 20px 80px;
         width: 60%;
     }
@@ -579,7 +579,7 @@ input[type="text"]:focus {
 }
 
 @media (max-width: 1920px) {
-    .right-inner-page {
+    .right-drawing-page {
         padding: 30px 20px 20px 80px;
         width: 60%;
     }
