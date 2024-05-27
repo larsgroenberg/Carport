@@ -574,7 +574,7 @@ input[type="text"]:focus {
         width: 60%;
     }
     .drawing {
-        width: 80%;
+        width: 60%;
     }
 }
 
@@ -583,9 +583,8 @@ input[type="text"]:focus {
         padding: 30px 20px 20px 80px;
         width: 60%;
     }
-
     .drawing {
-        width: 80%;
+        width: 60%;
     }
 
     payment {
