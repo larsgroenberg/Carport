@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Checkout</title>
+    <title>Fog Carport - Bekræft Ordren</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/carport.css" th:href="@{/css/carport.css}" rel="stylesheet"/>
@@ -17,39 +17,93 @@
                     <h1>Fog</h1>
                 </div>
                 <form id="navigationForm" method="get">
-                    <button type="submit" formaction="/" class="nav-btn"><div class="number">1</div><span>Specifikationer</span></button>
-                    <button type="submit" formaction="/carport-drawing" class="nav-btn"><div class="number">2</div><span>Tegning</span></button>
-                    <button type="submit" formaction="/user-details" class="nav-btn-over"><div class="number">3</div><span>Registrering</span></button>
-                    <button type="submit" formaction="/confirmation" class="nav-btn active"><div class="number-active">4</div><span>Bekræftelse</span></button>
+                    <button type="submit" formaction="/" class="nav-btn">
+                        <div class="number">1</div>
+                        <span>Specifikationer</span></button>
+                    <button type="submit" formaction="/carport-drawing" class="nav-btn">
+                        <div class="number">2</div>
+                        <span>Tegning</span></button>
+                    <button type="submit" formaction="/user-details" class="nav-btn-over">
+                        <div class="number">3</div>
+                        <span>Registrering</span></button>
+                    <button type="submit" formaction="/confirmation" class="nav-btn active">
+                        <div class="number-active">4</div>
+                        <span>Bekræftelse</span></button>
                     <button type="submit" formaction="/ToLogin" class="nav-btn-under"><span>Login</span></button>
                 </form>
             </div>
         </header>
     </div>
+
     <div class="right-inner-page">
-        <h2>Ordrebekræftelse</h2>
-        <h3>Carport Specifikationer</h3>
-        <p>Bredde: <span th:text="${session.newCarport.width}">0</span> cm</p>
-        <p>Længde: <span th:text="${session.newCarport.length}">0</span> cm</p>
-        <p>Højde: <span th:text="${session.newCarport.height}">0</span> cm</p>
-        <p>Tag Type: <span th:if="${session.newCarport.withRoof}">Plastic Trapeztag</span></p>
-
-        <div th:if="${session.newCarport.withShed}">
-            <p>Skur bredde: <span th:text="${session.newCarport.shedWidth}">0</span> cm</p>
-            <p>Skur længde: <span th:text="${session.newCarport.shedLength}">0</span> cm</p>
+        <h4 class="box-title">Carport</h4>
+        <div class="box specifications">
+            <table>
+                <tr class="info-box">
+                    <td>Bredde</td>
+                    <td><span th:text="${session.newCarport.width}">0</span> cm</td>
+                </tr>
+                <tr class="info-box">
+                    <td>Længde</td>
+                    <td><span th:text="${session.newCarport.length}">0</span> cm</td>
+                </tr>
+                <tr class="info-box">
+                    <td>Højde</td>
+                    <td><span th:text="${session.newCarport.height}">0</span> cm</td>
+                </tr>
+                <tr>
+                    <td class="no-border-bottom">Tag</td>
+                    <td class="no-border-bottom"><span th:if="${session.newCarport.withRoof}">Ja</span></td>
+                </tr>
+            </table>
         </div>
-
-        <h3>Personal Details</h3>
-        <p>Name: <span th:text="${session.currentUser.name}">Name not found</span></p>
-        <p>Email: <span th:text="${session.currentUser.email}">Email not found</span></p>
-        <p>Mobile Number: <span th:text="${session.currentUser.mobile}">Mobile number not found</span></p>
-        <p>Address: <span th:text="${session.currentUser.address}">Address not found</span></p>
-        <p>Zipcode: <span th:text="${session.currentUser.zipcode}">Zipcode not found</span></p>
-
-        <!-- Money offer on the carport -->
-        <h3>Den samlede pris: </h3>
-        <h3 th:text="${session.carportprice} + kr."></h3>
-
+        <h4 th:if="${session.newCarport.withShed}" class="box-title">Skur</h4>
+        <div class="box specifications" th:if="${session.newCarport.withShed}">
+            <table>
+                <tr class="info-box" th:if="${session.newCarport.withShed}">
+                    <td>Bredde</td>
+                    <td><span th:text="${session.newCarport.shedWidth}">0</span> cm</td>
+                </tr>
+                <tr th:if="${session.newCarport.withShed}">
+                    <td class="no-border-bottom">Længde</td>
+                    <td class="no-border-bottom"><span th:text="${session.newCarport.shedLength}">0</span> cm</td>
+                </tr>
+            </table>
+        </div>
+        <h4 class="box-title">Bruger oplysninger</h4>
+        <div class="box personal-details">
+            <table>
+                <tr class="info-box">
+                    <td>Navn</td>
+                    <td><span th:text="${session.currentUser.name}">ikke fundet</span></td>
+                </tr>
+                <tr class="info-box">
+                    <td>Adresse</td>
+                    <td><span th:text="${session.currentUser.address}">ikke fundet</span></td>
+                </tr>
+                <tr class="info-box">
+                    <td>Postnr.</td>
+                    <td><span th:text="${session.currentUser.zipcode}">ikke fundet</span></td>
+                </tr>
+                <tr class="info-box">
+                    <td>Email</td>
+                    <td><span th:text="${session.currentUser.email}">ikke fundet</span></td>
+                </tr>
+                <tr>
+                    <td class="no-border-bottom">Mobil</td>
+                    <td class="no-border-bottom"><span th:text="${session.currentUser.mobile}">ikke fundet</span></td>
+                </tr>
+            </table>
+        </div>
+        <h4 class="box-title">Pris</h4>
+        <div class="box price">
+            <table class="total-price-table">
+                <tr>
+                    <td>Pris</td>
+                    <td><span class="total-price" th:text="${session.carportprice} + ' kr.'">0 kr.</span></td>
+                </tr>
+            </table>
+        </div>
         <form method="post">
             <div class="button-container">
                 <button th:if="${session.confirmed == null}" type="submit" formaction="/finishOrder" class="payment">
@@ -60,5 +114,4 @@
     </div>
 </div>
 </body>
-
 </html>

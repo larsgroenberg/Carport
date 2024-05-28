@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="">
 
 <head>
-    <title>Tegning</title>
+    <title>Fog Carport - Tegning og Pris</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/css/carport.css" th:href="@{/css/carport.css}" rel="stylesheet"/>
@@ -17,68 +17,75 @@
                     <h1>Fog</h1>
                 </div>
                 <form id="navigationForm" method="get">
-                    <button type="submit" formaction="/" class="nav-btn-over"><div class="number">1</div><span>Specifikationer</span></button>
-                    <button type="submit" formaction="/carport-drawing" class="nav-btn active"><div class="number-active">2</div><span>Tegning</span></button>
-                    <button type="submit" formaction="/user-details" class="nav-btn-under"><div class="number">3</div><span>Registrering</span></button>
-                    <button type="submit" formaction="/confirmation" class="nav-btn"><div class="number">4</div><span>Bekræftelse</span></button>
+                    <button type="submit" formaction="/" class="nav-btn-over">
+                        <div class="number">1</div>
+                        <span>Specifikationer</span></button>
+                    <button type="submit" formaction="/carport-drawing" class="nav-btn active">
+                        <div class="number-active">2</div>
+                        <span>Tegning</span></button>
+                    <button type="submit" formaction="/user-details" class="nav-btn-under">
+                        <div class="number">3</div>
+                        <span>Registrering</span></button>
+                    <button type="submit" formaction="/confirmation" class="nav-btn">
+                        <div class="number">4</div>
+                        <span>Bekræftelse</span></button>
                     <button type="submit" formaction="/ToLogin" class="nav-btn"><span>Login</span></button>
                 </form>
             </div>
         </header>
     </div>
 
-
     <div class="right-drawing-page ">
         <form class="drawing" th:method="get">
-
             <div class="carport-svg-topview">
                 <div class="carport-svg-topview" th:utext="${session.svgFromSide}"></div>
                 <div class="carport-svg-topview" th:utext="${session.svgFromTop}"></div>
             </div>
-
-            <table class="carporttable">
-                <tr>
-                    <td>Carport bredde:</td>
-                    <td style="text-align: right;" th:text="${session.newCarport.width}"></td>
-                    <td style="text-align: left;">cm</td>
-                </tr>
-                <tr>
-                    <td>Carport længde:</td>
-                    <td style="text-align: right;" th:text="${session.newCarport.length}"></td>
-                    <td style="text-align: left;">cm</td>
-                </tr>
-                <tr>
-                    <td>Carport højde:</td>
-                    <td style="text-align: right;" th:text="${session.newCarport.height}"></td>
-                    <td style="text-align: left;">cm</td>
-                </tr>
-                <tr th:if="${session.newCarport.shedWidth} != 0">
-                    <td>Skur bredde:</td>
-                    <td style="text-align: right;" th:text="${session.newCarport.shedWidth}"></td>
-                    <td style="text-align: left;">cm</td>
-                </tr>
-                <tr th:if="${session.newCarport.shedLength} != 0">
-                    <td>Skur længde:</td>
-                    <td style="text-align: right;" th:text="${session.newCarport.shedLength}"></td>
-                    <td style="text-align: left;">cm</td>
-                </tr>
-                <tr>
-                    <td>Den samlede pris:</td>
-                    <td style="text-align: right;" th:text="${session.carportprice}"></td>
-                    <td style="text-align: left;">kr.</td>
-                </tr>
-            </table>
-            <div class="container-checkout">
-                <button id="movingBackButton" type="submit" name="orderId"
-                        value="Ændre Bestilling" formaction="/changeorder">
-                    <span class="movingPart"> &#x2190;</span><span class="staticPart">  Tilbage</span>
-                </button>
-                <button id="movingForwardButton" name="ordercarport" th:value="${length}" formaction="/user-details">
-                    <span class="staticPart">Videre  </span><span class="movingPart"> &#x2192;</span>
-                </button>
+            <h4 class="box-title">Specifikationer</h4>
+            <div class="box specifications">
+                <table>
+                    <tr class="info-box">
+                        <td>Carport bredde:</td>
+                        <td><span th:text="${session.newCarport.width}"></span> cm</td>
+                    </tr>
+                    <tr class="info-box">
+                        <td>Carport længde:</td>
+                        <td><span th:text="${session.newCarport.length}"></span> cm</td>
+                    </tr>
+                    <tr class="info-box">
+                        <td>Carport højde:</td>
+                        <td><span th:text="${session.newCarport.height}"></span> cm</td>
+                    </tr>
+                    <tr class="info-box" th:if="${session.newCarport.shedWidth} != 0">
+                        <td>Skur bredde:</td>
+                        <td><span th:text="${session.newCarport.shedWidth}"></span> cm</td>
+                    </tr>
+                    <tr class="info-box" th:if="${session.newCarport.shedLength} != 0">
+                        <td>Skur længde:</td>
+                        <td><span th:text="${session.newCarport.shedLength}"></span> cm</td>
+                    </tr>
+                </table>
             </div>
-        </form>
+            <h4 class="box-title">Pris</h4>
+            <div class="box price">
+                <table class="total-price-table">
+                    <tr>
+                        <td>Pris</td>
+                        <td><span class="total-price" th:text="${session.carportprice} + ' kr.'">0 kr.</span></td>
+                    </tr>
+                </table>
+            </div>
+    <div class="container-checkout">
+        <button id="movingBackButton" type="submit" name="orderId"
+                value="Ændre Bestilling" formaction="/changeorder">
+            <span class="movingPart"> &#x2190;</span><span class="staticPart">  Tilbage</span>
+        </button>
+        <button id="movingForwardButton" name="ordercarport" th:value="${length}" formaction="/user-details">
+            <span class="staticPart">Videre  </span><span class="movingPart"> &#x2192;</span>
+        </button>
     </div>
+    </form>
+</div>
 </div>
 </body>
 </html>
