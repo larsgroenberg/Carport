@@ -66,8 +66,6 @@ public class CarportPartMapper {
         }
         return part;
     }
-
-
     public static void addPart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
 
         String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit, name) VALUES (?,?,?,?,?,?,?,?,?)";

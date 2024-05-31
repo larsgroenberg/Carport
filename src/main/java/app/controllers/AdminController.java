@@ -120,45 +120,77 @@ public class AdminController {
         });
     }
 
-    private static void seeAllSale(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
-        ctx.sessionAttribute("customerorders", customerOrders);
-        double totalSale = 0, totalCost = 0, totalRevenue = 0;
-        int carportSold = 0;
-        for (Order order : customerOrders) {
-            if (order.getOrderStatus().equalsIgnoreCase("leveret")) {
-                totalSale += order.getSalesPrice();
-                totalCost += order.getMaterialCost();
-                carportSold++;
+    private static void seeAllSale(Context ctx, ConnectionPool connectionPool) {
+        try {
+            ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
+            ctx.sessionAttribute("customerorders", customerOrders);
+
+            double totalSale = 0, totalCost = 0;
+            int carportSold = 0;
+
+            for (Order order : customerOrders) {
+                if (order.getOrderStatus().equalsIgnoreCase("leveret")) {
+                    totalSale += order.getSalesPrice();
+                    totalCost += order.getMaterialCost();
+                    carportSold++;
+                }
             }
-            totalRevenue = totalSale - totalCost;
+
+            double totalRevenue = totalSale - totalCost;
+
+            // Afrunder til nærmeste hele 10 øre (1 decimal)
+            totalSale = Math.round(totalSale * 10) / 10.0;
+            totalCost = Math.round(totalCost * 10) / 10.0;
+            totalRevenue = Math.round(totalRevenue * 10) / 10.0;
+
+            DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+
+            // Formaterer værdierne så de har 2 decimaler
+            String formattedTotalSale = decimalFormat.format(totalSale);
+            String formattedTotalCost = decimalFormat.format(totalCost);
+            String formattedTotalRevenue = decimalFormat.format(totalRevenue);
+
+            ctx.sessionAttribute("totalSale", formattedTotalSale);
+            ctx.sessionAttribute("totalCost", formattedTotalCost);
+            ctx.sessionAttribute("totalRevenue", formattedTotalRevenue);
+            ctx.sessionAttribute("carportSold", carportSold);
+
+        } catch (DatabaseException e) {
+            // Log fejlmeddelelsen og sæt en fejlbesked i sessionen eller konteksten
+            System.err.println("Fejl ved hentning af ordrer: " + e.getMessage());
+            ctx.sessionAttribute("error", "Fejl ved hentning af ordrer: " + e.getMessage());
+        } catch (Exception e) {
+            // Her håndterer jeg eventuelle andre uventede undtagelser
+            System.err.println("Uventet fejl: " + e.getMessage());
+            ctx.sessionAttribute("error", "Uventet fejl: " + e.getMessage());
         }
-        // Her afrunder vi til nærmeste hele 10 øre
-        totalSale = Math.round(totalSale * 10) / 10.0;
-        totalCost = Math.round(totalCost * 10) / 10.0;
-        totalRevenue = Math.round(totalRevenue * 10) / 10.0;
-        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-
-        // Her konverterer vi variablerne til strenge så vi får dem med 2 decimaler
-        String formattedTotalSale = decimalFormat.format(totalSale);
-        String formattedTotalCost = decimalFormat.format(totalCost);
-        String formattedTotalRevenue = decimalFormat.format(totalRevenue);
-
-        ctx.sessionAttribute("totalSale", formattedTotalSale);
-        ctx.sessionAttribute("totalCost", formattedTotalCost);
-        ctx.sessionAttribute("totalRevenue", formattedTotalRevenue);
-        ctx.sessionAttribute("carportSold", carportSold);
     }
 
     private static void editOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        Order order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
+        // Her forsøger jeg at hente ordren fra databasen
+        Order order;
+        try {
+            order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
+        } catch (DatabaseException e) {
+            // Hej håndterer jeg en evt. databasefejl
+            System.err.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Her afbryder jeg metoden, hvis der opstår en databasefejl da sessionAtributten ikke kan sættes hvis order er null
+        }
         ctx.sessionAttribute("order", order);
     }
 
     private static void deleteOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException, SQLException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        OrdersMapper.deleteOrderByOrderId(orderId, connectionPool);
+        // Her forsøger jeg at slette ordren i databasen
+        try {
+            OrdersMapper.deleteOrderByOrderId(orderId, connectionPool);
+        } catch (DatabaseException e) {
+            // Hej håndterer jeg en evt. databasefejl
+            System.err.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        }
     }
 
     private static void updateOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
@@ -178,9 +210,16 @@ public class AdminController {
         order.setWall(Boolean.parseBoolean(ctx.formParam("wall")));
 
         ctx.sessionAttribute("order", order);
-
         Order updatedOrder = ctx.sessionAttribute("order");
-        OrdersMapper.updateOrder(updatedOrder, connectionPool);
+        // Her forsøger jeg at opdatere ordren i databasen
+        try {
+            OrdersMapper.updateOrder(updatedOrder, connectionPool);
+        } catch (DatabaseException e) {
+            // Hej håndterer jeg en evt. databasefejl
+            System.err.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Her afbryder jeg metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("showallorders", true);
         ctx.sessionAttribute("showorder", false);
     }
@@ -224,7 +263,15 @@ public class AdminController {
         ctx.sessionAttribute("part", part);
 
         CarportPart updatedPart = ctx.sessionAttribute("part");
-        CarportPartMapper.updatePart(updatedPart, connectionPool);
+        // Her forsøger jeg at opdatere delen i databasen
+        try {
+            CarportPartMapper.updatePart(updatedPart, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
 
         ctx.sessionAttribute("showallparts", true);
         ctx.sessionAttribute("showpart", false);
@@ -259,7 +306,6 @@ public class AdminController {
             case "hængsel" -> partType = CarportPart.CarportPartType.HÆNGSEL;
             default -> partType = CarportPart.CarportPartType.NONE;
         }
-        partType = CarportPart.CarportPartType.valueOf(ctx.formParam("type"));
         String partName = ctx.formParam("name");
         String partMaterial = ctx.formParam("material");
         String partUnit = ctx.formParam("unit");
@@ -268,81 +314,179 @@ public class AdminController {
 
         ctx.sessionAttribute("part", part);
 
-        part = ctx.sessionAttribute("part");
-        CarportPartMapper.addPart(part, connectionPool);
+        try {
+            CarportPartMapper.addPart(part, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        }
     }
 
     private static void editCarportPart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int partId = Integer.parseInt(ctx.formParam("partId"));
-        CarportPart part = CarportPartMapper.getPartById(partId, connectionPool);
+        CarportPart part;
+        try {
+            part = CarportPartMapper.getPartById(partId, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("part", part);
         ctx.sessionAttribute("showpart", true);
         ctx.sessionAttribute("showallparts", true);
     }
 
     private static void getPartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<CarportPart> partList = CarportPartMapper.getDBParts(connectionPool);
+        ArrayList<CarportPart> partList;
+        try {
+            partList = CarportPartMapper.getDBParts(connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("partslist", partList);
         System.out.println(partList.get(1).getType());
     }
 
     private static void getPartById(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int partId = Integer.parseInt(ctx.formParam("partid"));
-        CarportPart part = CarportPartMapper.getPartById(partId, connectionPool);
+        CarportPart part;
+        try {
+            part = CarportPartMapper.getPartById(partId, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("part", part);
     }
 
     private static void getAllOrders(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
+        ArrayList<Order> customerOrders;
+        try {
+            customerOrders = OrdersMapper.getAllOrders(connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("customerorders", customerOrders);
     }
 
     private static void getOrderByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
-        Order customerOrder = OrdersMapper.getOrderByEmail(email, connectionPool);
+        Order customerOrder;
+        try {
+            customerOrder = OrdersMapper.getOrderByEmail(email, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("customerOrders", customerOrder);
     }
 
-    private static void getOrderByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        User user = null;
+    private static void getOrderByName(Context ctx, ConnectionPool connectionPool) {
         String userName = ctx.formParam("username_input");
-        user = UserMapper.getCustomerByName(userName, connectionPool);
-        if (user != null) {
-            Order order = OrdersMapper.getOrderByUserId(user.getUserId(), connectionPool);
-            System.out.println(order.getUserEmail());
-            ctx.sessionAttribute("order", order);
-            ctx.sessionAttribute("modalmedbesked", false);
-            ctx.sessionAttribute("showorder", true);
-        } else {
-            String message = "Der findes ingen kunder med det navn i vores Database";
+
+        if (userName == null || userName.trim().isEmpty()) {
+            String message = "Brugernavn er påkrævet.";
             ctx.sessionAttribute("message", message);
             ctx.sessionAttribute("modalmedbesked", true);
             ctx.sessionAttribute("showorder", false);
+            return;
+        }
+
+        try {
+            User user = UserMapper.getCustomerByName(userName, connectionPool);
+            if (user != null) {
+                Order order = OrdersMapper.getOrderByUserId(user.getUserId(), connectionPool);
+                if (order != null) {
+                    System.out.println(order.getUserEmail());
+                    ctx.sessionAttribute("order", order);
+                    ctx.sessionAttribute("modalmedbesked", false);
+                    ctx.sessionAttribute("showorder", true);
+                } else {
+                    String message = "Ingen ordre fundet for den angivne bruger.";
+                    ctx.sessionAttribute("message", message);
+                    ctx.sessionAttribute("modalmedbesked", true);
+                    ctx.sessionAttribute("showorder", false);
+                }
+            } else {
+                String message = "Der findes ingen kunder med det navn i vores Database.";
+                ctx.sessionAttribute("message", message);
+                ctx.sessionAttribute("modalmedbesked", true);
+                ctx.sessionAttribute("showorder", false);
+            }
+        } catch (DatabaseException e) {
+            // Håndterer databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        } catch (Exception e) {
+            // Her håndterer jeg alle andre uventede fejl eksempelvis netværksfejl og skrivefejl
+            System.out.println("Unexpected error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Unexpected error: " + e.getMessage());
         }
     }
 
     private static void getCustomerByName(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String userName = ctx.formParam("username");
-        User currentUser = UserMapper.getCustomerByName(userName, connectionPool);
+        User currentUser;
+        try {
+            currentUser = UserMapper.getCustomerByName(userName, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("currentuser", currentUser);
     }
 
     private static void getCustomerByEmail(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         String email = ctx.formParam("email");
-        User currentUser = UserMapper.getCustomerByEmail(email, connectionPool);
+        User currentUser;
+        try {
+            currentUser = UserMapper.getCustomerByEmail(email, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            return;  // Afbryder metoden, hvis der opstår en databasefejl
+        }
         ctx.sessionAttribute("currentuser", currentUser);
     }
 
     private static int changeOrderStatusToProduced(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        OrdersMapper.changeStatusOnOrder("pakket", orderId, connectionPool);
+        try {
+            OrdersMapper.changeStatusOnOrder("pakket", orderId, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        }
         getAllOrders(ctx, connectionPool);
         return orderId;
     }
 
     private static void changeOrderStatusToPickedUp(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        OrdersMapper.changeStatusOnOrder("leveret", orderId, connectionPool);
+        try {
+            OrdersMapper.changeStatusOnOrder("leveret", orderId, connectionPool);
+        } catch (DatabaseException e) {
+            // Her håndterer jeg en evt. databasefejl
+            System.out.println("Database error: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        }
         getAllOrders(ctx, connectionPool);
     }
 }

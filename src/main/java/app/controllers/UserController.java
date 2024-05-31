@@ -9,14 +9,9 @@ import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
-
 import java.security.SecureRandom;
-
 import java.util.List;
-
 import static app.persistence.OrdersMapper.getOrderByUserId;
-
 
 public class UserController {
     public static void addRoutes(Javalin app) {
@@ -157,11 +152,9 @@ public class UserController {
             ctx.sessionAttribute("currentUser", user);
             ctx.render("customersite.html");
 
-
         } catch (DatabaseException e) {
             ctx.attribute("message", "Forkert brugernavn eller password. Prøv igen eller opret brugeren!");
             ctx.render("login.html");
-
         }
     }
 

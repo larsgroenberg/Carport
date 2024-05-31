@@ -1,8 +1,6 @@
 package app.controllers;
 
 import java.util.*;
-import java.util.logging.Logger;
-
 import app.entities.*;
 import app.exceptions.DatabaseException;
 import app.persistence.CarportPartMapper;
@@ -126,7 +124,6 @@ public class OrderController {
     }
 
     public static double calculateAndCreatePartsList(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        Logger.getLogger(OrderController.class.getName()).info("Calculating and creating parts list...");
         double totalPrice = 0.0;
         dbPartsList = CarportPartMapper.getDBParts(connectionPool);
         ctx.sessionAttribute("dbPartsList", dbPartsList);
