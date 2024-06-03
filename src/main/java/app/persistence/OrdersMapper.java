@@ -63,8 +63,8 @@ public class OrdersMapper {
         }
     }
 
-
     public static void insertPartsNeededForOrder(int orderID, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        // Her henter jeg partsListen
         ArrayList<CarportPart> carportPartList = ctx.sessionAttribute("partsList");
         String sql = "INSERT INTO partslist(part_id, order_id, quantity, partslistprice, description, unit, part_length, name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -85,7 +85,7 @@ public class OrdersMapper {
                 ps.setInt(7, part.getDBlength());
                 ps.setString(8, part.getDBname());
 
-                // Her udfører jeg opdateringen
+                // Her sætter jeg hver enkelt del ind i partslist-tabellen i Databasen
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected != 1) {
                     throw new DatabaseException("Fejl ved indsættelse af partslistlinie i tabellen partslist");
@@ -277,7 +277,6 @@ public class OrdersMapper {
         return order;
     }
 
-
     public static void deleteOrderByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "DELETE FROM ordrene WHERE order_id = ?";
         try (
@@ -298,6 +297,32 @@ public class OrdersMapper {
         } catch (SQLException e) {
             // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
             throw new DatabaseException("Fejl ved sletning af ordre: " + e.getMessage(), e);
+        }
+    }
+
+
+    public static void deleteUsersPartslistByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "DELETE FROM partslist WHERE order_id = ?";
+        try (
+                // Her opretter jeg forbindelse til databasen
+                Connection connection = connectionPool.getConnection();
+                // Her opretter jeg et PreparedStatement til at udføre SQL-forespørgslen
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            // Her sættes parameteren for PreparedStatement
+            ps.setInt(1, orderId);
+            int rowsAffected = ps.executeUpdate();
+
+            // Tjek om nogen rækker blev påvirket (dvs. om ordren blev slettet)
+            if (rowsAffected == 0) {
+                // Hvis ingen rækker blev påvirket, betyder det, at ordren ikke blev fundet
+                System.out.println("Partslisten med ordreId " + orderId + " kunne ikke findes i databasen.");
+            } else {
+                System.out.println("Partslisten med ordreId " + orderId + " blev slettet.");
+            }
+        } catch (SQLException e) {
+            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+            throw new DatabaseException("Fejl ved sletning af partslist med ordreId " + orderId + ": " + e.getMessage(), e);
         }
     }
 

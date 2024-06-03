@@ -1,16 +1,16 @@
 package app.controllers;
 
-import app.entities.CarportPart;
-import app.entities.Order;
-import app.entities.User;
+import app.entities.*;
 import app.exceptions.DatabaseException;
 import app.persistence.*;
+import app.services.CarportSvg;
 import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class AdminController {
     public static void addRoutes(Javalin app) {
@@ -88,6 +88,7 @@ public class AdminController {
             updateOrder(ctx, ConnectionPool.getInstance());
             getAllOrders(ctx, ConnectionPool.getInstance());
             ctx.sessionAttribute("showallorders", true);
+            ctx.sessionAttribute("showorder", false);
             ctx.render("adminsite.html");
         });
         app.post("/adminDeleteOrder", ctx -> {
@@ -183,45 +184,166 @@ public class AdminController {
 
     private static void deleteOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException, SQLException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
+        Order order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
+        int userId = order.getUserId();
         // Her forsøger jeg at slette ordren i databasen
         try {
             OrdersMapper.deleteOrderByOrderId(orderId, connectionPool);
         } catch (DatabaseException e) {
             // Hej håndterer jeg en evt. databasefejl
-            System.err.println("Database error: " + e.getMessage());
+            System.err.println("Database fejl ved forsøg på at slette ordren: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        }
+        // Her sletter jeg den partsliste der hører jeg ordren
+        try {
+            OrdersMapper.deleteUsersPartslistByOrderId(orderId, connectionPool);
+        } catch (DatabaseException e) {
+            // Hej håndterer jeg en evt. databasefejl
+            System.err.println("Database fejl ved forsøg på sketning af users partsList: " + e.getMessage());
+            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+        }
+        // Her sletter jeg brugeren
+        try {
+            UserMapper.deleteUserByUserId(userId, connectionPool);
+        } catch (DatabaseException e) {
+            // Hej håndterer jeg en evt. databasefejl
+            System.err.println("Database fejl ved forsøg på sletning af user: " + e.getMessage());
             ctx.sessionAttribute("error", "Database error: " + e.getMessage());
         }
     }
 
     private static void updateOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
-        Order order = ctx.sessionAttribute("order");
-        order.setMaterialCost(Double.parseDouble(ctx.formParam("materialCost")));
-        order.setSalesPrice(Double.parseDouble(ctx.formParam("salesPrice")));
-        order.setCarportLength(Double.parseDouble(ctx.formParam("carportLength")));
-        order.setCarportHeight(Double.parseDouble(ctx.formParam("carportHeight")));
-        order.setCarportWidth(Double.parseDouble(ctx.formParam("carportWidth")));
-        order.setUserId(Integer.parseInt(ctx.formParam("userId")));
-        order.setOrderStatus(ctx.formParam("orderStatus"));
-        order.setShedLength(Double.parseDouble(ctx.formParam("shedLength")));
-        order.setShedWidth(Double.parseDouble(ctx.formParam("shedWidth")));
-        order.setUserEmail(ctx.formParam("userEmail"));
-        order.setOrderDate(ctx.formParam("orderDate"));
-        order.setRoof(ctx.formParam("roof"));
-        order.setWall(Boolean.parseBoolean(ctx.formParam("wall")));
+        // Her henter jeg de opdaterede data og parser dem
+        int orderId = Integer.parseInt(ctx.formParam("orderId"));
+        Order order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
 
-        ctx.sessionAttribute("order", order);
-        Order updatedOrder = ctx.sessionAttribute("order");
-        // Her forsøger jeg at opdatere ordren i databasen
+        double materialCost = Double.parseDouble(ctx.formParam("materialCost"));
+        double salesPrice = Double.parseDouble(ctx.formParam("salesPrice"));
+        double carportLength = Double.parseDouble(ctx.formParam("carportLength"));
+        double carportHeight = Double.parseDouble(ctx.formParam("carportHeight"));
+        double carportWidth = Double.parseDouble(ctx.formParam("carportWidth"));
+        int userId = Integer.parseInt(ctx.formParam("userId"));
+        String orderStatus = ctx.formParam("orderStatus");
+        double shedLength = Double.parseDouble(ctx.formParam("shedLength"));
+        double shedWidth = Double.parseDouble(ctx.formParam("shedWidth"));
+        String userEmail = ctx.formParam("userEmail");
+        String orderDate = ctx.formParam("orderDate");
+        String roof = ctx.formParam("roof");
+        boolean wall = Boolean.parseBoolean(ctx.formParam("wall"));
+
+        // Her opretter jeg et nyt carport-objekt baseret på de nye data
+        Order updatedOrder = new Order(orderId, materialCost, salesPrice, carportWidth, carportLength, carportHeight, userId, orderStatus, shedWidth, shedLength, userEmail, orderDate, roof, wall);
+
+        // Her kontrollerer jeg om der er ændringer til carport og evt. skur
+        if (order.getCarportHeight() != updatedOrder.getCarportHeight() ||
+                order.getCarportLength() != updatedOrder.getCarportLength() ||
+                order.getCarportWidth() != updatedOrder.getCarportWidth() ||
+                order.getShedLength() != updatedOrder.getShedLength() ||
+                order.getShedWidth() != updatedOrder.getShedWidth() ||
+                !order.getRoof().equalsIgnoreCase(updatedOrder.getRoof())) {
+
+            try {
+                // Her sletter jeg brugerens partslist og genberegner totalprisen hvis der er ændringer til carport og skur
+                OrdersMapper.deleteUsersPartslistByOrderId(order.getOrderId(), connectionPool);
+                double totalPrice = calculateAndCreateNewOrderAndPartslist(order.getOrderId(), updatedOrder, ctx, connectionPool);
+                updatedOrder.setMaterialCost(totalPrice);
+                updatedOrder.setSalesPrice(ctx.sessionAttribute("carportprice"));
+            } catch (DatabaseException e) {
+                // Her håndterer jeg databasefejl ved sletning og genberegning
+                System.err.println("Database error: " + e.getMessage());
+                ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+                return;  // Her afbryder jeg metoden ved fejl
+            }
+        }
+
+        // Her sætter jeg session attributten order med de nye værdier
+        ctx.sessionAttribute("order", updatedOrder);
+
+        // Her opdaterer jeg ordren i databasen
         try {
             OrdersMapper.updateOrder(updatedOrder, connectionPool);
         } catch (DatabaseException e) {
-            // Hej håndterer jeg en evt. databasefejl
+            // Her håndterer jeg en evt. databasefejl ved opdateringen
             System.err.println("Database error: " + e.getMessage());
             ctx.sessionAttribute("error", "Database error: " + e.getMessage());
-            return;  // Her afbryder jeg metoden, hvis der opstår en databasefejl
         }
-        ctx.sessionAttribute("showallorders", true);
-        ctx.sessionAttribute("showorder", false);
+    }
+
+    public static double calculateAndCreateNewOrderAndPartslist(int orderId, Order updatedOrder, Context ctx, ConnectionPool connectionPool) throws DatabaseException {
+        double length = updatedOrder.getCarportLength();
+        double width = updatedOrder.getCarportWidth();
+        double height = updatedOrder.getCarportHeight();
+        double lengthShed = updatedOrder.getShedLength();
+        double widthShed = updatedOrder.getShedWidth();
+
+        double postLength = height + 90;
+        String roof = updatedOrder.getRoof();
+        boolean withRoof = !updatedOrder.getRoof().contains("Uden");
+        boolean withShed = lengthShed > 0;
+
+        Carport carport = new Carport(length, width, height, withRoof, withShed, lengthShed, widthShed, 0);
+
+        // Her sætter jeg session attributter til brug ved beregning i PartsCalculator
+        ctx.sessionAttribute("carport_trapeztag", roof);
+        ctx.sessionAttribute("carport_width", (int) width);
+        ctx.sessionAttribute("carport_length", (int) length);
+        ctx.sessionAttribute("postlength", (int) postLength);
+        if (lengthShed > 0) {
+            ctx.sessionAttribute("shed", true);
+        }
+
+        // Her opretter jeg en ArrayListe med carportdelene fra databasen
+        ArrayList<CarportPart> dbPartsList;
+        try {
+            dbPartsList = CarportPartMapper.getDBParts(connectionPool);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Fejl ved hentning af carportdele fra databasen: " + e.getMessage(), String.valueOf(e));
+        }
+
+        ctx.sessionAttribute("newdbPartsList", dbPartsList);
+        ctx.sessionAttribute("dbPartsList", dbPartsList);
+
+        // Her indstiller jeg locale
+        Locale.setDefault(new Locale("da-DK"));
+
+        // Her laver jeg de 2 tegninger svgFromTop og svgFromSide
+        CarportSvg svgFromTop = new CarportSvg(ctx, (int) width, (int) length, (int) height, lengthShed, widthShed);
+        CarportSvg svgFromSide = new CarportSvg(ctx, (int) width, (int) length, (int) height, lengthShed, widthShed, roof);
+
+        ctx.sessionAttribute("totalPoles", svgFromTop.getTotalPoles());
+        ctx.sessionAttribute("totalBeams", svgFromTop.getTotalBeams());
+        ctx.sessionAttribute("totalRafters", svgFromTop.getTotalRafters());
+        ctx.sessionAttribute("totalCrossSupports", svgFromTop.getTotalCrossSupports());
+        ctx.sessionAttribute("totalBoards", svgFromSide.getTotalBoards());
+
+        ctx.sessionAttribute("svgFromTop", svgFromTop.toString());
+        ctx.sessionAttribute("svgFromSide", svgFromSide.toString());
+
+        double totalPrice = 0.0;
+
+        // Her beregner jeg delene der skal bruges gemmer i calculateCarport-metoden partsList
+        PartsCalculator partsCalculator = new PartsCalculator(carport, dbPartsList);
+        partsCalculator.calculateCarport(ctx);
+
+        // Her henter jeg partsListen fra sessionAtributten
+        ArrayList<CarportPart> partsList = ctx.sessionAttribute("partsList");
+        for (CarportPart part : partsList) {
+            totalPrice += (part.getQuantity() * part.getDBprice());
+        }
+        totalPrice = Math.ceil(totalPrice);
+        double carportTotalPrice = Math.ceil(totalPrice * 1.4);
+        ctx.sessionAttribute("carportprice", carportTotalPrice);
+        carport.setPrice(totalPrice);
+        ctx.sessionAttribute("newCarport", carport);
+
+        // Indsæt de nødvendige dele for ordren i databasen
+        try {
+            OrdersMapper.insertPartsNeededForOrder(orderId, ctx, connectionPool);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Fejl ved indsættelse af dele til ordren: " + e.getMessage(), String.valueOf(e));
+        }
+
+        return totalPrice;
     }
 
     private static void updatePart(Context ctx, ConnectionPool connectionPool) throws DatabaseException {

@@ -2,7 +2,6 @@ package app.persistence;
 
 import app.entities.CarportPart;
 import app.exceptions.DatabaseException;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,43 +11,17 @@ public class CarportPartMapper {
         ArrayList<CarportPart> partList = new ArrayList<>();
         String sql = "SELECT * FROM parts";
 
-        try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ResultSet rs = ps.executeQuery();
-
-                while (rs.next()) {
-                    int partId = rs.getInt("part_id");
-                    Double price = rs.getDouble("price");
-                    String description = rs.getString("description");
-                    int length = rs.getInt("length");
-                    int height = rs.getInt("height");
-                    int width = rs.getInt("width");
-                    String type = rs.getString("type");
-                    String material_name = rs.getString("material");
-                    String unit = rs.getString("unit");
-                    String name = rs.getString("name");
-                    CarportPart.CarportPartType partType = mapToCarportPartType(type);
-                    partList.add(new CarportPart(partId, partType, 0, price, length, height, width, description, material_name, unit, name, type));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("We couldn't get the part", e.getMessage());
-        }
-        return partList;
-    }
-
-    public static CarportPart getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
-
-        CarportPart part = null;
-        String sql = "SELECT * FROM parts WHERE part_id = ?";
-
         try (
+                // Her opretter jeg forbindelse til databasen
                 Connection connection = connectionPool.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)
+                // Her opretter jeg et PreparedStatement til at udføre SQL-forespørgslen
+                PreparedStatement ps = connection.prepareStatement(sql);
+                // Her udfører jeg forespørgslen og gemmer resultatet i et ResultSet
+                ResultSet rs = ps.executeQuery()
         ) {
-            ps.setInt(1, partId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
+            // Her løber jeg gennem ResultSet'et og tilføjer hver del til partList
+            while (rs.next()) {
+                int partId = rs.getInt("part_id");
                 double price = rs.getDouble("price");
                 String description = rs.getString("description");
                 int length = rs.getInt("length");
@@ -58,60 +31,117 @@ public class CarportPartMapper {
                 String material_name = rs.getString("material");
                 String unit = rs.getString("unit");
                 String name = rs.getString("name");
+
+                // Map type til CarportPartType og opret CarportPart-objekt
                 CarportPart.CarportPartType partType = mapToCarportPartType(type);
-                part = new CarportPart(partId, partType, 0, price, length, height, width, description, material_name, unit, name, type);
+                partList.add(new CarportPart(partId, partType, 0, price, length, height, width, description, material_name, unit, name, type));
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error retrieving material with id = " + partId, e.getMessage());
+            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+            throw new DatabaseException("Det lykkedes ikke at hente byggematerialer fra databasen", e);
         }
+        return partList;
+    }
+
+
+    public static CarportPart getPartById(int partId, ConnectionPool connectionPool) throws DatabaseException {
+        CarportPart part = null;
+        String sql = "SELECT * FROM parts WHERE part_id = ?";
+
+        try (
+                // Her opretter jeg forbindelse til databasen
+                Connection connection = connectionPool.getConnection();
+                // Her opretter jeg et PreparedStatement til at udføre SQL-forespørgslen
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            // Her sætter jeg parametrene for PreparedStatementet
+            ps.setInt(1, partId);
+
+            // Her udfører jeg forespørgslen og gemmer resultatet i et ResultSet
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Her henter jeg data fra ResultSet'et
+                    double price = rs.getDouble("price");
+                    String description = rs.getString("description");
+                    int length = rs.getInt("length");
+                    int height = rs.getInt("height");
+                    int width = rs.getInt("width");
+                    String type = rs.getString("type");
+                    String material_name = rs.getString("material");
+                    String unit = rs.getString("unit");
+                    String name = rs.getString("name");
+
+                    // Map type til CarportPartType og opret CarportPart-objekt
+                    CarportPart.CarportPartType partType = mapToCarportPartType(type);
+                    part = new CarportPart(partId, partType, 0, price, length, height, width, description, material_name, unit, name, type);
+                }
+            }
+        } catch (SQLException e) {
+            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+            throw new DatabaseException("Fejl ved hentning af materialet med id = " + partId, e);
+        }
+
         return part;
     }
-    public static void addPart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
 
+    public static void addPart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO parts (price, description, length, height, width, type, material, unit, name) VALUES (?,?,?,?,?,?,?,?,?)";
 
-        try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setDouble(1, part.getDBprice());
-                ps.setString(2, part.getDBdescription());
-                ps.setInt(3, part.getDBlength());
-                ps.setInt(4, part.getDBheight());
-                ps.setInt(5, part.getDBwidth());
-                ps.setString(6, part.getDBtype());
-                ps.setString(7, part.getDBmaterial());
-                ps.setString(8, part.getDBunit());
-                ps.setString(9, part.getDBname());
+        try (
+                // Her opretter jeg forbindelse til databasen
+                Connection connection = connectionPool.getConnection();
+                // Her opretter jeg et PreparedStatement til at udføre SQL-forespørgslen
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            // Hej sætter jeg parametrene for PreparedStatementet
+            ps.setDouble(1, part.getDBprice());
+            ps.setString(2, part.getDBdescription());
+            ps.setInt(3, part.getDBlength());
+            ps.setInt(4, part.getDBheight());
+            ps.setInt(5, part.getDBwidth());
+            ps.setString(6, part.getDBtype());
+            ps.setString(7, part.getDBmaterial());
+            ps.setString(8, part.getDBunit());
+            ps.setString(9, part.getDBname());
 
-                ps.executeUpdate();
-            }
+            // Her udfører jeg indsættelsen
+            ps.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException("Byggematerialet kunne ikke indsættes i databasen", e.getMessage());
+            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+            throw new DatabaseException("Byggematerialet kunne ikke indsættes i databasen", e);
         }
     }
+
 
     public static void updatePart(CarportPart part, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE parts SET price = ?, description = ?, length = ?, height = ?, width = ?, type = ?, material = ?, unit = ?, name = ? WHERE part_id = ?";
 
-        String sql = "UPDATE parts SET price = ?, description = ?, length = ?, height = ?, width = ?, type = ?, material = ?, unit = ?, name = ? WHERE part_id = ?;";
+        try (
+                // Her opretter jeg forbindelse til databasen
+                Connection connection = connectionPool.getConnection();
+                // Her opretter jeg et PreparedStatement til at udføre SQL-forespørgslen
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            // Her sætter vi parametrene for PreparedStatementet
+            ps.setDouble(1, part.getDBprice());
+            ps.setString(2, part.getDBdescription());
+            ps.setInt(3, part.getDBlength());
+            ps.setInt(4, part.getDBheight());
+            ps.setInt(5, part.getDBwidth());
+            ps.setString(6, part.getDBtype());
+            ps.setString(7, part.getDBmaterial());
+            ps.setString(8, part.getDBunit());
+            ps.setString(9, part.getDBname());
+            ps.setInt(10, part.getPartId());
 
-        try (Connection connection = connectionPool.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setDouble(1, part.getDBprice());
-                ps.setString(2, part.getDBdescription());
-                ps.setInt(3, part.getDBlength());
-                ps.setInt(4, part.getDBheight());
-                ps.setInt(5, part.getDBwidth());
-                ps.setString(6, part.getDBtype());
-                ps.setString(7, part.getDBmaterial());
-                ps.setString(8, part.getDBunit());
-                ps.setString(9, part.getDBname());
-                ps.setInt(10, part.getPartId());
-
-                ps.executeUpdate();
-            }
+            // Her udfører vi opdateringen
+            ps.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException("Part'en kunne ikke opdateres i databasen", e.getMessage());
+            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+            throw new DatabaseException("Part'en kunne ikke opdateres i databasen", e);
         }
     }
+
 
     public static List<CarportPart> getCompletePartsListByOrderId(int orderId, ConnectionPool pool) throws DatabaseException {
         List<CarportPart> partsList = new ArrayList<>();

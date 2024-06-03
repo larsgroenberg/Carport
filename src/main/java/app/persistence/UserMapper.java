@@ -71,6 +71,29 @@ public class UserMapper {
         }
     }
 
+    public static void deleteUserByUserId(int userId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "DELETE FROM users WHERE user_id = ?";
+        try (
+                // Her opretter jeg forbindelse til databasen
+                Connection connection = connectionPool.getConnection();
+                // Her opretter jeg et PreparedStatement til at udføre SQL-forespørgslen
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            // Her sættes parameteren for PreparedStatement
+            ps.setInt(1, userId);
+            int rowsAffected = ps.executeUpdate();
+
+            // Tjek om nogen rækker blev påvirket (dvs. om ordren blev slettet)
+            if (rowsAffected == 0) {
+                // Hvis ingen rækker blev påvirket, betyder det, at ordren ikke blev fundet
+                System.out.println("Ordren kunne ikke findes i databasen ");
+            }
+        } catch (SQLException e) {
+            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+            throw new DatabaseException("Fejl ved sletning af ordre: " + e.getMessage(), e);
+        }
+    }
+
     public static User getCustomerByName(String userName, ConnectionPool connectionPool) throws DatabaseException {
         User user = null;
         String sql = "select * from public.users where name=?";
