@@ -83,14 +83,16 @@ public class UserMapper {
             ps.setInt(1, userId);
             int rowsAffected = ps.executeUpdate();
 
-            // Tjek om nogen rækker blev påvirket (dvs. om ordren blev slettet)
+            // Tjek om nogen rækker blev påvirket (dvs. om brugeren blev slettet)
             if (rowsAffected == 0) {
-                // Hvis ingen rækker blev påvirket, betyder det, at ordren ikke blev fundet
-                System.out.println("Ordren kunne ikke findes i databasen ");
+                // Hvis ingen rækker blev påvirket, betyder det, at brugeren ikke blev fundet
+                System.out.println("Brugeren blev ikke fundet i databasen ");
+            } else {
+                System.out.println("Brugeren blev slettet i databasen ");
             }
         } catch (SQLException e) {
             // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
-            throw new DatabaseException("Fejl ved sletning af ordre: " + e.getMessage(), e);
+            throw new DatabaseException("Ved forsøg på sletning af bruger med brugerId: "+userId+" opstod følgende fejl: " + e.getMessage(), e);
         }
     }
 

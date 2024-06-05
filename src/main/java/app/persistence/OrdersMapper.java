@@ -6,7 +6,6 @@ import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import io.javalin.http.Context;
-
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
