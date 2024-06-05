@@ -7,7 +7,6 @@ import app.services.CarportSvg;
 import app.services.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -123,7 +122,10 @@ public class AdminController {
 
     private static void seeAllSale(Context ctx, ConnectionPool connectionPool) {
         try {
-            ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool);
+            ArrayList<Order> customerOrders = OrdersMapper.getAllOrders(connectionPool); // Denne linje kan kaste en DatabaseException
+            if (customerOrders == null) {
+                throw new NullPointerException("Order list is null.");
+            }
             ctx.sessionAttribute("customerorders", customerOrders);
 
             double totalSale = 0, totalCost = 0;
@@ -157,9 +159,13 @@ public class AdminController {
             ctx.sessionAttribute("carportSold", carportSold);
 
         } catch (DatabaseException e) {
-            // Log fejlmeddelelsen og sæt en fejlbesked i sessionen eller konteksten
+            // I tilfælde af at der opstår en Databaseexception i getAllOrders kastes der en DatabaseException
             System.err.println("Fejl ved hentning af ordrer: " + e.getMessage());
             ctx.sessionAttribute("error", "Fejl ved hentning af ordrer: " + e.getMessage());
+        } catch (NullPointerException e) {
+            //Hvis CustomerOrders er null, altså der ikke er nogle ordre i systemet kastes der en NullpointerException
+            System.err.println("Null reference fejl: " + e.getMessage());
+            ctx.sessionAttribute("error", "Ingen ordrer at hente: " + e.getMessage());
         } catch (Exception e) {
             // Her håndterer jeg eventuelle andre uventede undtagelser
             System.err.println("Uventet fejl: " + e.getMessage());
@@ -169,9 +175,9 @@ public class AdminController {
 
     private static void editOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        // Her forsøger jeg at hente ordren fra databasen
         Order order;
         try {
+            // Her forsøger jeg at hente ordren fra databasen
             order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
         } catch (DatabaseException e) {
             // Hej håndterer jeg en evt. databasefejl
@@ -182,35 +188,46 @@ public class AdminController {
         ctx.sessionAttribute("order", order);
     }
 
-    private static void deleteOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException, SQLException {
-        int orderId = Integer.parseInt(ctx.formParam("orderId"));
-        Order order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
-        int userId = order.getUserId();
-        // Her forsøger jeg at slette ordren i databasen
+    private static void deleteOrder(Context ctx, ConnectionPool connectionPool) {
+        // Den ydre try-catch blok som omslutter hele metoden er for at fange og håndtere eventuelle andre uventede undtagelser
         try {
-            OrdersMapper.deleteOrderByOrderId(orderId, connectionPool);
-        } catch (DatabaseException e) {
-            // Hej håndterer jeg en evt. databasefejl
-            System.err.println("Database fejl ved forsøg på at slette ordren: " + e.getMessage());
-            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
-        }
-        // Her sletter jeg den partsliste der hører jeg ordren
-        try {
-            OrdersMapper.deleteUsersPartslistByOrderId(orderId, connectionPool);
-        } catch (DatabaseException e) {
-            // Hej håndterer jeg en evt. databasefejl
-            System.err.println("Database fejl ved forsøg på sketning af users partsList: " + e.getMessage());
-            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
-        }
-        // Her sletter jeg brugeren
-        try {
-            UserMapper.deleteUserByUserId(userId, connectionPool);
-        } catch (DatabaseException e) {
-            // Hej håndterer jeg en evt. databasefejl
-            System.err.println("Database fejl ved forsøg på sletning af user: " + e.getMessage());
-            ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            int orderId = Integer.parseInt(ctx.formParam("orderId"));
+            Order order = OrdersMapper.getOrderByOrderId(orderId, connectionPool);
+            int userId = order.getUserId();
+
+            try {
+                // Her forsøger jeg at slette ordren i databasen
+                OrdersMapper.deleteOrderByOrderId(orderId, connectionPool);
+            } catch (DatabaseException e) {
+                // Her håndterer jeg en evt. databasefejl eller SQL-fejl
+                System.err.println("Database fejl ved forsøg på at slette ordren: " + e.getMessage());
+                ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            }
+
+            // Her sletter jeg den partslist der hører til den specifikke ordre
+            try {
+                OrdersMapper.deleteUsersPartslistByOrderId(orderId, connectionPool);
+            } catch (DatabaseException e) {
+                // Her håndterer jeg en evt. databasefejl eller SQL-fejl
+                System.err.println("Database fejl ved forsøg på sletning af kundens partsList: " + e.getMessage());
+                ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            }
+
+            // Her forsøger jeg at slette brugeren
+            try {
+                UserMapper.deleteUserByUserId(userId, connectionPool);
+            } catch (DatabaseException e) {
+                // Her håndterer jeg en evt. databasefejl eller SQL-fejl
+                System.err.println("Database fejl ved forsøg på sletning af user: " + e.getMessage());
+                ctx.sessionAttribute("error", "Database error: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            // Her håndterer jeg alle andre uventede undtagelser
+            System.err.println("Uventet fejl: " + e.getMessage());
+            ctx.sessionAttribute("error", "Uventet fejl: " + e.getMessage());
         }
     }
+
 
     private static void updateOrder(Context ctx, ConnectionPool connectionPool) throws DatabaseException {
         // Her henter jeg de opdaterede data og parser dem
