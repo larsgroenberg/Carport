@@ -292,13 +292,14 @@ public class OrdersMapper {
             if (rowsAffected == 0) {
                 // Hvis ingen rækker blev påvirket, betyder det, at ordren ikke blev fundet
                 System.out.println("Ordren kunne ikke findes i databasen ");
+            } else {
+                System.out.println("Ordren med ordrenr. "+orderId+" blev slettet fra databasen");
             }
-        } catch (SQLException e) {
-            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
-            throw new DatabaseException("Fejl ved sletning af ordre: " + e.getMessage(), e);
+        } catch (Exception e) {
+            // Her fanger jeg alle undtagelser og kaster dem som DatabaseException
+            throw new DatabaseException("Generel fejl ved sletning af ordre: " + e.getMessage(), e);
         }
     }
-
 
     public static void deleteUsersPartslistByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "DELETE FROM partslist WHERE order_id = ?";
@@ -319,8 +320,8 @@ public class OrdersMapper {
             } else {
                 System.out.println("Partslisten med ordreId " + orderId + " blev slettet.");
             }
-        } catch (SQLException e) {
-            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+        } catch (Exception e) {
+            // Her fanger jeg alle undtagelser og kaster dem som DatabaseException
             throw new DatabaseException("Fejl ved sletning af partslist med ordreId " + orderId + ": " + e.getMessage(), e);
         }
     }

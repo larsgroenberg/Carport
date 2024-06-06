@@ -90,8 +90,8 @@ public class UserMapper {
             } else {
                 System.out.println("Brugeren blev slettet i databasen ");
             }
-        } catch (SQLException e) {
-            // Her kaster vi en DatabaseException hvis der opstår en SQL-relateret fejl
+        } catch (Exception e) {
+            // Her fanger jeg alle undtagelser og kaster dem som DatabaseException
             throw new DatabaseException("Ved forsøg på sletning af bruger med brugerId: "+userId+" opstod følgende fejl: " + e.getMessage(), e);
         }
     }
