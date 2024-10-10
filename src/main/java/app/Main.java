@@ -11,11 +11,11 @@ public class Main
 {
     public static void main(String[] args) {
 
-        // Initialiserer Javalin og Jetty webserver
+        // Her initialiserer jeg Javalin og Jetty webserver
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
-        }).start(7070);
+        }).start(7075);
 
         // Routing
         OrderController.addRoutes(app);
